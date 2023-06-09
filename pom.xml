@@ -5,9 +5,9 @@
 
   <groupId>jp.soars</groupId>
   <artifactId>soars-samples</artifactId>
-  <version>220910_01</version>
+  <version>230609_01</version>
 
-  <name>soars</name>
+  <name>soars2-samples</name>
   <!-- FIXME change it to the project's website -->
   <url>http://www.soars.jp</url>
 
