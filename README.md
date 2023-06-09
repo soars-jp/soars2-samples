@@ -3,18 +3,18 @@
 
 SOARS toolkit ver.2のサンプルプログラム
 
-- [sample01](src/main/java/jp/soars/samples/sample01/)
-- [sample02](src/main/java/jp/soars/samples/sample02/)
-- [sample03](src/main/java/jp/soars/samples/sample03/)
-- [sample04](src/main/java/jp/soars/samples/sample04/)
-- [sample05](src/main/java/jp/soars/samples/sample05/)
-- [sample06](src/main/java/jp/soars/samples/sample06/)
-- [sample07](src/main/java/jp/soars/samples/sample07/)
-- [sample08](src/main/java/jp/soars/samples/sample08/)
-- [sample09](src/main/java/jp/soars/samples/sample09/)
-- [sample10](src/main/java/jp/soars/samples/sample10/)
-- [sample11](src/main/java/jp/soars/samples/sample11/)
-- [sample12](src/main/java/jp/soars/samples/sample12/)
+- [sample01：最も簡単なプログラム](src/main/java/jp/soars/samples/sample01/)
+- [sample02：日を跨ぐ相対時刻指定](src/main/java/jp/soars/samples/sample02/)
+- [sample03：確率的なルールの定義](src/main/java/jp/soars/samples/sample03/)
+- [sample04：子役割と役割の変更](src/main/java/jp/soars/samples/sample04/)
+- [sample05：臨時実行ルールの繰り返し](src/main/java/jp/soars/samples/sample05/)
+- [sample06：臨時実行ルールの発火時刻をランダムに設定](src/main/java/jp/soars/samples/sample06/)
+- [sample07：スポット・エージェントの動的追加・削除](src/main/java/jp/soars/samples/sample07/)
+- [sample08：ルールの並列実行](src/main/java/jp/soars/samples/sample08/)
+- [sample09：ステージ実行ルールとグローバル共有変数集合](src/main/java/jp/soars/samples/sample09/)
+- [sample10：レイヤー機能](src/main/java/jp/soars/samples/sample10/)
+- [sample11：モジュール合成](src/main/java/jp/soars/samples/sample11/)
+- [sample12：スポットの定員](src/main/java/jp/soars/samples/sample12/)
 
 <!-- omit in toc -->
 ## 目次
@@ -237,4 +237,3 @@ TSOARSBuilderのメソッド．
   - レイヤーとスポットタイプごとにスポットを保持するリストの初期サイズを指定する．
   - レイヤーを入力しない場合は，デフォルトレイヤーが指定される．
   - レイヤーとスポットタイプごとのシミュレーションで作成されるスポット数の最大値の予測値を指定するのがよい．
-
