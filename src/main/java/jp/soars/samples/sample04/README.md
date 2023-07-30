@@ -11,7 +11,7 @@
 - [役割の定義](#役割の定義)
   - [共通役割](#共通役割)
   - [父親役割](#父親役割)
-  - [子ども役割](#子ども役割)
+  - [子供役割](#子供役割)
   - [病人役割](#病人役割)
 - [メインクラスの定義](#メインクラスの定義)
 
@@ -23,12 +23,12 @@
 - 3人の父親(Father1, Father2, Father3)は，それぞれ自宅(Home1, Home2, Home3)を持つ．
 - 3人の父親は，50%の確率で9時，30%の確率で10時，20%の確率で11時に自宅から同じ会社(Company)に移動する．
 - 3人の父親は，出社して8時間後にそれぞれの自宅に移動する．
-- 3人の子ども(Child1, Child2, Child3)は，それぞれ自宅(Home1, Home2, Home3)を持つ．
-- 3人の子どもは，8時に自宅から同じ学校(School)に移動する．
-- 3人の子どもは，15時に学校からそれぞれの自宅に移動する．
-- 父親と子どもは，6時に25%の確率で病気になる．
+- 3人の子供(Child1, Child2, Child3)は，それぞれ自宅(Home1, Home2, Home3)を持つ．
+- 3人の子供は，8時に自宅から同じ学校(School)に移動する．
+- 3人の子供は，15時に学校からそれぞれの自宅に移動する．
+- 父親と子供は，6時に25%の確率で病気になる．
 - 病人は，10時に自宅から病院(Hospital)に移動する．
-- 病人は，父親の場合2時間，子どもの場合3時間，病院で診察を受けた後，自宅に戻り病気が治る．
+- 病人は，父親の場合2時間，子供の場合3時間，病院で治療を受けた後，自宅に戻り病気が治る．
 
 シミュレーション条件
 
@@ -53,7 +53,7 @@ sample04では以下の定数を定義する．
 public enum EAgentType {
     /** 父親 */
     Father,
-    /** 子ども */
+    /** 子供 */
     Child
 }
 ```
@@ -84,7 +84,7 @@ public enum EStage {
 public enum ERoleName {
     /** 父親役割 */
     Father,
-    /** 子ども役割 */
+    /** 子供役割 */
     Child,
     /** 共通役割 */
     Common,
@@ -306,8 +306,8 @@ public final class TRuleOfStochasticallyAgentMoving extends TAgentRule {
 ### 健康状態決定ルール
 
 健康状態決定ルールは，スポット条件と確率条件が満たされた場合に役割を切り替える．
-病人役割に切り替える時にディアクティブ化する役割をディアクティブ化して病人役割をアクティブ化する．
-父親役割と子ども役割には共通役割が子役割として登録されており，共通役割のアクティブ状態も一緒に変わる点に注意．
+病人役割に切り替える時にディアクティブ化する役割を非アクティブ化して病人役割をアクティブ化する．
+父親役割と子供役割には共通役割が子役割として登録されており，共通役割のアクティブ状態も一緒に変わる点に注意．
 
 `TRuleOfDeterminingHealth.java`
 
@@ -320,8 +320,8 @@ public final class TRuleOfDeterminingHealth extends TAgentRule {
     /** 病気になる確率 */
     private final double fProbability;
 
-    /** 病人役割に切り替える時にディアクティブ化する役割 */
-    private final Enum<?> fDeactivateRole;
+    /** 病人役割に切り替える時に非アクティブ化される役割 */
+    private final Enum<?> fDeactivatedRole;
 
     /**
      * コンストラクタ
@@ -329,13 +329,13 @@ public final class TRuleOfDeterminingHealth extends TAgentRule {
      * @param owner このルールを持つ役割
      * @param spot 発火スポット
      * @param probability 病気になる確率
-     * @param deactivateRole 病人役割に切り替える時にディアクティブ化する役割
+     * @param deactivatedRole 病人役割に切り替える時に非アクティブ化される役割
      */
-    public TRuleOfDeterminingHealth(String name, TRole owner, TSpot spot, double probability, Enum<?> deactivateRole) {
+    public TRuleOfDeterminingHealth(String name, TRole owner, TSpot spot, double probability, Enum<?> deactivatedRole) {
         super(name, owner);
         fSpot = spot;
         fProbability = probability;
-        fDeactivateRole = deactivateRole;
+        fDeactivatedRole = deactivatedRole;
     }
 
     /**
@@ -350,9 +350,9 @@ public final class TRuleOfDeterminingHealth extends TAgentRule {
     public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
             TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
         if (isAt(fSpot) && (getRandom().nextDouble() <= fProbability)) {// スポット条件および確率条件が満たされたら
-            // 父親の場合は父親役割，子どもの場合は子ども役割を無効化する．
-            if (fDeactivateRole != null) {
-                getAgent().deactivateRole(fDeactivateRole);
+            // 父親の場合は父親役割，子供の場合は子供役割を無効化する．
+            if (fDeactivatedRole != null) {
+                getAgent().deactivateRole(fDeactivatedRole);
             }
             // 病人役割を有効化する．
             getAgent().activateRole(ERoleName.SickPerson);
@@ -365,7 +365,7 @@ public final class TRuleOfDeterminingHealth extends TAgentRule {
 
 健康状態決定ルールは，病院にいる場合に自宅に移動して役割を切り替える．
 病人役割をディアクティブ化して病人役割から回復するときに切り替える役割をアクティブ化する．
-父親役割と子ども役割には共通役割が子役割として登録されており，共通役割のアクティブ状態も一緒に変わる点に注意．
+父親役割と子供役割には共通役割が子役割として登録されており，共通役割のアクティブ状態も一緒に変わる点に注意．
 
 `TRuleOfRecoveringFromSick.java`
 
@@ -378,8 +378,8 @@ public final class TRuleOfRecoveringFromSick extends TAgentRule {
     /** 病院 */
     private final TSpot fHospital;
 
-    /** 病人役割から回復するときに切り替える役割 */
-    private final Enum<?> fActivateRole;
+    /** 病人役割から回復するときにアクティブ化される役割 */
+    private final Enum<?> fActivatedRole;
 
     /**
      * コンストラクタ
@@ -387,13 +387,13 @@ public final class TRuleOfRecoveringFromSick extends TAgentRule {
      * @param owner このルールをもつ役割
      * @param home 自宅
      * @param hospital 病院
-     * @param activateRole 病人役割から回復するときに切り替える役割
+     * @param activatedRole 病人役割から回復するときにアクティブ化される役割
      */
-    public TRuleOfRecoveringFromSick(String name, TRole owner, TSpot home, TSpot hospital, Enum<?> activateRole) {
+    public TRuleOfRecoveringFromSick(String name, TRole owner, TSpot home, TSpot hospital, Enum<?> activatedRole) {
         super(name, owner);
         fHome = home;
         fHospital = hospital;
-        fActivateRole = activateRole;
+        fActivatedRole = activatedRole;
     }
 
     /**
@@ -412,9 +412,9 @@ public final class TRuleOfRecoveringFromSick extends TAgentRule {
 
             // 病人役割を無効化する．
             getAgent().deactivateRole(ERoleName.SickPerson);
-            // アクティブ化する役割が設定されている場合はアクティブ化
-            if (fActivateRole != null) {
-                getAgent().activateRole(fActivateRole);
+            // アクティブ化される役割が設定されている場合はその役割をアクティブ化
+            if (fActivatedRole != null) {
+                getAgent().activateRole(fActivatedRole);
             }
         }
     }
@@ -427,14 +427,14 @@ sample04では以下の役割を定義する．
 
 - TRoleOfCommon：共通役割
 - TRoleOfFather：父親役割
-- TRoleOfChild：子ども役割
+- TRoleOfChild：子供役割
 - TRoleOfSickPerson：病人役割
 
 ### 共通役割
 
 共通役割は，6時に25%の確率で病気になり，役割を病人役割に変更する．
-共通役割は，父親と子どもに共通するルールをもつ役割であり父親役割，子ども役割の子役割として登録される．
-子役割にすることで，父親役割，子ども役割をアクティブ化，ディアクティブ化したときに共通役割のアクティブ状態も一緒に変化する．
+共通役割は，父親と子供に共通するルールをもつ役割であり，父親役割と子供役割の子役割として登録される．
+共通役割を父親役割と子供役割の子役割にすることで，父親役割と子供役割をアクティブ化，非アクティブ化したときに共通役割のアクティブ状態も一緒に変化する．
 
 `TRoleOfCommon.java`
 
@@ -448,13 +448,13 @@ public final class TRoleOfCommon extends TRole {
      * コンストラクタ
      * @param owner この役割を持つエージェント
      * @param home 自宅
-     * @param deactivateRole 病人役割に切り替える時にディアクティブ化する役割
+     * @param deactivatedRole 病人役割に切り替える時に非アクティブ化される役割
      */
-    public TRoleOfCommon(TAgent owner, TSpot home, Enum<?> deactivateRole) {
+    public TRoleOfCommon(TAgent owner, TSpot home, Enum<?> deactivatedRole) {
         super(ERoleName.Common, owner, 1, 0);
 
         // 6時，健康状態決定ステージ，自宅において，25%の確率で病気になる．
-        new TRuleOfDeterminingHealth(RULE_NAME_OF_DETERMINING_HEALTH, this, home, 0.25, deactivateRole)
+        new TRuleOfDeterminingHealth(RULE_NAME_OF_DETERMINING_HEALTH, this, home, 0.25, deactivatedRole)
                 .setTimeAndStage(6, 0, 0, EStage.DeterminingHealth);
     }
 }
@@ -512,9 +512,9 @@ public final class TRoleOfFather extends TRole {
 }
 ```
 
-### 子ども役割
+### 子供役割
 
-子ども役割は毎日8時に自宅から学校，15時に学校から自宅に移動するルールを持つ．
+子供役割は毎日8時に自宅から学校，15時に学校から自宅に移動するルールを持つ．
 
 `TRoleOfChild.java`
 
@@ -549,7 +549,7 @@ public final class TRoleOfChild extends TRole {
 
 ### 病人役割
 
-病人役割は，10時に支度から病院に移動し，診察時間が過ぎた後自宅に戻って病気が回復するルールを持つ．
+病人役割は，10時に自宅から病院に移動し，治療時間が過ぎた後に自宅に戻って病気から回復するルールを持つ．
 
 `TRoleOfSickPerson.java`
 
@@ -567,19 +567,19 @@ public final class TRoleOfSickPerson extends TRole {
      * @param owner この役割を持つエージェント
      * @param home 自宅
      * @param hospital 病院
-     * @param medicTTime 診察時間
-     * @param activateRole 病人役割から回復するときに切り替える役割
+     * @param treatmentTime 治療時間
+     * @param activatedRole 病人役割から回復するときにアクティブ化される役割
      */
-    public TRoleOfSickPerson(TAgent owner, TSpot home, TSpot hospital, TTime medicTTime, Enum<?> activateRole) {
+    public TRoleOfSickPerson(TAgent owner, TSpot home, TSpot hospital, TTime treatmentTime, Enum<?> activatedRole) {
         super(ERoleName.SickPerson, owner, 2, 0);
 
         // 病気から回復して帰宅する．スケジューリングは，RULE_NAME_OF_GO_HOSPITALで行われる．
         TRule ruleOfRecoveringFromSick = new TRuleOfRecoveringFromSick(RULE_NAME_OF_RECOVERING_FROM_SICK, this,
-                home, hospital, activateRole);
+                home, hospital, activatedRole);
 
         // 10時に自宅から病院に移動する．診察時間が過ぎたあと，ruleOfRecoveringFromSickを臨時実行ルールとしてスケジューリングする．
         new TRuleOfAgentMoving(RULE_NAME_OF_GO_HOSPITAL, this, home, hospital,
-                ruleOfRecoveringFromSick, medicTTime, EStage.AgentMoving)
+                ruleOfRecoveringFromSick, treatmentTime, EStage.AgentMoving)
                 .setTimeAndStage(10, 0, 0, EStage.AgentMoving);
     }
 }
@@ -660,7 +660,7 @@ public class TMain {
         //     - 役割として父親役割，共通役割，病人役割を持つ．
         //   - Child エージェントを3つ
         //     - 初期スポットは Home スポット
-        //     - 役割として子ども役割，共通役割，病人役割を持つ．
+        //     - 役割として子供役割，共通役割，病人役割を持つ．
         // *************************************************************************************************************
 
         int noOfFathers = noOfHomes; // 父親の数は家の数と同じ．
@@ -672,12 +672,12 @@ public class TMain {
 
             TRole commonRole = new TRoleOfCommon(father, home, ERoleName.Father); // 共通役割を生成する．
             TRole fatherRole = new TRoleOfFather(father, home, company); // 父親役割を生成する．
-            new TRoleOfSickPerson(father, home, hospital, new TTime("2:00:00"), ERoleName.Father); // 病人役割を生成する．診察時間は2時間とする．
+            new TRoleOfSickPerson(father, home, hospital, new TTime("2:00:00"), ERoleName.Father); // 病人役割を生成する．治療時間は2時間とする．
             fatherRole.addChildRole(commonRole); // 共通役割を父親役割の子役割として登録する．これにより共通役割のアクティブ状態は父親役割のアクティブ状態と同じになる．
             father.activateRole(ERoleName.Father); // 父親役割をアクティブ化する．
         }
 
-        int noOfChildren = noOfHomes; // 子どもの数は家の数と同じ．
+        int noOfChildren = noOfHomes; // 子供の数は家の数と同じ．
         List<TAgent> children = agentManager.createAgents(EAgentType.Child, noOfChildren); // Childエージェントを生成．(Child1, Child2, ...)
         for (int i = 0; i < children.size(); ++i) {
             TAgent child = children.get(i);// i番目のエージェントを取り出す．
@@ -685,10 +685,10 @@ public class TMain {
             child.initializeCurrentSpot(home); // 初期位置を自宅に設定する．
 
             TRole commonRole = new TRoleOfCommon(child, home, ERoleName.Child); // 共通役割を生成する．
-            TRole childRole = new TRoleOfChild(child, home, school); // 子ども役割を生成する．
-            new TRoleOfSickPerson(child, home, hospital, new TTime("3:00:00"), ERoleName.Child); // 病人役割を生成する．診察時間は3時間とする．
-            childRole.addChildRole(commonRole); // 共通役割を子ども役割の子役割として登録する．これにより共通役割のアクティブ状態は子ども役割のアクティブ状態と同じになる．
-            child.activateRole(ERoleName.Child);// 子ども役割をアクティブ化する
+            TRole childRole = new TRoleOfChild(child, home, school); // 子供役割を生成する．
+            new TRoleOfSickPerson(child, home, hospital, new TTime("3:00:00"), ERoleName.Child); // 病人役割を生成する．治療時間は3時間とする．
+            childRole.addChildRole(commonRole); // 共通役割を子供役割の子役割として登録する．これにより共通役割のアクティブ状態は子供役割のアクティブ状態と同じになる．
+            child.activateRole(ERoleName.Child);// 子供役割をアクティブ化する
         }
 
         // *************************************************************************************************************

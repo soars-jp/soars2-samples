@@ -1,7 +1,7 @@
 <!-- omit in toc -->
 # sample11：モジュール合成
 
-シナリオとシミュレーション条件はsample04と同じだが，父親役割，子ども役割，病人役割をそれぞれモジュール化してその合成を行う．
+シナリオとシミュレーション条件はsample04と同じだが，父親役割，子供役割，病人役割をそれぞれモジュール化してその合成を行う．
 
 - [シナリオとシミュレーション条件](#シナリオとシミュレーション条件)
 - [module1: 父親役割](#module1-父親役割)
@@ -11,12 +11,12 @@
     - [確率的エージェント移動ルール](#確率的エージェント移動ルール)
   - [役割の定義](#役割の定義)
     - [父親役割](#父親役割)
-- [module2: 子ども役割](#module2-子ども役割)
+- [module2: 子供役割](#module2-子供役割)
   - [シミュレーション定数の定義](#シミュレーション定数の定義-1)
   - [ルールの定義](#ルールの定義-1)
     - [エージェント移動ルール](#エージェント移動ルール-1)
   - [役割の定義](#役割の定義-1)
-    - [子ども役割](#子ども役割)
+    - [子供役割](#子供役割)
 - [module3: 病人役割](#module3-病人役割)
   - [シミュレーション定数の定義](#シミュレーション定数の定義-2)
   - [ルールの定義](#ルールの定義-2)
@@ -39,12 +39,12 @@
 - 3人の父親(Father1, Father2, Father3)は，それぞれ自宅(Home1, Home2, Home3)を持つ．
 - 3人の父親は，50%の確率で9時，30%の確率で10時，20%の確率で11時に自宅から同じ会社(Company)に移動する．
 - 3人の父親は，出社して8時間後にそれぞれの自宅に移動する．
-- 3人の子ども(Child1, Child2, Child3)は，それぞれ自宅(Home1, Home2, Home3)を持つ．
-- 3人の子どもは，8時に自宅から同じ学校(School)に移動する．
-- 3人の子どもは，15時に学校からそれぞれの自宅に移動する．
-- 父親と子どもは，6時に25%の確率で病気になる．
+- 3人の子供(Child1, Child2, Child3)は，それぞれ自宅(Home1, Home2, Home3)を持つ．
+- 3人の子供は，8時に自宅から同じ学校(School)に移動する．
+- 3人の子供は，15時に学校からそれぞれの自宅に移動する．
+- 父親と子供は，6時に25%の確率で病気になる．
 - 病人は，10時に自宅から病院(Hospital)に移動する．
-- 病人は，父親の場合2時間，子どもの場合3時間，病院で診察を受けた後，自宅に戻り病気が治る．
+- 病人は，父親の場合2時間，子供の場合3時間，病院で診察を受けた後，自宅に戻り病気が治る．
 
 シミュレーション条件
 
@@ -344,7 +344,7 @@ public final class TRoleOfFather extends TRole {
 }
 ```
 
-## module2: 子ども役割
+## module2: 子供役割
 
 ### シミュレーション定数の定義
 
@@ -362,7 +362,7 @@ public enum EStage {
 
 ```java
 public enum ERoleName {
-    /** 子ども役割 */
+    /** 子供役割 */
     Child
 }
 ```
@@ -475,11 +475,11 @@ public final class TRuleOfAgentMoving extends TAgentRule {
 
 module2では以下の役割を定義する．
 
-- TRoleOfChild：子ども役割
+- TRoleOfChild：子供役割
 
-#### 子ども役割
+#### 子供役割
 
-sample04の子ども役割と同様．
+sample04の子供役割と同様．
 
 `TRoleOfChild.java`
 
@@ -756,7 +756,7 @@ sample11では以下の定数を定義する．
 public enum EAgentType {
     /** 父親 */
     Father,
-    /** 子ども */
+    /** 子供 */
     Child
 }
 ```
@@ -839,7 +839,7 @@ public final class TRuleOfDeterminingHealth extends TAgentRule {
     public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
             TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
         if (isAt(fSpot) && (getRandom().nextDouble() <= fProbability)) {// スポット条件および確率条件が満たされたら
-            // 父親の場合は父親役割，子どもの場合は子ども役割を無効化する．
+            // 父親の場合は父親役割，子供の場合は子供役割を無効化する．
             if (fDeactivateRole != null) {
                 getAgent().deactivateRole(fDeactivateRole);
             }
@@ -970,7 +970,7 @@ public class TMain {
         //     - 役割として父親役割，共通役割，病人役割を持つ．
         //   - Child エージェントを3つ
         //     - 初期スポットは Home スポット
-        //     - 役割として子ども役割，共通役割，病人役割を持つ．
+        //     - 役割として子供役割，共通役割，病人役割を持つ．
         // *************************************************************************************************************
 
         int noOfFathers = noOfHomes; // 父親の数は家の数と同じ．
@@ -987,7 +987,7 @@ public class TMain {
             father.activateRole(jp.soars.samples.sample11.module1.ERoleName.Father); // 父親役割をアクティブ化する．
         }
 
-        int noOfChildren = noOfHomes; // 子どもの数は家の数と同じ．
+        int noOfChildren = noOfHomes; // 子供の数は家の数と同じ．
         List<TAgent> children = agentManager.createAgents(EAgentType.Child, noOfChildren); // Childエージェントを生成．(Child1, Child2, ...)
         for (int i = 0; i < children.size(); ++i) {
             TAgent child = children.get(i);// i番目のエージェントを取り出す．
@@ -995,10 +995,10 @@ public class TMain {
             child.initializeCurrentSpot(home); // 初期位置を自宅に設定する．
 
             TRole commonRole = new TRoleOfCommon(child, home, jp.soars.samples.sample11.module2.ERoleName.Child); // 共通役割を生成する．
-            TRole childRole = new TRoleOfChild(child, home, school); // 子ども役割を生成する．
+            TRole childRole = new TRoleOfChild(child, home, school); // 子供役割を生成する．
             new TRoleOfSickPerson(child, home, hospital, new TTime("3:00:00"), jp.soars.samples.sample11.module2.ERoleName.Child); // 病人役割を生成する．診察時間は3時間とする．
-            childRole.addChildRole(commonRole); // 共通役割を子ども役割の子役割として登録する．これにより共通役割のアクティブ状態は子ども役割のアクティブ状態と同じになる．
-            child.activateRole(jp.soars.samples.sample11.module2.ERoleName.Child);// 子ども役割をアクティブ化する
+            childRole.addChildRole(commonRole); // 共通役割を子供役割の子役割として登録する．これにより共通役割のアクティブ状態は子供役割のアクティブ状態と同じになる．
+            child.activateRole(jp.soars.samples.sample11.module2.ERoleName.Child);// 子供役割をアクティブ化する
         }
 
         // *************************************************************************************************************

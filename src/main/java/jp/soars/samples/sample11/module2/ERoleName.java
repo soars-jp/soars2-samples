@@ -5,6 +5,6 @@ package jp.soars.samples.sample11.module2;
  * @author nagakane
  */
 public enum ERoleName {
-    /** 子ども役割 */
+    /** 子供役割 */
     Child
 }

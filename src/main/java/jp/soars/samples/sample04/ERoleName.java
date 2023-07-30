@@ -7,7 +7,7 @@ package jp.soars.samples.sample04;
 public enum ERoleName {
     /** 父親役割 */
     Father,
-    /** 子ども役割 */
+    /** 子供役割 */
     Child,
     /** 共通役割 */
     Common,

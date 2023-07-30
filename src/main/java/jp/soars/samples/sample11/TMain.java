@@ -105,7 +105,7 @@ public class TMain {
         //     - 役割として父親役割，共通役割，病人役割を持つ．
         //   - Child エージェントを3つ
         //     - 初期スポットは Home スポット
-        //     - 役割として子ども役割，共通役割，病人役割を持つ．
+        //     - 役割として子供役割，共通役割，病人役割を持つ．
         // *************************************************************************************************************
 
         int noOfFathers = noOfHomes; // 父親の数は家の数と同じ．
@@ -122,7 +122,7 @@ public class TMain {
             father.activateRole(jp.soars.samples.sample11.module1.ERoleName.Father); // 父親役割をアクティブ化する．
         }
 
-        int noOfChildren = noOfHomes; // 子どもの数は家の数と同じ．
+        int noOfChildren = noOfHomes; // 子供の数は家の数と同じ．
         List<TAgent> children = agentManager.createAgents(EAgentType.Child, noOfChildren); // Childエージェントを生成．(Child1, Child2, ...)
         for (int i = 0; i < children.size(); ++i) {
             TAgent child = children.get(i);// i番目のエージェントを取り出す．
@@ -130,10 +130,10 @@ public class TMain {
             child.initializeCurrentSpot(home); // 初期位置を自宅に設定する．
 
             TRole commonRole = new TRoleOfCommon(child, home, jp.soars.samples.sample11.module2.ERoleName.Child); // 共通役割を生成する．
-            TRole childRole = new TRoleOfChild(child, home, school); // 子ども役割を生成する．
+            TRole childRole = new TRoleOfChild(child, home, school); // 子供役割を生成する．
             new TRoleOfSickPerson(child, home, hospital, new TTime("3:00:00"), jp.soars.samples.sample11.module2.ERoleName.Child); // 病人役割を生成する．診察時間は3時間とする．
-            childRole.addChildRole(commonRole); // 共通役割を子ども役割の子役割として登録する．これにより共通役割のアクティブ状態は子ども役割のアクティブ状態と同じになる．
-            child.activateRole(jp.soars.samples.sample11.module2.ERoleName.Child);// 子ども役割をアクティブ化する
+            childRole.addChildRole(commonRole); // 共通役割を子供役割の子役割として登録する．これにより共通役割のアクティブ状態は子供役割のアクティブ状態と同じになる．
+            child.activateRole(jp.soars.samples.sample11.module2.ERoleName.Child);// 子供役割をアクティブ化する
         }
 
         // *************************************************************************************************************

@@ -23,19 +23,19 @@ public final class TRoleOfSickPerson extends TRole {
      * @param owner この役割を持つエージェント
      * @param home 自宅
      * @param hospital 病院
-     * @param medicTTime 診察時間
-     * @param activateRole 病人役割から回復するときに切り替える役割
+     * @param treatmentTime 治療時間
+     * @param activatedRole 病人役割から回復するときにアクティブ化される役割
      */
-    public TRoleOfSickPerson(TAgent owner, TSpot home, TSpot hospital, TTime medicTTime, Enum<?> activateRole) {
+    public TRoleOfSickPerson(TAgent owner, TSpot home, TSpot hospital, TTime treatmentTime, Enum<?> activatedRole) {
         super(ERoleName.SickPerson, owner, 2, 0);
 
         // 病気から回復して帰宅する．スケジューリングは，RULE_NAME_OF_GO_HOSPITALで行われる．
         TRule ruleOfRecoveringFromSick = new TRuleOfRecoveringFromSick(RULE_NAME_OF_RECOVERING_FROM_SICK, this,
-                home, hospital, activateRole);
+                home, hospital, activatedRole);
 
         // 10時に自宅から病院に移動する．診察時間が過ぎたあと，ruleOfRecoveringFromSickを臨時実行ルールとしてスケジューリングする．
         new TRuleOfAgentMoving(RULE_NAME_OF_GO_HOSPITAL, this, home, hospital,
-                ruleOfRecoveringFromSick, medicTTime, EStage.AgentMoving)
+                ruleOfRecoveringFromSick, treatmentTime, EStage.AgentMoving)
                 .setTimeAndStage(10, 0, 0, EStage.AgentMoving);
     }
 }

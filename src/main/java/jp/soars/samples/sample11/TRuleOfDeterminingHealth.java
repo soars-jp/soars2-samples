@@ -52,7 +52,7 @@ public final class TRuleOfDeterminingHealth extends TAgentRule {
     public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
             TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
         if (isAt(fSpot) && (getRandom().nextDouble() <= fProbability)) {// スポット条件および確率条件が満たされたら
-            // 父親の場合は父親役割，子どもの場合は子ども役割を無効化する．
+            // 父親の場合は父親役割，子供の場合は子供役割を無効化する．
             if (fDeactivateRole != null) {
                 getAgent().deactivateRole(fDeactivateRole);
             }

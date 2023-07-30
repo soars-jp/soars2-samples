@@ -5,7 +5,7 @@ import jp.soars.core.TRole;
 import jp.soars.core.TSpot;
 
 /**
- * 子ども役割
+ * 子供役割
  * @author nagakane
  */
 public final class TRoleOfChild extends TRole {

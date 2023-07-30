@@ -21,8 +21,8 @@ public final class TRuleOfRecoveringFromSick extends TAgentRule {
     /** 病院 */
     private final TSpot fHospital;
 
-    /** 病人役割から回復するときに切り替える役割 */
-    private final Enum<?> fActivateRole;
+    /** 病人役割から回復するときにアクティブ化される役割 */
+    private final Enum<?> fActivatedRole;
 
     /**
      * コンストラクタ
@@ -30,13 +30,13 @@ public final class TRuleOfRecoveringFromSick extends TAgentRule {
      * @param owner このルールをもつ役割
      * @param home 自宅
      * @param hospital 病院
-     * @param activateRole 病人役割から回復するときに切り替える役割
+     * @param activatedRole 病人役割から回復するときにアクティブ化される役割
      */
-    public TRuleOfRecoveringFromSick(String name, TRole owner, TSpot home, TSpot hospital, Enum<?> activateRole) {
+    public TRuleOfRecoveringFromSick(String name, TRole owner, TSpot home, TSpot hospital, Enum<?> activatedRole) {
         super(name, owner);
         fHome = home;
         fHospital = hospital;
-        fActivateRole = activateRole;
+        fActivatedRole = activatedRole;
     }
 
     /**
@@ -55,9 +55,9 @@ public final class TRuleOfRecoveringFromSick extends TAgentRule {
 
             // 病人役割を無効化する．
             getAgent().deactivateRole(ERoleName.SickPerson);
-            // アクティブ化する役割が設定されている場合はアクティブ化
-            if (fActivateRole != null) {
-                getAgent().activateRole(fActivateRole);
+            // アクティブ化される役割が設定されている場合はアクティブ化
+            if (fActivatedRole != null) {
+                getAgent().activateRole(fActivatedRole);
             }
         }
     }

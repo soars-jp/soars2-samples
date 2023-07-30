@@ -7,6 +7,6 @@ package jp.soars.samples.sample11;
 public enum EAgentType {
     /** 父親 */
     Father,
-    /** 子ども */
+    /** 子供 */
     Child
 }
