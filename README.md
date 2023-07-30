@@ -1,4 +1,3 @@
-<!-- omit in toc -->
 # SOARS toolkit ver.2 samples
 
 SOARS toolkit ver.2のサンプルプログラム
@@ -16,28 +15,29 @@ SOARS toolkit ver.2のサンプルプログラム
 - [sample11：モジュール合成](src/main/java/jp/soars/samples/sample11/)
 - [sample12：スポットの定員](src/main/java/jp/soars/samples/sample12/)
 
-<!-- omit in toc -->
 ## 目次
 
-- [ver.1からの変更点](#ver1からの変更点)
-  - [並列化機能](#並列化機能)
-  - [ステージ実行ルール](#ステージ実行ルール)
-  - [モジュール合成機能](#モジュール合成機能)
-    - [ステージ名, オブジェクトタイプ, 役割名の定数化(Enum)](#ステージ名-オブジェクトタイプ-役割名の定数化enum)
-    - [ステージマージ機能](#ステージマージ機能)
-  - [アクティブ役割の仕様変更](#アクティブ役割の仕様変更)
-  - [TModelの廃止とBuilderパターンの導入](#tmodelの廃止とbuilderパターンの導入)
-  - [時間に秒を追加](#時間に秒を追加)
-  - [レイヤー機能](#レイヤー機能)
-  - [スポットの定員機能](#スポットの定員機能)
-  - [ランタイムログの導入](#ランタイムログの導入)
-- [ver.1から移行する場合の注意点](#ver1から移行する場合の注意点)
-- [TSOARSBuilderの使い方](#tsoarsbuilderの使い方)
-- [最適化のための設定項目](#最適化のための設定項目)
-  - [TRoleの設定項目](#troleの設定項目)
-  - [TAgentManager, TSpotManagerの設定項目](#tagentmanager-tspotmanagerの設定項目)
-  - [TSOARSBuilderの設定項目](#tsoarsbuilderの設定項目)
-
+- [SOARS toolkit ver.2 samples](#soars-toolkit-ver2-samples)
+  - [目次](#目次)
+  - [ver.1からの変更点](#ver1からの変更点)
+    - [並列化機能](#並列化機能)
+    - [ステージ実行ルール](#ステージ実行ルール)
+    - [モジュール合成機能](#モジュール合成機能)
+      - [ステージ名, オブジェクトタイプ, 役割名の定数化(Enum)](#ステージ名-オブジェクトタイプ-役割名の定数化enum)
+      - [ステージマージ機能](#ステージマージ機能)
+    - [アクティブ役割の仕様変更](#アクティブ役割の仕様変更)
+    - [TModelの廃止とBuilderパターンの導入](#tmodelの廃止とbuilderパターンの導入)
+    - [時間に秒を追加](#時間に秒を追加)
+    - [レイヤー機能](#レイヤー機能)
+    - [スポットの定員機能](#スポットの定員機能)
+    - [ランタイムログの導入](#ランタイムログの導入)
+  - [ver.1から移行する場合の注意点](#ver1から移行する場合の注意点)
+  - [TSOARSBuilderの使い方](#tsoarsbuilderの使い方)
+  - [最適化のための設定項目](#最適化のための設定項目)
+    - [TRoleの設定項目](#troleの設定項目)
+    - [TAgentManager, TSpotManagerの設定項目](#tagentmanager-tspotmanagerの設定項目)
+    - [TSOARSBuilderの設定項目](#tsoarsbuilderの設定項目)
+  - [SOARS2 APIs (JavaDoc)](#soars2-apis-javadoc)
 
 ## ver.1からの変更点
 
@@ -236,3 +236,6 @@ TSOARSBuilderのメソッド．
   - レイヤーとスポットタイプごとにスポットを保持するリストの初期サイズを指定する．
   - レイヤーを入力しない場合は，デフォルトレイヤーが指定される．
   - レイヤーとスポットタイプごとのシミュレーションで作成されるスポット数の最大値の予測値を指定するのがよい．
+
+## SOARS2 APIs (JavaDoc)
+- http://www.ic.dis.titech.ac.jp/soars/soars2-apidocs_2_0_1/index.html
