@@ -11,7 +11,7 @@ import jp.soars.core.TSpotManager;
 import jp.soars.core.TTime;
 
 /**
- * エージェントランダム移動ルール
+ * ランダム移動ルール
  * ランダムにレイヤーとスポットを選択し移動する．
  * @author nagakane
  */
