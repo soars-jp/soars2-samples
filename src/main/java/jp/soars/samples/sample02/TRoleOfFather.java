@@ -31,6 +31,8 @@ public final class TRoleOfFather extends TRole {
         TRule ruleOfReturnHome = new TRuleOfAgentMoving(RULE_NAME_OF_RETURN_HOME, this, company, home);
 
         // 自宅にいるならば会社に移動し，32時間後のエージェント移動ステージにruleOfReturnHomeをスケジュールする．
+        // 24時間以上の時間をTTimeで指定する際は，dd/hh:mm:ss形式で指定する必要があるため，"0/32:00:00"となっていることに注意すること．
+        // もし"hh:mm:ss"形式で"32:00:00"と指定した場合は"08:00:00"と指定したことと同じになる．
         // 毎日9時，エージェントステージに発火するように予約する．
         new TRuleOfAgentMoving(RULE_NAME_OF_LEAVE_HOME, this, home, company,
                 ruleOfReturnHome, new TTime("0/32:00:00"), EStage.AgentMoving)

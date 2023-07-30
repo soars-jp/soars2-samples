@@ -183,6 +183,8 @@ sample02では以下の役割を定義する．
 父親役割は，家を出発地，会社を目的地とするエージェント移動ルールLeaveHomeと，会社を出発地，家を目的地とするエージェント移動ルールReturnHomeから構成される．
 sample01との差分は，父親役割のコンストラクタではReturnHomeのスケジュールはせず，
 LeaveHomeルールを実行した32時間後のエージェント移動ステージにReturnHomeが臨時実行ルールとしてスケジュールされる点である．
+また，24時間以上の時間をTTimeで指定する際は，dd/hh:mm:ss形式で指定する必要があるため，"0/32:00:00"となっていることに注意する必要がある．
+もし"hh:mm:ss"形式で"32:00:00"と指定した場合は，"08:00:00"と指定したことと同じになる．
 
 `TRoleOfFather.java`
 
@@ -208,6 +210,8 @@ public final class TRoleOfFather extends TRole {
         TRule ruleOfReturnHome = new TRuleOfAgentMoving(RULE_NAME_OF_RETURN_HOME, this, company, home);
 
         // 自宅にいるならば会社に移動し，32時間後のエージェント移動ステージにruleOfReturnHomeをスケジュールする．
+        // 24時間以上の時間をTTimeで指定する際は，dd/hh:mm:ss形式で指定する必要があるため，"0/32:00:00"となっていることに注意すること．
+        // もし"hh:mm:ss"形式で"32:00:00"と指定した場合は"08:00:00"と指定したことと同じになる．
         // 毎日9時，エージェントステージに発火するように予約する．
         new TRuleOfAgentMoving(RULE_NAME_OF_LEAVE_HOME, this, home, company,
                 ruleOfReturnHome, new TTime("0/32:00:00"), EStage.AgentMoving)
