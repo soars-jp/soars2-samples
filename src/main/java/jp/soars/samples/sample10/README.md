@@ -211,6 +211,9 @@ public class TMain {
         builder.setRuleLoggingEnabled(pathOfLogDir + File.separator + "rule_log.csv") // ルールログ出力設定
                .setRuntimeLoggingEnabled(pathOfLogDir + File.separator + "runtime_log.csv"); // ランタイムログ出力設定
 
+        // ルールログのデバッグ情報出力設定
+        builder.setRuleDebugMode(ERuleDebugMode.LOCAL); // ローカル設定に従う
+
         // *************************************************************************************************************
         // TSOARSBuilderの最適化設定項目．
         // *************************************************************************************************************

@@ -16,12 +16,6 @@ import jp.soars.core.TTime;
  */
 public final class TRuleOfCreatingSpotAndAgent extends TAgentRule {
 
-    /** デバッグ情報として作成したエージェント名を出力する */
-    private String fCreatedSpot;
-
-    /** デバッグ情報として作成したスポット名を出力する */
-    private String fCreatedAgent;
-
     /**
      * コンストラクタ
      * @param name ルール名
@@ -29,8 +23,6 @@ public final class TRuleOfCreatingSpotAndAgent extends TAgentRule {
      */
     public TRuleOfCreatingSpotAndAgent(String name, TRole owner) {
         super(name, owner);
-        fCreatedSpot = "";
-        fCreatedAgent = "";
     }
 
     /**
@@ -44,24 +36,13 @@ public final class TRuleOfCreatingSpotAndAgent extends TAgentRule {
     @Override
     public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
             TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
+        boolean debugFlag = true; // デバッグ情報出力フラグ
         // 新たなスポットの作成
         TSpot newSpot = spotManager.createSpots(ESpotType.Dummy, 1).get(0);
-        fCreatedSpot = newSpot.getName();
+        appendToDebugInfo("created spot:" + newSpot.getName(), debugFlag);
 
         // 新たなエージェントの作成
         TAgent newAgent = agentManager.createAgents(EAgentType.Dummy, 1).get(0);
-        fCreatedAgent = newAgent.getName();
-    }
-
-    /**
-     * ルールログで表示するデバッグ情報．
-     * @return デバッグ情報
-     */
-    @Override
-    public String debugInfo() {
-        String str = "spot:" + fCreatedSpot + " agent:" + fCreatedAgent;
-        fCreatedSpot = "";
-        fCreatedAgent = "";
-        return str;
+        appendToDebugInfo(" created agent:" + newAgent.getName(), debugFlag);
     }
 }

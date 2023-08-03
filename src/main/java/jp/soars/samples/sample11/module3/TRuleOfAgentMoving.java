@@ -80,8 +80,11 @@ public final class TRuleOfAgentMoving extends TAgentRule {
     @Override
     public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
             TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
+        boolean debugFlag = true; // デバッグ情報出力フラグ
         if (isAt(fSource)) { // 出発地にいるなら
             moveTo(fDestination); // 目的地に移動する
+            // 出発地と目的地をデバッグ情報として出力
+            appendToDebugInfo("move from " + fSource.getName() + " to " + fDestination.getName(), debugFlag);
 
             if (fNextRule != null) { // 次に実行するルールが定義されていたら
                 // 現在時刻にインターバルを足した時刻を次のルールの発火時刻とする．
@@ -91,16 +94,8 @@ public final class TRuleOfAgentMoving extends TAgentRule {
                 fNextRule.setTimeAndStage(fTimeOfNextRule.getDay(), fTimeOfNextRule.getHour(),
                         fTimeOfNextRule.getMinute(), fTimeOfNextRule.getSecond(), fStageOfNextRule);
             }
+        } else { // 移動しない場合
+            appendToDebugInfo("no move (wrong spot)", debugFlag);
         }
-    }
-
-    /**
-     * ルールログで表示するデバッグ情報．
-     * @return デバッグ情報
-     */
-    @Override
-    public final String debugInfo() {
-        // 設定されている出発地と目的地をデバッグ情報として出力する．
-        return fSource.getName() + ":" + fDestination.getName();
     }
 }

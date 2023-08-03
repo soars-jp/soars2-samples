@@ -114,19 +114,14 @@ public final class TRuleOfAgentMoving extends TAgentRule {
     @Override
     public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
             TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
+        boolean debugFlag = true; // デバッグ情報出力フラグ
         if (isAt(fSource)) { // 出発地にいるなら
             moveTo(fDestination); // 目的地に移動する
+            // 出発地と目的地をデバッグ情報として出力
+            appendToDebugInfo("move from " + fSource.getName() + " to " + fDestination.getName(), debugFlag);
+        } else { // 移動しない場合
+            appendToDebugInfo("no move (wrong spot)", debugFlag);
         }
-    }
-
-    /**
-     * ルールログで表示するデバッグ情報．
-     * @return デバッグ情報
-     */
-    @Override
-    public final String debugInfo() {
-        // 設定されている出発地と目的地をデバッグ情報として出力する．
-        return fSource.getName() + ":" + fDestination.getName();
     }
 }
 ```
@@ -267,6 +262,9 @@ public class TMain {
         String pathOfLogDir = "logs" + File.separator + "sample01"; // ログディレクトリ
         builder.setRuleLoggingEnabled(pathOfLogDir + File.separator + "rule_log.csv") // ルールログ出力設定
                .setRuntimeLoggingEnabled(pathOfLogDir + File.separator + "runtime_log.csv"); // ランタイムログ出力設定
+
+        // ルールログのデバッグ情報出力設定
+        builder.setRuleDebugMode(ERuleDebugMode.LOCAL); // ローカル設定に従う
 
         // *************************************************************************************************************
         // TSOARSBuilderでシミュレーションに必要なインスタンスの作成と取得．

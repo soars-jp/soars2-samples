@@ -50,15 +50,22 @@ public final class TRuleOfRecoveringFromSick extends TAgentRule {
     @Override
     public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
             TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
+        boolean debugFlag = true; // デバッグ情報出力フラグ
         if (isAt(fHospital)) { // 病院にいるなら
             moveTo(fHome); // 自宅へ移動する
+            appendToDebugInfo("recovering from sick.", debugFlag);
 
             // 病人役割を無効化する．
             getAgent().deactivateRole(ERoleName.SickPerson);
-            // アクティブ化される役割が設定されている場合はアクティブ化
+            appendToDebugInfo(" deactivate:" + ERoleName.SickPerson.toString(), debugFlag);
+
+            // アクティブ化する役割が設定されている場合はアクティブ化
             if (fActivatedRole != null) {
                 getAgent().activateRole(fActivatedRole);
+                appendToDebugInfo(" activate:" + fActivatedRole.toString(), debugFlag);
             }
+        } else {
+            appendToDebugInfo("not recovering (wrong spot)", debugFlag);
         }
     }
 }

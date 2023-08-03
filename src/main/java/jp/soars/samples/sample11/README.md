@@ -157,8 +157,11 @@ public final class TRuleOfAgentMoving extends TAgentRule {
     @Override
     public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
             TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
+        boolean debugFlag = true; // デバッグ情報出力フラグ
         if (isAt(fSource)) { // 出発地にいるなら
             moveTo(fDestination); // 目的地に移動する
+            // 出発地と目的地をデバッグ情報として出力
+            appendToDebugInfo("move from " + fSource.getName() + " to " + fDestination.getName(), debugFlag);
 
             if (fNextRule != null) { // 次に実行するルールが定義されていたら
                 // 現在時刻にインターバルを足した時刻を次のルールの発火時刻とする．
@@ -168,17 +171,9 @@ public final class TRuleOfAgentMoving extends TAgentRule {
                 fNextRule.setTimeAndStage(fTimeOfNextRule.getDay(), fTimeOfNextRule.getHour(),
                         fTimeOfNextRule.getMinute(), fTimeOfNextRule.getSecond(), fStageOfNextRule);
             }
+        } else { // 移動しない場合
+            appendToDebugInfo("no move (wrong spot)", debugFlag);
         }
-    }
-
-    /**
-     * ルールログで表示するデバッグ情報．
-     * @return デバッグ情報
-     */
-    @Override
-    public final String debugInfo() {
-        // 設定されている出発地と目的地をデバッグ情報として出力する．
-        return fSource.getName() + ":" + fDestination.getName();
     }
 }
 ```
@@ -260,28 +255,27 @@ public final class TRuleOfStochasticallyAgentMoving extends TAgentRule {
     @Override
     public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
             TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
-        if (isAt(fSource) && (getRandom().nextDouble() <= fProbability)) { // 出発地にいるかつ，移動確率条件が満たされたら
-            moveTo(fDestination); // 目的地に移動する
+        boolean debugFlag = true; // デバッグ情報出力フラグ
+        if (isAt(fSource)) { // 出発地にいるなら
+            if (getRandom().nextDouble() <= fProbability) { // 移動確率条件が満たされたら
+                moveTo(fDestination); // 目的地に移動する
+                // 出発地と目的地をデバッグ情報として出力
+                appendToDebugInfo("move from " + fSource.getName() + " to " + fDestination.getName(), debugFlag);
 
-            if (fNextRule != null) { // 次に実行するルールが定義されていたら
-                // 現在時刻にインターバルを足した時刻を次のルールの発火時刻とする．
-                fTimeOfNextRule.copyFrom(currentTime)
-                               .add(fIntervalTimeToNextRule);
-                // 次に実行するルールを臨時実行ルールとしてスケジュール
-                fNextRule.setTimeAndStage(fTimeOfNextRule.getDay(), fTimeOfNextRule.getHour(),
-                        fTimeOfNextRule.getMinute(), fTimeOfNextRule.getSecond(), fStageOfNextRule);
+                if (fNextRule != null) { // 次に実行するルールが定義されていたら
+                    // 現在時刻にインターバルを足した時刻を次のルールの発火時刻とする．
+                    fTimeOfNextRule.copyFrom(currentTime)
+                                .add(fIntervalTimeToNextRule);
+                    // 次に実行するルールを臨時実行ルールとしてスケジュール
+                    fNextRule.setTimeAndStage(fTimeOfNextRule.getDay(), fTimeOfNextRule.getHour(),
+                            fTimeOfNextRule.getMinute(), fTimeOfNextRule.getSecond(), fStageOfNextRule);
+                }
+            } else {
+                appendToDebugInfo("no move (probability)", debugFlag);
             }
+        } else { // 移動しない場合
+            appendToDebugInfo("no move (wrong spot)", debugFlag);
         }
-    }
-
-    /**
-     * ルールログで表示するデバッグ情報．
-     * @return デバッグ情報
-     */
-    @Override
-    public final String debugInfo() {
-        // 設定されている出発地と目的地をデバッグ情報として出力する．
-        return fSource.getName() + ":" + fDestination.getName();
     }
 }
 ```
@@ -445,8 +439,11 @@ public final class TRuleOfAgentMoving extends TAgentRule {
     @Override
     public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
             TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
+        boolean debugFlag = true; // デバッグ情報出力フラグ
         if (isAt(fSource)) { // 出発地にいるなら
             moveTo(fDestination); // 目的地に移動する
+            // 出発地と目的地をデバッグ情報として出力
+            appendToDebugInfo("move from " + fSource.getName() + " to " + fDestination.getName(), debugFlag);
 
             if (fNextRule != null) { // 次に実行するルールが定義されていたら
                 // 現在時刻にインターバルを足した時刻を次のルールの発火時刻とする．
@@ -456,17 +453,9 @@ public final class TRuleOfAgentMoving extends TAgentRule {
                 fNextRule.setTimeAndStage(fTimeOfNextRule.getDay(), fTimeOfNextRule.getHour(),
                         fTimeOfNextRule.getMinute(), fTimeOfNextRule.getSecond(), fStageOfNextRule);
             }
+        } else { // 移動しない場合
+            appendToDebugInfo("no move (wrong spot)", debugFlag);
         }
-    }
-
-    /**
-     * ルールログで表示するデバッグ情報．
-     * @return デバッグ情報
-     */
-    @Override
-    public final String debugInfo() {
-        // 設定されている出発地と目的地をデバッグ情報として出力する．
-        return fSource.getName() + ":" + fDestination.getName();
     }
 }
 ```
@@ -614,8 +603,11 @@ public final class TRuleOfAgentMoving extends TAgentRule {
     @Override
     public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
             TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
+        boolean debugFlag = true; // デバッグ情報出力フラグ
         if (isAt(fSource)) { // 出発地にいるなら
             moveTo(fDestination); // 目的地に移動する
+            // 出発地と目的地をデバッグ情報として出力
+            appendToDebugInfo("move from " + fSource.getName() + " to " + fDestination.getName(), debugFlag);
 
             if (fNextRule != null) { // 次に実行するルールが定義されていたら
                 // 現在時刻にインターバルを足した時刻を次のルールの発火時刻とする．
@@ -625,17 +617,9 @@ public final class TRuleOfAgentMoving extends TAgentRule {
                 fNextRule.setTimeAndStage(fTimeOfNextRule.getDay(), fTimeOfNextRule.getHour(),
                         fTimeOfNextRule.getMinute(), fTimeOfNextRule.getSecond(), fStageOfNextRule);
             }
+        } else { // 移動しない場合
+            appendToDebugInfo("no move (wrong spot)", debugFlag);
         }
-    }
-
-    /**
-     * ルールログで表示するデバッグ情報．
-     * @return デバッグ情報
-     */
-    @Override
-    public final String debugInfo() {
-        // 設定されている出発地と目的地をデバッグ情報として出力する．
-        return fSource.getName() + ":" + fDestination.getName();
     }
 }
 ```
@@ -655,8 +639,8 @@ public final class TRuleOfRecoveringFromSick extends TAgentRule {
     /** 病院 */
     private final TSpot fHospital;
 
-    /** 病人役割から回復するときに切り替える役割 */
-    private final Enum<?> fActivateRole;
+    /** 病人役割から回復するときにアクティブ化される役割 */
+    private final Enum<?> fActivatedRole;
 
     /**
      * コンストラクタ
@@ -664,13 +648,13 @@ public final class TRuleOfRecoveringFromSick extends TAgentRule {
      * @param owner このルールをもつ役割
      * @param home 自宅
      * @param hospital 病院
-     * @param activateRole 病人役割から回復するときに切り替える役割
+     * @param activatedRole 病人役割から回復するときにアクティブ化される役割
      */
-    public TRuleOfRecoveringFromSick(String name, TRole owner, TSpot home, TSpot hospital, Enum<?> activateRole) {
+    public TRuleOfRecoveringFromSick(String name, TRole owner, TSpot home, TSpot hospital, Enum<?> activatedRole) {
         super(name, owner);
         fHome = home;
         fHospital = hospital;
-        fActivateRole = activateRole;
+        fActivatedRole = activatedRole;
     }
 
     /**
@@ -684,15 +668,22 @@ public final class TRuleOfRecoveringFromSick extends TAgentRule {
     @Override
     public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
             TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
+        boolean debugFlag = true; // デバッグ情報出力フラグ
         if (isAt(fHospital)) { // 病院にいるなら
             moveTo(fHome); // 自宅へ移動する
+            appendToDebugInfo("recovering from sick.", debugFlag);
 
             // 病人役割を無効化する．
             getAgent().deactivateRole(ERoleName.SickPerson);
+            appendToDebugInfo(" deactivate:" + ERoleName.SickPerson.toString(), debugFlag);
+
             // アクティブ化する役割が設定されている場合はアクティブ化
-            if (fActivateRole != null) {
-                getAgent().activateRole(fActivateRole);
+            if (fActivatedRole != null) {
+                getAgent().activateRole(fActivatedRole);
+                appendToDebugInfo(" activate:" + fActivatedRole.toString(), debugFlag);
             }
+        } else {
+            appendToDebugInfo("not recovering (wrong spot)", debugFlag);
         }
     }
 }
@@ -809,8 +800,8 @@ public final class TRuleOfDeterminingHealth extends TAgentRule {
     /** 病気になる確率 */
     private final double fProbability;
 
-    /** 病人役割に切り替える時にディアクティブ化する役割 */
-    private final Enum<?> fDeactivateRole;
+    /** 病人役割に切り替える時にディアクティブ化される役割 */
+    private final Enum<?> fDeactivatedRole;
 
     /**
      * コンストラクタ
@@ -818,13 +809,13 @@ public final class TRuleOfDeterminingHealth extends TAgentRule {
      * @param owner このルールを持つ役割
      * @param spot 発火スポット
      * @param probability 病気になる確率
-     * @param deactivateRole 病人役割に切り替える時にディアクティブ化する役割
+     * @param deactivatedRole 病人役割に切り替える時にディアクティブ化される役割
      */
-    public TRuleOfDeterminingHealth(String name, TRole owner, TSpot spot, double probability, Enum<?> deactivateRole) {
+    public TRuleOfDeterminingHealth(String name, TRole owner, TSpot spot, double probability, Enum<?> deactivatedRole) {
         super(name, owner);
         fSpot = spot;
         fProbability = probability;
-        fDeactivateRole = deactivateRole;
+        fDeactivatedRole = deactivatedRole;
     }
 
     /**
@@ -838,13 +829,24 @@ public final class TRuleOfDeterminingHealth extends TAgentRule {
     @Override
     public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
             TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
-        if (isAt(fSpot) && (getRandom().nextDouble() <= fProbability)) {// スポット条件および確率条件が満たされたら
-            // 父親の場合は父親役割，子供の場合は子供役割を無効化する．
-            if (fDeactivateRole != null) {
-                getAgent().deactivateRole(fDeactivateRole);
+        boolean debugFlag = true; // デバッグ情報出力フラグ
+        if (isAt(fSpot)) {
+            if (getRandom().nextDouble() <= fProbability) { // スポット条件および確率条件が満たされたら
+                appendToDebugInfo("get sick.", debugFlag);
+
+                // 父親の場合は父親役割，子供の場合は子供役割を無効化する．
+                if (fDeactivatedRole != null) {
+                    getAgent().deactivateRole(fDeactivatedRole);
+                    appendToDebugInfo(" deactivate:" + fDeactivatedRole.toString(), debugFlag);
+                }
+                // 病人役割を有効化する．
+                getAgent().activateRole(ERoleName.SickPerson);
+                appendToDebugInfo(" activate:" + ERoleName.SickPerson.toString(), debugFlag);
+            } else {
+                appendToDebugInfo("Don't get sick (probability)", debugFlag);
             }
-            // 病人役割を有効化する．
-            getAgent().activateRole(ERoleName.SickPerson);
+        } else { // 移動しない場合
+            appendToDebugInfo("Don't get sick (wrong spot)", debugFlag);
         }
     }
 }
@@ -931,6 +933,9 @@ public class TMain {
         String pathOfLogDir = "logs" + File.separator + "sample11"; // ログディレクトリ
         builder.setRuleLoggingEnabled(pathOfLogDir + File.separator + "rule_log.csv") // ルールログ出力設定
                .setRuntimeLoggingEnabled(pathOfLogDir + File.separator + "runtime_log.csv"); // ランタイムログ出力設定
+
+        // ルールログのデバッグ情報出力設定
+        builder.setRuleDebugMode(ERuleDebugMode.LOCAL); // ローカル設定に従う
 
         // ステージをマージして同一ステージとする．
         // これにより，どのEStageで定義されたAgentMovingを指定しても同じものとして解釈される．

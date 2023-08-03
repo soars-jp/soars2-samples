@@ -50,13 +50,24 @@ public final class TRuleOfDeterminingHealth extends TAgentRule {
     @Override
     public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
             TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
-        if (isAt(fSpot) && (getRandom().nextDouble() <= fProbability)) {// スポット条件および確率条件が満たされたら
-            // 父親の場合は父親役割，子供の場合は子供役割を無効化する．
-            if (fDeactivatedRole != null) {
-                getAgent().deactivateRole(fDeactivatedRole);
+        boolean debugFlag = true; // デバッグ情報出力フラグ
+        if (isAt(fSpot)) {
+            if (getRandom().nextDouble() <= fProbability) { // スポット条件および確率条件が満たされたら
+                appendToDebugInfo("get sick.", debugFlag);
+
+                // 父親の場合は父親役割，子供の場合は子供役割を無効化する．
+                if (fDeactivatedRole != null) {
+                    getAgent().deactivateRole(fDeactivatedRole);
+                    appendToDebugInfo(" deactivate:" + fDeactivatedRole.toString(), debugFlag);
+                }
+                // 病人役割を有効化する．
+                getAgent().activateRole(ERoleName.SickPerson);
+                appendToDebugInfo(" activate:" + ERoleName.SickPerson.toString(), debugFlag);
+            } else {
+                appendToDebugInfo("Don't get sick (probability)", debugFlag);
             }
-            // 病人役割を有効化する．
-            getAgent().activateRole(ERoleName.SickPerson);
+        } else { // 移動しない場合
+            appendToDebugInfo("Don't get sick (wrong spot)", debugFlag);
         }
     }
 }

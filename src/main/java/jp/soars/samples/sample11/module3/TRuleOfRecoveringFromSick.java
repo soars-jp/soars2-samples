@@ -21,8 +21,8 @@ public final class TRuleOfRecoveringFromSick extends TAgentRule {
     /** 病院 */
     private final TSpot fHospital;
 
-    /** 病人役割から回復するときに切り替える役割 */
-    private final Enum<?> fActivateRole;
+    /** 病人役割から回復するときにアクティブ化される役割 */
+    private final Enum<?> fActivatedRole;
 
     /**
      * コンストラクタ
@@ -30,13 +30,13 @@ public final class TRuleOfRecoveringFromSick extends TAgentRule {
      * @param owner このルールをもつ役割
      * @param home 自宅
      * @param hospital 病院
-     * @param activateRole 病人役割から回復するときに切り替える役割
+     * @param activatedRole 病人役割から回復するときにアクティブ化される役割
      */
-    public TRuleOfRecoveringFromSick(String name, TRole owner, TSpot home, TSpot hospital, Enum<?> activateRole) {
+    public TRuleOfRecoveringFromSick(String name, TRole owner, TSpot home, TSpot hospital, Enum<?> activatedRole) {
         super(name, owner);
         fHome = home;
         fHospital = hospital;
-        fActivateRole = activateRole;
+        fActivatedRole = activatedRole;
     }
 
     /**
@@ -50,15 +50,22 @@ public final class TRuleOfRecoveringFromSick extends TAgentRule {
     @Override
     public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
             TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
+        boolean debugFlag = true; // デバッグ情報出力フラグ
         if (isAt(fHospital)) { // 病院にいるなら
             moveTo(fHome); // 自宅へ移動する
+            appendToDebugInfo("recovering from sick.", debugFlag);
 
             // 病人役割を無効化する．
             getAgent().deactivateRole(ERoleName.SickPerson);
+            appendToDebugInfo(" deactivate:" + ERoleName.SickPerson.toString(), debugFlag);
+
             // アクティブ化する役割が設定されている場合はアクティブ化
-            if (fActivateRole != null) {
-                getAgent().activateRole(fActivateRole);
+            if (fActivatedRole != null) {
+                getAgent().activateRole(fActivatedRole);
+                appendToDebugInfo(" activate:" + fActivatedRole.toString(), debugFlag);
             }
+        } else {
+            appendToDebugInfo("not recovering (wrong spot)", debugFlag);
         }
     }
 }

@@ -22,8 +22,8 @@ public final class TRuleOfDeterminingHealth extends TAgentRule {
     /** 病気になる確率 */
     private final double fProbability;
 
-    /** 病人役割に切り替える時にディアクティブ化する役割 */
-    private final Enum<?> fDeactivateRole;
+    /** 病人役割に切り替える時にディアクティブ化される役割 */
+    private final Enum<?> fDeactivatedRole;
 
     /**
      * コンストラクタ
@@ -31,13 +31,13 @@ public final class TRuleOfDeterminingHealth extends TAgentRule {
      * @param owner このルールを持つ役割
      * @param spot 発火スポット
      * @param probability 病気になる確率
-     * @param deactivateRole 病人役割に切り替える時にディアクティブ化する役割
+     * @param deactivatedRole 病人役割に切り替える時にディアクティブ化される役割
      */
-    public TRuleOfDeterminingHealth(String name, TRole owner, TSpot spot, double probability, Enum<?> deactivateRole) {
+    public TRuleOfDeterminingHealth(String name, TRole owner, TSpot spot, double probability, Enum<?> deactivatedRole) {
         super(name, owner);
         fSpot = spot;
         fProbability = probability;
-        fDeactivateRole = deactivateRole;
+        fDeactivatedRole = deactivatedRole;
     }
 
     /**
@@ -51,13 +51,24 @@ public final class TRuleOfDeterminingHealth extends TAgentRule {
     @Override
     public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
             TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
-        if (isAt(fSpot) && (getRandom().nextDouble() <= fProbability)) {// スポット条件および確率条件が満たされたら
-            // 父親の場合は父親役割，子供の場合は子供役割を無効化する．
-            if (fDeactivateRole != null) {
-                getAgent().deactivateRole(fDeactivateRole);
+        boolean debugFlag = true; // デバッグ情報出力フラグ
+        if (isAt(fSpot)) {
+            if (getRandom().nextDouble() <= fProbability) { // スポット条件および確率条件が満たされたら
+                appendToDebugInfo("get sick.", debugFlag);
+
+                // 父親の場合は父親役割，子供の場合は子供役割を無効化する．
+                if (fDeactivatedRole != null) {
+                    getAgent().deactivateRole(fDeactivatedRole);
+                    appendToDebugInfo(" deactivate:" + fDeactivatedRole.toString(), debugFlag);
+                }
+                // 病人役割を有効化する．
+                getAgent().activateRole(ERoleName.SickPerson);
+                appendToDebugInfo(" activate:" + ERoleName.SickPerson.toString(), debugFlag);
+            } else {
+                appendToDebugInfo("Don't get sick (probability)", debugFlag);
             }
-            // 病人役割を有効化する．
-            getAgent().activateRole(ERoleName.SickPerson);
+        } else { // 移動しない場合
+            appendToDebugInfo("Don't get sick (wrong spot)", debugFlag);
         }
     }
 }

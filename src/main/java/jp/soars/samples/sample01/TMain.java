@@ -17,6 +17,7 @@ import jp.soars.core.TRuleExecutor;
 import jp.soars.core.TSOARSBuilder;
 import jp.soars.core.TSpot;
 import jp.soars.core.TSpotManager;
+import jp.soars.core.enums.ERuleDebugMode;
 import jp.soars.utils.random.ICRandom;
 
 /**
@@ -58,6 +59,9 @@ public class TMain {
         String pathOfLogDir = "logs" + File.separator + "sample01"; // ログディレクトリ
         builder.setRuleLoggingEnabled(pathOfLogDir + File.separator + "rule_log.csv") // ルールログ出力設定
                .setRuntimeLoggingEnabled(pathOfLogDir + File.separator + "runtime_log.csv"); // ランタイムログ出力設定
+
+        // ルールログのデバッグ情報出力設定
+        builder.setRuleDebugMode(ERuleDebugMode.LOCAL); // ローカル設定に従う
 
         // *************************************************************************************************************
         // TSOARSBuilderでシミュレーションに必要なインスタンスの作成と取得．
