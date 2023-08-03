@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>jp.soars</groupId>
-  <artifactId>soars-samples</artifactId>
+  <artifactId>soars2-samples</artifactId>
   <version>230609_01</version>
 
   <name>soars2-samples</name>
