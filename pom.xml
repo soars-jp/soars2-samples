@@ -5,7 +5,7 @@
 
   <groupId>jp.soars</groupId>
   <artifactId>soars2-samples</artifactId>
-  <version>230609_01</version>
+  <version>SNAPSHOTS</version>
 
   <name>soars2-samples</name>
   <!-- FIXME change it to the project's website -->
@@ -36,13 +36,7 @@
     <dependency>
       <groupId>jp.soars</groupId>
       <artifactId>soars-core</artifactId>
-      <version>2.2.1</version>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.11</version>
-      <scope>test</scope>
+      <version>2.4.0</version>
     </dependency>
   </dependencies>
 

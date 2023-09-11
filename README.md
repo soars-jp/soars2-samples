@@ -14,6 +14,8 @@ SOARS toolkit ver.2のサンプルプログラム
 - [sample10：レイヤー機能](src/main/java/jp/soars/samples/sample10/)
 - [sample11：モジュール合成](src/main/java/jp/soars/samples/sample11/)
 - [sample12：スポットの定員](src/main/java/jp/soars/samples/sample12/)
+- セルオートマトン
+  - [ライフゲーム](src/main/java/jp/soars/samples/ca/gol/)
 
 ## 目次
 
