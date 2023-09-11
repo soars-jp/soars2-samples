@@ -1,0 +1,43 @@
+<mxfile host="65bd71144e">
+    <diagram id="vQqo-izhhF5hLRTf01V8" name="ページ1">
+        <mxGraphModel dx="676" dy="570" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="none" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="2" value="オブジェクト (Object)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="275" y="30" width="130" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="エージェント (Agent)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="350" y="120" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="スポット (Spot)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="210" y="120" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="15" value="&lt;ul style=&quot;text-align: left&quot;&gt;&lt;li&gt;行動主体&lt;/li&gt;&lt;li&gt;ある時点で1つのスポットに存在し，スポット間を移動可能&lt;/li&gt;&lt;/ul&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="330" y="168" width="247" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="16" value="&lt;ul style=&quot;text-align: left&quot;&gt;&lt;li&gt;エージェントが相互作用する場&lt;/li&gt;&lt;/ul&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="191" y="161" width="130" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="17" value="" style="endArrow=classic;html=1;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" parent="1" target="2" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="270" y="120" as="sourcePoint"/>
+                        <mxPoint x="280" y="50" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="18" value="is-a" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;labelBackgroundColor=#FFFFFF;" parent="17" connectable="0" vertex="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="22" value="" style="endArrow=classic;html=1;entryX=0.75;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" parent="1" source="3" target="2" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="280" y="130" as="sourcePoint"/>
+                        <mxPoint x="320" y="80" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="23" value="is-a" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;labelBackgroundColor=#FFFFFF;" parent="22" connectable="0" vertex="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

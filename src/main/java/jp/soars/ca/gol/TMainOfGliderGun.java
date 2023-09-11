@@ -2,17 +2,17 @@ package jp.soars.ca.gol;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import jp.soars.core.TAgent;
-import jp.soars.core.TAgentManager;
 import jp.soars.core.TRuleExecutor;
 import jp.soars.core.TSOARSBuilder;
+import jp.soars.core.TSpot;
+import jp.soars.core.TSpotManager;
 import jp.soars.core.enums.ERuleDebugMode;
+import jp.soars.modules.onolab.space.T2DCellSpaceMap;
 
 /**
  * メインクラス
@@ -23,9 +23,6 @@ public class TMainOfGliderGun {
     /**
      * ライフゲームのグライダー銃パターンのシミュレーション
      * 作者実行環境 Ubuntu22.04 以外で実行確認していないのであしからず．(特に標準出力画面をクリアする部分)
-     * @param args
-     * @throws IOException
-     * @throws InterruptedException
      */
     public static void main(String[] args) throws IOException, InterruptedException {
         // *************************************************************************************************************
@@ -39,12 +36,12 @@ public class TMainOfGliderGun {
         // *************************************************************************************************************
 
         String simulationStart = "0/00:00:00"; // シミュレーション開始時刻
-        String simulationEnd = "0/00:5:00"; // シミュレーション終了時刻
+        String simulationEnd = "0/00:3:00"; // シミュレーション終了時刻
         String tick = "00:00:01"; // １ステップの時間間隔
-        List<Enum<?>> stages = List.of(EStage.CalculateNextState, EStage.UpdateCell); // ステージリスト
+        List<Enum<?>> stages = List.of(EStage.CalculateNextState, EStage.StateTransition); // ステージリスト
         Set<Enum<?>> agentTypes = new HashSet<>(); // 全エージェントタイプ
         Set<Enum<?>> spotTypes = new HashSet<>(); // 全スポットタイプ
-        Collections.addAll(agentTypes, EAgentType.values()); // EAgentType に登録されているエージェントタイプをすべて追加
+        Collections.addAll(spotTypes, ESpotType.values()); // ESpotType に登録されているスポットタイプをすべて追加
         TSOARSBuilder builder = new TSOARSBuilder(simulationStart, simulationEnd, tick, stages, agentTypes, spotTypes); // ビルダー作成
 
         // *************************************************************************************************************
@@ -53,20 +50,16 @@ public class TMainOfGliderGun {
 
         // 定期実行ステージ設定
         builder.setPeriodicallyExecutedStage(EStage.CalculateNextState, simulationStart, tick)
-               .setPeriodicallyExecutedStage(EStage.UpdateCell, simulationStart, tick);
-
-        // 並列化設定
-        int noOfThreads = 10;
-        builder.setParallelizationStages(noOfThreads, EStage.CalculateNextState, EStage.UpdateCell);
+               .setPeriodicallyExecutedStage(EStage.StateTransition, simulationStart, tick);
 
         // ログ出力設定
-        String pathOfLogDir = "logs" + File.separator + "ca" + File.separator + "gol"; // ログディレクトリ
+        String pathOfLogDir = "logs" + File.separator + "ca" + File.separator + "gol" + File.separator + "glider_gun"; // ログディレクトリ
         builder.setRuleLoggingEnabled(pathOfLogDir + File.separator + "rule_log.csv") // ルールログ出力設定
                .setRuntimeLoggingEnabled(pathOfLogDir + File.separator + "runtime_log.csv"); // ランタイムログ出力設定
 
         // ルールのシャッフルオフ
         builder.setRulesNotShuffledBeforeExecuted(EStage.CalculateNextState)
-               .setRulesNotShuffledBeforeExecuted(EStage.UpdateCell);
+               .setRulesNotShuffledBeforeExecuted(EStage.StateTransition);
 
         // ルールログのデバッグ情報出力設定
         builder.setRuleDebugMode(ERuleDebugMode.LOCAL); // ローカル設定に従う
@@ -74,14 +67,13 @@ public class TMainOfGliderGun {
         // 空間のサイズ
         int width = 60;
         int hight = 30;
-        int noOfAgents = (width + 2) * (hight + 2); // 領域の外側に番人が必要なことに注意
-        int noOfUpdatedAgents = width * hight; // 状態のアップデートが実行されるエージェント数．(番人以外)
+        int noOfSpots = width * hight;
 
         // 以下最適化設定
-        builder.setExpectedNoOfAgents(EAgentType.Cell, noOfAgents);
-        builder.setExpectedNoOfRulesPerStage(EStage.CalculateNextState, noOfUpdatedAgents);
-        builder.setExpectedNoOfRulesPerStage(EStage.UpdateCell, noOfUpdatedAgents);
-        builder.setFlagOfCreatingRandomForEachAgent(false);
+        builder.setExpectedNoOfSpots(ESpotType.Cell, noOfSpots);
+        builder.setExpectedNoOfRulesPerStage(EStage.CalculateNextState, noOfSpots);
+        builder.setExpectedNoOfRulesPerStage(EStage.StateTransition, noOfSpots);
+        builder.setFlagOfCreatingRandomForEachSpot(false);
         builder.setExpectedSizeOfTemporaryRulesMap(0);
         builder.setExpectedNoOfDeletedObjects(0);
 
@@ -91,43 +83,22 @@ public class TMainOfGliderGun {
 
         builder.build(); // インスタンスのビルド
         TRuleExecutor ruleExecutor = builder.getRuleExecutor(); // ルール実行器
-        TAgentManager agentManager = builder.getAgentManager(); // エージェント管理
+        TSpotManager spotManager = builder.getSpotManager(); // スポット管理
 
         // *************************************************************************************************************
-        // エージェント作成
+        // スポット作成
         // *************************************************************************************************************
 
-        List<TAgent> agents = agentManager.createAgents(EAgentType.Cell, noOfAgents, 1);
-        List<TAgent> updatedAgents = new ArrayList<>(noOfUpdatedAgents); // アップデートされるエージェントリスト
-        int width2 = width + 2;
-        int tmp1 = (width + 2) * (hight + 1);
-        for (int i = 0; i < noOfAgents; ++i) {
-            if (i % width2 == 0 || (i + 1) % width2 == 0 || i <= width || tmp1 < i) { // 番人の条件
-                TAgent agent = agents.get(i);
-                // 役割生成
-                new TRoleOfCell(agent, null);
-            } else { // 番人ではない
-                TAgent agent = agents.get(i);
-                updatedAgents.add(agent);
-                List<TAgent> neighborhoods = new ArrayList<>(8);
-                // 上段
-                int tmp = i - width2;
-                neighborhoods.add(agents.get(tmp - 1));
-                neighborhoods.add(agents.get(tmp));
-                neighborhoods.add(agents.get(tmp + 1));
-                // 左右
-                neighborhoods.add(agents.get(i - 1));
-                neighborhoods.add(agents.get(i + 1));
-                // 下段
-                tmp = i + width2;
-                neighborhoods.add(agents.get(tmp - 1));
-                neighborhoods.add(agents.get(tmp));
-                neighborhoods.add(agents.get(tmp + 1));
+        List<TSpot> cells = spotManager.createSpots(ESpotType.Cell, noOfSpots, 2, 0); // セル生成
 
-                // 役割生成
-                new TRoleOfCell(agent, neighborhoods);
-                agent.activateRole(ERoleName.Cell);
-            }
+        // onolab space-module のスポットによる2次元セル空間を構築．(デフォルトでトーラス)
+        // T2DCellSpaceMap を作成した時点で，各スポットには TRoleOf2DCell が設定され，これは内部にムーア近傍にあるセルへの参照を持つ．
+        T2DCellSpaceMap map = new T2DCellSpaceMap(cells, width, hight);
+
+        // 状態遷移役割設定
+        for (TSpot cell : cells) {
+            new TRoleOfStateTransition(cell, EState.DEATH);
+            cell.activateRole(ERoleName.StateTransition);
         }
 
         // グライダー銃を構成するためのマッピング
@@ -141,17 +112,15 @@ public class TMainOfGliderGun {
                  {0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0},
                  {0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
                  {0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
-        // (1, 1) を基準に上記のマッピングをコピー． 1 -> LIFE とする
-        int ul = width + 1; // (1, 1)のインデックス
-        for (int h = 0, len1 = gliderGun.length; h < len1; ++h) {
-            int[] indexes = gliderGun[h];
-            int sIndex = ul + h * width; // マッピング1行の開始インデックス
-            for (int w = 0, len2 = indexes.length; w < len2; ++w) {
-                if (gliderGun[h][w] == 1) {
-                    ((TRoleOfCell) updatedAgents.get(sIndex + w).getRole(ERoleName.Cell)).setState(EState.LIFE);
+        // 左上を基準に上記のマッピングをコピー． 1 -> LIFE とする
+        for (int i = 0, lenY = gliderGun.length, y = map.getUpperBoundY(); i < lenY; ++i, --y) {
+            for (int j = 0, lenX = gliderGun[i].length, x = map.getLowerBoundX(); j < lenX; ++j, ++x) {
+                if (gliderGun[i][j] == 1) {
+                    ((TRoleOfStateTransition) map.getCell(x, y).getRole(ERoleName.StateTransition)).setState(EState.LIFE);
                 }
             }
         }
+
         // *************************************************************************************************************
         // シミュレーションのメインループ
         // *************************************************************************************************************
@@ -162,15 +131,15 @@ public class TMainOfGliderGun {
             System.out.flush();
             // 画面表示
             System.out.println(ruleExecutor.getCurrentTime());
-            for (int i = 0; i < noOfUpdatedAgents; ++i) {
-                if (((TRoleOfCell) updatedAgents.get(i).getRole(ERoleName.Cell)).getState() == EState.LIFE) {
-                    System.out.print("⬛︎");
-                } else {
-                    System.out.print("⬜︎");
+            for (int y = map.getUpperBoundY(), lenY = map.getLowerBoundY(); lenY <= y; --y) {
+                for (int x = map.getLowerBoundX(), lenX = map.getUpperBoundX(); x <= lenX; ++x) {
+                    if (((TRoleOfStateTransition) map.getCell(x, y).getRole(ERoleName.StateTransition)).isState(EState.LIFE)) {
+                        System.out.print("⬛︎");
+                    } else {
+                        System.out.print("⬜︎");
+                    }
                 }
-                if ((i + 1) % width == 0) {
-                    System.out.println();
-                }
+                System.out.println();
             }
             // ディレイ 100ms
             Thread.sleep(100);

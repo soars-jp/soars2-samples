@@ -1,4 +1,4 @@
-package jp.soars.samples.sample01;
+package jp.soars.tutorials.sample01;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -28,13 +28,13 @@ public class TMain {
 
     public static void main(String[] args) throws IOException {
         // *************************************************************************************************************
-        // TSOARSBuilderの必須設定項目．
-        //   - simulationStart: シミュレーション開始時刻
-        //   - simulationEnd: シミュレーション終了時刻
-        //   - tick: 1ステップの時間間隔
-        //   - stages: 使用するステージリスト
-        //   - agentTypes: 使用するエージェントタイプ集合
-        //   - spotTypes: 使用するスポットタイプ集合
+        // TSOARSBuilderの必須設定項目
+        //   - simulationStart:シミュレーション開始時刻
+        //   - simulationEnd:シミュレーション終了時刻
+        //   - tick:1ステップの時間間隔
+        //   - stages:使用するステージリスト(実行順)
+        //   - agentTypes:使用するエージェントタイプ集合
+        //   - spotTypes:使用するスポットタイプ集合
         // *************************************************************************************************************
 
         String simulationStart = "0/00:00:00"; // シミュレーション開始時刻
@@ -48,7 +48,7 @@ public class TMain {
         TSOARSBuilder builder = new TSOARSBuilder(simulationStart, simulationEnd, tick, stages, agentTypes, spotTypes); // ビルダー作成
 
         // *************************************************************************************************************
-        // TSOARSBuilderの任意設定項目．
+        // TSOARSBuilderの任意設定項目
         // *************************************************************************************************************
 
         // マスター乱数発生器のシード値設定
@@ -56,7 +56,7 @@ public class TMain {
         builder.setRandomSeed(seed); // シード値設定
 
         // ログ出力設定
-        String pathOfLogDir = "logs" + File.separator + "sample01"; // ログディレクトリ
+        String pathOfLogDir = "logs" + File.separator + "tutorials" + File.separator + "sample01"; // ログディレクトリ
         builder.setRuleLoggingEnabled(pathOfLogDir + File.separator + "rule_log.csv") // ルールログ出力設定
                .setRuntimeLoggingEnabled(pathOfLogDir + File.separator + "runtime_log.csv"); // ランタイムログ出力設定
 
@@ -64,7 +64,7 @@ public class TMain {
         builder.setRuleDebugMode(ERuleDebugMode.LOCAL); // ローカル設定に従う
 
         // *************************************************************************************************************
-        // TSOARSBuilderでシミュレーションに必要なインスタンスの作成と取得．
+        // TSOARSBuilderでシミュレーションに必要なインスタンスの作成と取得
         // *************************************************************************************************************
 
         builder.build(); // インスタンスのビルド
@@ -76,42 +76,43 @@ public class TMain {
 
         // *************************************************************************************************************
         // スポット作成
-        //   - Home スポットを3つ
-        //   - Company スポットを1つ
+        //   - Home(3)
+        //   - Company(1)
         // *************************************************************************************************************
 
         int noOfHomes = 3; // 家の数
-        List<TSpot> homes = spotManager.createSpots(ESpotType.Home, noOfHomes); // Homeスポットを生成．(Home1, Home2, ...)
-        TSpot company = spotManager.createSpot(ESpotType.Company); // Companyスポットを生成．(Company)
+        List<TSpot> homes = spotManager.createSpots(ESpotType.Home, noOfHomes); // Homeスポットを生成．(Home1, Home2, Home3)
+        TSpot company = spotManager.createSpot(ESpotType.Company); // Companyスポットを1つ生成．(Company)
 
         // *************************************************************************************************************
         // エージェント作成
-        //   - Father エージェントを3つ
-        //     - 初期スポットは Home スポット
-        //     - 役割として父親役割を持つ．
+        //   - Father(3)
+        //     - 初期スポット:Home
+        //     - 役割:父親役割
         // *************************************************************************************************************
 
         int noOfFathers = noOfHomes; // 父親の数は家の数と同じ．
-        List<TAgent> fathers = agentManager.createAgents(EAgentType.Father, noOfFathers); // Fatherエージェントを生成．(Father1, Father2, ...)
+        List<TAgent> fathers = agentManager.createAgents(EAgentType.Father, noOfFathers); // Fatherエージェントを生成．(Father1, Father2, Father3)
         for (int i = 0; i < noOfFathers; ++i) {
-            TAgent father = fathers.get(i); // i番目のエージェントを取り出す．
-            TSpot home = homes.get(i); // i番目のエージェントの自宅を取り出す．
-            father.initializeCurrentSpot(home); // 初期位置を自宅に設定する．
-            new TRoleOfCell(father, home, company); // 父親役割を生成する．
+            TAgent father = fathers.get(i); // i番目の父親エージェントを取り出す．
+            TSpot home = homes.get(i); // i番目の父親エージェントの自宅を取り出す．
+            father.initializeCurrentSpot(home); // 初期スポットを自宅に設定する．
+            new TRoleOfFather(father, home, company); // 父親役割を生成する．
             father.activateRole(ERoleName.Father); // 父親役割をアクティブ化する．
         }
 
         // *************************************************************************************************************
         // 独自に作成するログ用のPrintWriter
-        //   - 各時刻でエージェントの現在位置のログをとる (スポットログ, spot_log.csv)
+        //   - スポットログ:各時刻での各エージェントの現在位置ログ
         // *************************************************************************************************************
 
         // スポットログ用PrintWriter
         PrintWriter spotLogPW = new PrintWriter(new BufferedWriter(new FileWriter(pathOfLogDir + File.separator + "spot_log.csv")));
         // スポットログのカラム名出力
         spotLogPW.print("CurrentTime");
-        for (TAgent agent : fathers) {
-            spotLogPW.print("," + agent.getName());
+        for (TAgent father : fathers) {
+            spotLogPW.print(',');
+            spotLogPW.print(father.getName());
         }
         spotLogPW.println();
 
@@ -119,14 +120,17 @@ public class TMain {
         // シミュレーションのメインループ
         // *************************************************************************************************************
 
-        while (ruleExecutor.executeStep()) { // 1ステップ分のルールを実行
+        // 1ステップ分のルールを実行 (ruleExecutor.executeStage()で1ステージ毎に実行することもできる)
+        // 実行された場合:true，実行されなかった(終了時刻)場合は:falseが帰ってくるため，while文で回すことができる．
+        while (ruleExecutor.executeStep()) {
             // 標準出力に現在時刻を表示する
             System.out.println(ruleExecutor.getCurrentTime());
 
             // スポットログ出力
             spotLogPW.print(ruleExecutor.getCurrentTime());
-            for (TAgent a : fathers) {
-                spotLogPW.print("," + a.getCurrentSpotName());
+            for (TAgent father : fathers) {
+                spotLogPW.print(',');
+                spotLogPW.print(father.getCurrentSpotName());
             }
             spotLogPW.println();
         }

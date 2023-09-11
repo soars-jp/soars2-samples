@@ -1,13 +1,16 @@
-<!-- omit in toc -->
-# sample03：確率的なルールの定義
+前：
+次：
+TODO:
+
+# sample03:確率的なルールの定義 <!-- omit in toc -->
 
 - [シナリオとシミュレーション条件](#シナリオとシミュレーション条件)
 - [シミュレーション定数の定義](#シミュレーション定数の定義)
 - [ルールの定義](#ルールの定義)
-  - [エージェント移動ルール](#エージェント移動ルール)
-  - [確率的エージェント移動ルール](#確率的エージェント移動ルール)
+  - [TRuleOfStochasticallyMoveFromHomeToCompany:確率的に自宅から会社に移動するルール](#truleofstochasticallymovefromhometocompany確率的に自宅から会社に移動するルール)
+  - [TRuleOfMoveFromCompanyToHome:会社から自宅に移動するルール](#truleofmovefromcompanytohome会社から自宅に移動するルール)
 - [役割の定義](#役割の定義)
-  - [父親役割](#父親役割)
+  - [TRoleOfFather:父親役割](#troleoffather父親役割)
 - [メインクラスの定義](#メインクラスの定義)
 
 
@@ -16,8 +19,8 @@
 以下のシナリオを考える．
 
 - 3人の父親(Father1, Father2, Father3)は，それぞれ自宅(Home1, Home2, Home3)を持つ．
-- 3人の父親は，50%の確率で9時，30%の確率で10時，20%の確率で11時に自宅から同じ会社(Company)に移動する．
-- 3人の父親は，出社して8時間後にそれぞれの自宅に移動する．
+- 父親は，50%の確率で9時，30%の確率で10時，20%の確率で11時に自宅から同じ会社(Company)に移動する．
+- 父親は，会社に移動してから8時間後に会社からそれぞれの自宅に移動する．
 
 シミュレーション条件
 
@@ -27,24 +30,16 @@
 - 時刻ステップ間隔：1時間 / step
 - シミュレーション期間：7日間
 
-
 ## シミュレーション定数の定義
 
-sample03では以下の定数を定義する．
-
-- エージェントタイプの定義
-- スポットタイプの定義
-- ステージの定義
-- 役割名の定義
-
-
+`EAgentType.java`
 ```java
 public enum EAgentType {
     /** 父親 */
     Father
 }
 ```
-
+`ESpotType.java`
 ```java
 public enum ESpotType {
     /** 自宅 */
@@ -53,14 +48,14 @@ public enum ESpotType {
     Company
 }
 ```
-
+`EStage.java`
 ```java
 public enum EStage {
     /** エージェント移動ステージ */
     AgentMoving
 }
 ```
-
+`ERoleName.java`
 ```java
 public enum ERoleName {
     /** 父親役割 */
@@ -70,70 +65,44 @@ public enum ERoleName {
 
 ## ルールの定義
 
-sample03では以下のルールを定義する．
+### TRuleOfStochasticallyMoveFromHomeToCompany:確率的に自宅から会社に移動するルール
 
-- TRuleOfAgentMoving：エージェント移動ルール
-- TRuleOfStochasticallyAgentMoving：確率的エージェント移動ルール
+sample02のTRuleOfMoveFromHomeToCompanyを拡張する．
+初日の予約は父親役割で行い，
+初日以降はルールが自分自身を次の日の9時(50%)，10時(30%)，11時(20%)のエージェント移動ステージに臨時実行ルールとして再予約する．
 
-### エージェント移動ルール
-
-sample02のエージェント移動ルールと同様．
-
-`TRuleOfAgentMoving.java`
-
+`TRuleOfStochasticallyMoveFromHomeToCompany.java`
 ```java
-public final class TRuleOfAgentMoving extends TAgentRule {
+public final class TRuleOfStochasticallyMoveFromHomeToCompany extends TAgentRule {
 
-    /** 出発地 */
-    private final TSpot fSource;
+    /** 会社から自宅に移動するルール */
+    private final TRule fRuleOfReturnHome;
 
-    /** 目的地 */
-    private final TSpot fDestination;
+    /** 会社から自宅に移動するルールを実行するまでの時間間隔 */
+    private final TTime fIntervalTimeOfReturnHome;
 
-    /** 次に実行するルール */
-    private final TRule fNextRule;
+    /** 会社から自宅に移動するルールの発火時刻計算用 */
+    private final TTime fTimeOfReturnHome;
 
-    /** 次のルールを実行するまでの時間間隔 */
-    private final TTime fIntervalTimeToNextRule;
-
-    /** 次のルールの発火時刻計算用 */
-    private final TTime fTimeOfNextRule;
-
-    /** 次のルールを実行するステージ */
-    private final Enum<?> fStageOfNextRule;
+    /** 会社から自宅に移動するルールを実行するステージ */
+    private final Enum<?> fStageOfReturnHome;
 
     /**
      * コンストラクタ
      * @param name ルール名
      * @param owner このルールをもつ役割
-     * @param source 出発地
-     * @param destination 目的地
-     * @param nextRule 次に実行するルール．
-     * @param intervalTimeToNextRule 次のルールを実行するまでの時間間隔
-     * @param stageOfNextRule 次のルールを実行するステージ
+     * @param ruleOfReturnHome 会社から自宅に移動するルール
+     * @param intervalTimeOfReturnHome 会社から自宅に移動するルールを実行するまでの時間間隔
+     * @param stageOfReturnHome 会社から自宅に移動するルールを実行するステージ
      */
-    public TRuleOfAgentMoving(String name, TRole owner, TSpot source, TSpot destination,
-            TRule nextRule, TTime intervalTimeToNextRule, Enum<?> stageOfNextRule) {
-        // 親クラスのコンストラクタを呼び出す
+    public TRuleOfStochasticallyMoveFromHomeToCompany(String name, TRole owner,
+            TRule ruleOfReturnHome, String intervalTimeOfReturnHome, Enum<?> stageOfReturnHome) {
+        // 親クラスのコンストラクタを呼び出す．
         super(name, owner);
-        fSource = source;
-        fDestination = destination;
-        fNextRule = nextRule;
-        fIntervalTimeToNextRule = intervalTimeToNextRule;
-        fTimeOfNextRule = new TTime();
-        fStageOfNextRule = stageOfNextRule;
-    }
-
-    /**
-     * コンストラクタ
-     * 次に実行するルールを登録しない場合に使用する．エージェント移動のみのルールとなる．
-     * @param name ルール名
-     * @param owner このルールをもつ役割
-     * @param source 出発地
-     * @param destination 目的地
-     */
-    public TRuleOfAgentMoving(String name, TRole owner, TSpot source, TSpot destination) {
-        this(name, owner, source, destination, null, null, null);
+        fRuleOfReturnHome = ruleOfReturnHome;
+        fIntervalTimeOfReturnHome = new TTime(intervalTimeOfReturnHome);
+        fTimeOfReturnHome = new TTime();
+        fStageOfReturnHome = stageOfReturnHome;
     }
 
     /**
@@ -148,92 +117,56 @@ public final class TRuleOfAgentMoving extends TAgentRule {
     public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
             TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
         boolean debugFlag = true; // デバッグ情報出力フラグ
-        if (isAt(fSource)) { // 出発地にいるなら
-            moveTo(fDestination); // 目的地に移動する
-            // 出発地と目的地をデバッグ情報として出力
-            appendToDebugInfo("move from " + fSource.getName() + " to " + fDestination.getName(), debugFlag);
+        TRoleOfFather role = (TRoleOfFather) getOwnerRole(); // 父親役割(このルールを持っている役割)を取得
+        if (isAt(role.getHome())) { // 自宅にいる場合
+            // 会社に移動する
+            moveTo(role.getCompany());
+            // 移動ルールが正常に実行されたことをデバッグ情報としてルールログに出力
+            appendToDebugInfo("success", debugFlag);
 
-            if (fNextRule != null) { // 次に実行するルールが定義されていたら
-                // 現在時刻にインターバルを足した時刻を次のルールの発火時刻とする．
-                fTimeOfNextRule.copyFrom(currentTime)
-                               .add(fIntervalTimeToNextRule);
-                // 次に実行するルールを臨時実行ルールとしてスケジュール
-                fNextRule.setTimeAndStage(fTimeOfNextRule.getDay(), fTimeOfNextRule.getHour(),
-                        fTimeOfNextRule.getMinute(), fTimeOfNextRule.getSecond(), fStageOfNextRule);
-            }
-        } else { // 移動しない場合
-            appendToDebugInfo("no move (wrong spot)", debugFlag);
+            // 現在時刻にインターバルを足した時刻を会社から自宅に移動するルールの発火時刻とする．
+            fTimeOfReturnHome.copyFrom(currentTime).add(fIntervalTimeOfReturnHome);
+            // 会社から自宅に移動するルールを臨時実行ルールとして予約する．
+            fRuleOfReturnHome.setTimeAndStage(fTimeOfReturnHome.getDay(), fTimeOfReturnHome.getHour(),
+                    fTimeOfReturnHome.getMinute(), fTimeOfReturnHome.getSecond(), fStageOfReturnHome);
+        } else { // 自宅にいない場合
+            // 移動ルールが実行されなかったことをデバッグ情報としてルールログに出力
+            appendToDebugInfo("fail", debugFlag);
         }
+
+        // 次の日の9時(50%)，10時(30%)，11時(20%)のエージェント移動ステージに自分自身を再予約する．
+        double p = getRandom().nextDouble(); // [0, 1]のdouble
+        int hour;
+        if (p <= 0.5) {
+            hour = 9; // 50%
+        } else if (p <= 0.8) {
+            hour = 10; // 30%
+        } else {
+            hour = 11; // 20%
+        }
+        setTimeAndStage(currentTime.getDay() + 1, hour, 0, 0, EStage.AgentMoving);
+        // 設定された時刻をデバッグ情報としてルールログに出力
+        appendToDebugInfo("/next time = " + hour, debugFlag);
     }
 }
 ```
 
-### 確率的エージェント移動ルール
+### TRuleOfMoveFromCompanyToHome:会社から自宅に移動するルール
 
-TRuleOfAgentMovingを拡張して，確率的エージェント移動ルールTRuleOfStochasticallyAgentMovingを定義する．
-コンストラクタで移動確率を引数としてとり，エージェントが出発地にいるかつ移動確率条件が満たされたら移動先に移動し，
-次のルールを臨時実行ルールとしてスケジュールする．
+sample02と同じ．
 
-`TRuleOfStochasticallyAgentMoving.java`
-
+`TRuleOfMoveFromCompanyToHome.java`
 ```java
-public final class TRuleOfStochasticallyAgentMoving extends TAgentRule {
-
-    /** 出発地 */
-    private final TSpot fSource;
-
-    /** 目的地 */
-    private final TSpot fDestination;
-
-    /** 次に実行するルール */
-    private final TRule fNextRule;
-
-    /** 次のルールを実行するまでの時間間隔 */
-    private final TTime fIntervalTimeToNextRule;
-
-    /** 次のルールの発火時刻計算用 */
-    private final TTime fTimeOfNextRule;
-
-    /** 次のルールを実行するステージ */
-    private final Enum<?> fStageOfNextRule;
-
-    /** 移動確率 */
-    private final double fProbability;
+public final class TRuleOfMoveFromCompanyToHome extends TAgentRule {
 
     /**
      * コンストラクタ
      * @param name ルール名
      * @param owner このルールをもつ役割
-     * @param source 出発地
-     * @param destination 目的地
-     * @param nextRule 次に実行するルール
-     * @param intervalTimeToNextRule 次のルールを実行するまでの時間間隔
-     * @param stageOfNextRule 次のルールを実行するステージ
-     * @param probability 移動確率
      */
-    public TRuleOfStochasticallyAgentMoving(String name, TRole owner, TSpot source, TSpot destination,
-            TRule nextRule, TTime intervalTimeToNextRule, Enum<?> stageOfNextRule, double probability) {
+    public TRuleOfMoveFromCompanyToHome(String name, TRole owner) {
+        // 親クラスのコンストラクタを呼び出す．
         super(name, owner);
-        fSource = source;
-        fDestination = destination;
-        fNextRule = nextRule;
-        fIntervalTimeToNextRule = intervalTimeToNextRule;
-        fTimeOfNextRule = new TTime();
-        fStageOfNextRule = stageOfNextRule;
-        fProbability = probability;
-    }
-
-    /**
-     * コンストラクタ
-     * 次に実行するルールを登録しない場合に使用する．エージェント移動のみのルールとなる．
-     * @param name ルール名
-     * @param owner このルールをもつ役割
-     * @param source 出発地
-     * @param destination 目的地
-     * @param probability 移動確率
-     */
-    public TRuleOfStochasticallyAgentMoving(String name, TRole owner, TSpot source, TSpot destination, double probability) {
-        this(name, owner, source, destination, null, null, null, probability);
     }
 
     /**
@@ -248,25 +181,15 @@ public final class TRuleOfStochasticallyAgentMoving extends TAgentRule {
     public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
             TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
         boolean debugFlag = true; // デバッグ情報出力フラグ
-        if (isAt(fSource)) { // 出発地にいるなら
-            if (getRandom().nextDouble() <= fProbability) { // 移動確率条件が満たされたら
-                moveTo(fDestination); // 目的地に移動する
-                // 出発地と目的地をデバッグ情報として出力
-                appendToDebugInfo("move from " + fSource.getName() + " to " + fDestination.getName(), debugFlag);
-
-                if (fNextRule != null) { // 次に実行するルールが定義されていたら
-                    // 現在時刻にインターバルを足した時刻を次のルールの発火時刻とする．
-                    fTimeOfNextRule.copyFrom(currentTime)
-                                .add(fIntervalTimeToNextRule);
-                    // 次に実行するルールを臨時実行ルールとしてスケジュール
-                    fNextRule.setTimeAndStage(fTimeOfNextRule.getDay(), fTimeOfNextRule.getHour(),
-                            fTimeOfNextRule.getMinute(), fTimeOfNextRule.getSecond(), fStageOfNextRule);
-                }
-            } else {
-                appendToDebugInfo("no move (probability)", debugFlag);
-            }
-        } else { // 移動しない場合
-            appendToDebugInfo("no move (wrong spot)", debugFlag);
+        TRoleOfFather role = (TRoleOfFather) getOwnerRole(); // 父親役割(このルールを持っている役割)を取得
+        if (isAt(role.getCompany())) { // 会社にいる場合
+            // 自宅に移動する
+            moveTo(role.getHome());
+            // 移動ルールが正常に実行されたことをデバッグ情報としてルールログに出力
+            appendToDebugInfo("success", debugFlag);
+        } else { // 会社にいない場合
+            // 移動ルールが実行されなかったことをデバッグ情報としてルールログに出力
+            appendToDebugInfo("fail", debugFlag);
         }
     }
 }
@@ -274,38 +197,27 @@ public final class TRuleOfStochasticallyAgentMoving extends TAgentRule {
 
 ## 役割の定義
 
-sample03では以下の役割を定義する．
+### TRoleOfFather:父親役割
 
-- TRoleOfFather：父親役割
-
-### 父親役割
-
-父親役割は，家を出発地，会社を目的地とするエージェント移動ルールLeaveHomeと，
-会社を出発地，家を目的地とする確率的エージェント移動ルールStochasticallyLeaveHomeから構成される．
-
-シナリオの50%の確率で9時，30%の確率で10時，20%の確率で11時に自宅から同じ会社(Company)に移動を表現するために，
-自宅にいるかつ，確率条件が満たされた時のみエージェントが移動するTRuleOfStochasticallyAgentMovingを利用する．
-
-- まず，9時に自宅から会社に0.5の確率で移動するルールを定義する．
-- 次に，10時に自宅から会社に0.6の確率で移動するルールを定義する．このルールは9時に自宅から会社に移動していないかつ，0.6の確率でエージェントが移動するルールとなるため，総じて0.5*0.6=0.3の確率でエージェントが移動するルールとなる．
-- 次に，11時に自宅から会社に1.0の確率で移動するルールを定義する．このルールは9時,10時に自宅から会社に移動していないかつ，1.0の確率でエージェントが移動するルールとなるため，総じて0.5*0.4*1.0=0.2の確率でエージェントが移動するルールとなる．
+sample02のTRoleOfFatherを拡張する．
+TRoleOfFatherではTRuleOfMoveFromCompanyToHomeの予約を行わない．
+TRuleOfStochasticallyMoveFromHomeToCompanyを初日の9時(50%)，10時(30%)，11時(20%)のエージェント移動ステージに予約する．
 
 `TRoleOfFather.java`
-
 ```java
 public final class TRoleOfFather extends TRole {
 
-    /** ９時に確率的に家を出発するルール名 */
-    public static final String RULE_NAME_OF_STOCHASTICALLY_LEAVE_HOME_9 = "StochasticallyLeaveHome9";
+    /** 自宅 */
+    private final TSpot fHome;
 
-    /** １０時に確率的に家を出発するルール名 */
-    public static final String RULE_NAME_OF_STOCHASTICALLY_LEAVE_HOME_10 = "StochasticallyLeaveHome10";
+    /** 会社 */
+    private final TSpot fCompany;
 
-    /** １１時に確率的に家を出発するルール名 */
-    public static final String RULE_NAME_OF_STOCHASTICALLY_LEAVE_HOME_11 = "StochasticallyLeaveHome11";
+    /** 自宅から会社に移動するルール名 */
+    private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY = "MoveFromHomeToCompany";
 
-    /** 家に帰るルール名 */
-    public static final String RULE_NAME_OF_RETURN_HOME = "ReturnHome";
+    /** 会社から自宅に移動するルール名 */
+    private static final String RULE_NAME_OF_MOVE_FROM_COMPANY_TO_HOME = "MoveFromCompanyToHome";
 
     /**
      * コンストラクタ
@@ -314,33 +226,56 @@ public final class TRoleOfFather extends TRole {
      * @param company 会社
      */
     public TRoleOfFather(TAgent owner, TSpot home, TSpot company) {
-        super(ERoleName.Father, owner, 4, 0);
+        // 親クラスのコンストラクタを呼び出す．
+        // 以下の2つの引数は省略可能で，その場合デフォルト値で設定される．
+        // 第3引数:この役割が持つルール数 (デフォルト値 10)
+        // 第4引数:この役割が持つ子役割数 (デフォルト値 5)
+        super(ERoleName.Father, owner, 2, 0);
 
-        // 会社にいるならば自宅に移動する．スケジューリングは，RULE_NAME_OF_STOCHASTICALLY_LEAVE_HOMEで行われる．
-        TRule ruleOfReturnHome = new TRuleOfAgentMoving(RULE_NAME_OF_RETURN_HOME, this, company, home);
+        fHome = home;
+        fCompany = company;
 
-        // 自宅にいるならば会社に移動し，8時間後のエージェント移動ステージにruleOfReturnHomeをスケジュールする．
-        // 9時，10時，11時のエージェント移動ステージにそれぞれのRULE_NAME_OF_STOCHASTICALLY_LEAVE_HOMEが発火するように予約する．
-        // TRuleOfStochasticallyAgentMoving は自宅にいる場合のみ会社に移動するため，
-        // まず，9時に発火するルールは，自宅にいる場合に0.5の確率で会社に移動する．
-        // 次に，10時に発火するルールは，9時に会社に移動していないかつ，0.6の確率で会社に移動するため，0.5*0.6=0.3の確率で会社に移動するルールとなる．
-        // 次に，11時に発火するルールは，10時に会社に移動していないかつ，1.0の確率で会社に移動するため，0.5*0.4*1.0=0.2の確率で会社に移動するルールとなる．
-        new TRuleOfStochasticallyAgentMoving(RULE_NAME_OF_STOCHASTICALLY_LEAVE_HOME_9, this, home, company,
-                ruleOfReturnHome, new TTime("8:00:00"), EStage.AgentMoving, 0.5)
-                .setTimeAndStage(9, 0, 0, EStage.AgentMoving);
-        new TRuleOfStochasticallyAgentMoving(RULE_NAME_OF_STOCHASTICALLY_LEAVE_HOME_10, this, home, company,
-                ruleOfReturnHome, new TTime("8:00:00"), EStage.AgentMoving, 0.6)
-                .setTimeAndStage(10, 0, 0, EStage.AgentMoving);
-        new TRuleOfStochasticallyAgentMoving(RULE_NAME_OF_STOCHASTICALLY_LEAVE_HOME_11, this, home, company,
-                ruleOfReturnHome, new TTime("8:00:00"), EStage.AgentMoving, 1.0)
-                .setTimeAndStage(11, 0, 0, EStage.AgentMoving);
+        // 役割が持つルールの登録
+        // 会社から自宅に移動するルール．予約はTRuleOfStochasticallyMoveFromHomeToCompanyで相対時刻指定で行われる．
+        TRule ruleOfReturnHome = new TRuleOfMoveFromCompanyToHome(RULE_NAME_OF_MOVE_FROM_COMPANY_TO_HOME, this);
+
+        // 自宅から会社に移動するルール．初日の9時(50%)，10時(30%)，11時(20%)/エージェント移動ステージに臨時実行ルールとして予約する．
+        // 初日以降は，ルール自身が臨時実行ルールとして再予約する．
+        double p = getRandom().nextDouble(); // [0, 1]のdouble
+        int hour;
+        if (p <= 0.5) {
+            hour = 9; // 50%
+        } else if (p <= 0.8) {
+            hour = 10; // 30%
+        } else {
+            hour = 11; // 20%
+        }
+        new TRuleOfStochasticallyMoveFromHomeToCompany(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY, this,
+                ruleOfReturnHome, "8:00:00", EStage.AgentMoving)
+                .setTimeAndStage(0, hour, 0, 0, EStage.AgentMoving);
+    }
+
+    /**
+     * 自宅を返す．
+     * @return 自宅
+     */
+    public final TSpot getHome() {
+        return fHome;
+    }
+
+    /**
+     * 会社を返す．
+     * @return 会社
+     */
+    public final TSpot getCompany() {
+        return fCompany;
     }
 }
 ```
 
 ## メインクラスの定義
 
-sample02との差分はログ出力先ディレクトリを変更したのみである．
+sample02のメインクラスのログ出力ディレクトリを変更する．
 
 `TMain.java`
 
@@ -353,7 +288,7 @@ public class TMain {
         //   - simulationStart: シミュレーション開始時刻
         //   - simulationEnd: シミュレーション終了時刻
         //   - tick: 1ステップの時間間隔
-        //   - stages: 使用するステージリスト
+        //   - stages: 使用するステージリスト(実行順)
         //   - agentTypes: 使用するエージェントタイプ集合
         //   - spotTypes: 使用するスポットタイプ集合
         // *************************************************************************************************************
@@ -377,7 +312,7 @@ public class TMain {
         builder.setRandomSeed(seed); // シード値設定
 
         // ログ出力設定
-        String pathOfLogDir = "logs" + File.separator + "sample03"; // ログディレクトリ
+        String pathOfLogDir = "logs" + File.separator + "tutorials" + File.separator + "sample03"; // ログディレクトリ
         builder.setRuleLoggingEnabled(pathOfLogDir + File.separator + "rule_log.csv") // ルールログ出力設定
                .setRuntimeLoggingEnabled(pathOfLogDir + File.separator + "runtime_log.csv"); // ランタイムログ出力設定
 
@@ -397,28 +332,27 @@ public class TMain {
 
         // *************************************************************************************************************
         // スポット作成
-        //   - Home スポットを3つ
-        //   - Company スポットを1つ
+        //   - Home(3)
+        //   - Company(1)
         // *************************************************************************************************************
 
         int noOfHomes = 3; // 家の数
-        List<TSpot> homes = spotManager.createSpots(ESpotType.Home, noOfHomes); // Homeスポットを生成．(Home1, Home2, ...)
-        TSpot company = spotManager.createSpot(ESpotType.Company); // Companyスポットを生成．(Company)
+        List<TSpot> homes = spotManager.createSpots(ESpotType.Home, noOfHomes); // Homeスポットを生成．(Home1, Home2, Home3)
+        TSpot company = spotManager.createSpot(ESpotType.Company); // Companyスポットを1つ生成．(Company)
 
         // *************************************************************************************************************
         // エージェント作成
-        //   - Father エージェントを3つ
-        //     - 初期スポットは Home スポット
-        //     - 役割として父親役割を持つ．
+        //   - Father(3)
+        //     - 初期スポットは Home
+        //     - 父親役割を持つ．
         // *************************************************************************************************************
 
         int noOfFathers = noOfHomes; // 父親の数は家の数と同じ．
-        List<TAgent> fathers = agentManager.createAgents(EAgentType.Father, noOfFathers); // Fatherエージェントを生成．(Father1, Father2, ...)
-        for (int i = 0; i < fathers.size(); ++i) {
+        List<TAgent> fathers = agentManager.createAgents(EAgentType.Father, noOfFathers); // Fatherエージェントを生成．(Father1, Father2, Father3)
+        for (int i = 0; i < noOfFathers; ++i) {
             TAgent father = fathers.get(i); // i番目のエージェントを取り出す．
             TSpot home = homes.get(i); // i番目のエージェントの自宅を取り出す．
             father.initializeCurrentSpot(home); // 初期位置を自宅に設定する．
-
             new TRoleOfFather(father, home, company); // 父親役割を生成する．
             father.activateRole(ERoleName.Father); // 父親役割をアクティブ化する．
         }
@@ -429,12 +363,11 @@ public class TMain {
         // *************************************************************************************************************
 
         // スポットログ用PrintWriter
-        PrintWriter spotLogPW = new PrintWriter(new BufferedWriter(
-                new FileWriter(pathOfLogDir + File.separator + "spot_log.csv")));
+        PrintWriter spotLogPW = new PrintWriter(new BufferedWriter(new FileWriter(pathOfLogDir + File.separator + "spot_log.csv")));
         // スポットログのカラム名出力
         spotLogPW.print("CurrentTime");
-        for (TAgent agent : fathers) {
-            spotLogPW.print("," + agent.getName());
+        for (TAgent father : fathers) {
+            spotLogPW.print("," + father.getName());
         }
         spotLogPW.println();
 
@@ -442,14 +375,14 @@ public class TMain {
         // シミュレーションのメインループ
         // *************************************************************************************************************
 
-        while (ruleExecutor.executeStep()) { // 1ステップ分のルールを実行
+        while (ruleExecutor.executeStep()) {
             // 標準出力に現在時刻を表示する
             System.out.println(ruleExecutor.getCurrentTime());
 
             // スポットログ出力
             spotLogPW.print(ruleExecutor.getCurrentTime());
-            for (TAgent a : fathers) {
-                spotLogPW.print("," + a.getCurrentSpotName());
+            for (TAgent father : fathers) {
+                spotLogPW.print("," + father.getCurrentSpotName());
             }
             spotLogPW.println();
         }
@@ -463,3 +396,7 @@ public class TMain {
     }
 }
 ```
+
+前：
+次：
+TODO:

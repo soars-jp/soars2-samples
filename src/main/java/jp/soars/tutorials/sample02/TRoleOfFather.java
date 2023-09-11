@@ -1,10 +1,9 @@
-package jp.soars.samples.sample02;
+package jp.soars.tutorials.sample02;
 
 import jp.soars.core.TAgent;
 import jp.soars.core.TRole;
 import jp.soars.core.TRule;
 import jp.soars.core.TSpot;
-import jp.soars.core.TTime;
 
 /**
  * 父親役割
@@ -12,11 +11,17 @@ import jp.soars.core.TTime;
  */
 public final class TRoleOfFather extends TRole {
 
-    /** 家を出発するルール名 */
-    private static final String RULE_NAME_OF_LEAVE_HOME = "LeaveHome";
+    /** 自宅 */
+    private final TSpot fHome;
 
-    /** 家に帰るルール名 */
-    private static final String RULE_NAME_OF_RETURN_HOME = "ReturnHome";
+    /** 会社 */
+    private final TSpot fCompany;
+
+    /** 自宅から会社に移動するルール名 */
+    private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY = "MoveFromHomeToCompany";
+
+    /** 会社から自宅に移動するルール名 */
+    private static final String RULE_NAME_OF_MOVE_FROM_COMPANY_TO_HOME = "MoveFromCompanyToHome";
 
     /**
      * コンストラクタ
@@ -25,17 +30,39 @@ public final class TRoleOfFather extends TRole {
      * @param company 会社
      */
     public TRoleOfFather(TAgent owner, TSpot home, TSpot company) {
+        // 親クラスのコンストラクタを呼び出す．
+        // 以下の2つの引数は省略可能で，その場合デフォルト値で設定される．
+        // 第3引数:この役割が持つルール数 (デフォルト値 10)
+        // 第4引数:この役割が持つ子役割数 (デフォルト値 5)
         super(ERoleName.Father, owner, 2, 0);
 
-        // 会社にいるならば自宅に移動する．スケジューリングは，RULE_NAME_OF_LEAVE_HOMEで行われる．
-        TRule ruleOfReturnHome = new TRuleOfAgentMoving(RULE_NAME_OF_RETURN_HOME, this, company, home);
+        fHome = home;
+        fCompany = company;
 
-        // 自宅にいるならば会社に移動し，32時間後のエージェント移動ステージにruleOfReturnHomeをスケジュールする．
-        // 24時間以上の時間をTTimeで指定する際は，dd/hh:mm:ss形式で指定する必要があるため，"0/32:00:00"となっていることに注意すること．
-        // もし"hh:mm:ss"形式で"32:00:00"と指定した場合は"08:00:00"と指定したことと同じになる．
-        // 毎日9時，エージェントステージに発火するように予約する．
-        new TRuleOfAgentMoving(RULE_NAME_OF_LEAVE_HOME, this, home, company,
-                ruleOfReturnHome, new TTime("0/32:00:00"), EStage.AgentMoving)
+        // 役割が持つルールの登録
+        // 会社から自宅に移動するルール．予約はTRuleOfMoveFromHomeToCompanyで相対時刻指定で行われる．
+        TRule ruleOfReturnHome = new TRuleOfMoveFromCompanyToHome(RULE_NAME_OF_MOVE_FROM_COMPANY_TO_HOME, this);
+
+        // 自宅から会社に移動するルール．9:00:00/エージェント移動ステージに定時実行ルールとして予約する．
+        // 相対時刻として32:00:00ではなく0/32:00:00とする点に注意．32:00:00はTTimeクラスで8:00:00と解釈され，32時間後を表現できない．
+        new TRuleOfMoveFromHomeToCompany(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY, this,
+                ruleOfReturnHome, "0/32:00:00", EStage.AgentMoving)
                 .setTimeAndStage(9, 0, 0, EStage.AgentMoving);
+    }
+
+    /**
+     * 自宅を返す．
+     * @return 自宅
+     */
+    public final TSpot getHome() {
+        return fHome;
+    }
+
+    /**
+     * 会社を返す．
+     * @return 会社
+     */
+    public final TSpot getCompany() {
+        return fCompany;
     }
 }

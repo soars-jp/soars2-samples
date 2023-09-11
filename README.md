@@ -1,48 +1,58 @@
-# SOARS toolkit ver.2 samples
+# SOARS toolkit ver.2 samples <!-- omit in toc -->
 
 SOARS toolkit ver.2のサンプルプログラム
 
-- [sample01：最も簡単なプログラム](src/main/java/jp/soars/samples/sample01/)
-- [sample02：日を跨ぐ相対時刻指定](src/main/java/jp/soars/samples/sample02/)
-- [sample03：確率的なルールの定義](src/main/java/jp/soars/samples/sample03/)
-- [sample04：子役割と役割の変更](src/main/java/jp/soars/samples/sample04/)
-- [sample05：臨時実行ルールの繰り返し](src/main/java/jp/soars/samples/sample05/)
-- [sample06：臨時実行ルールの発火時刻をランダムに設定](src/main/java/jp/soars/samples/sample06/)
-- [sample07：スポット・エージェントの動的追加・削除](src/main/java/jp/soars/samples/sample07/)
-- [sample08：ルールの並列実行](src/main/java/jp/soars/samples/sample08/)
-- [sample09：ステージ実行ルールとグローバル共有変数集合](src/main/java/jp/soars/samples/sample09/)
-- [sample10：レイヤー機能](src/main/java/jp/soars/samples/sample10/)
-- [sample11：モジュール合成](src/main/java/jp/soars/samples/sample11/)
-- [sample12：スポットの定員](src/main/java/jp/soars/samples/sample12/)
+- SOARSチュートリアル
+  - [SOARSの基本概念](src/main/java/jp/soars/tutorials/sample00/)
+  - [sample01:最も簡単なプログラム](src/main/java/jp/soars/tutorials/sample01/)
+  - [sample02:臨時実行ルールによる相対時刻指定](src/main/java/jp/soars/tutorials/sample02/)
+  - [sample03:確率的なルールの定義](src/main/java/jp/soars/tutorials/sample03/)
+  - [sample04:曜日概念の導入](src/main/java/jp/soars/tutorials/sample04/)
+  - [sample05:役割のアクティブ制御](src/main/java/jp/soars/tutorials/sample05/)
+
+
+子役割による役割の同時アクティブ制御
+  - [sample03:ステージ実行ルールによるルールの定期実行](src/main/java/jp/soars/tutorials/sample03/)
+  - [sample07:スポット・エージェントの動的追加・削除](src/main/java/jp/soars/tutorials/sample07/)
+  - [sample08:ルールの並列実行](src/main/java/jp/soars/tutorials/sample08/)
+  - [sample09:ステージ実行ルールとグローバル共有変数集合](src/main/java/jp/soars/tutorials/sample09/)
+  - [sample10:レイヤー機能](src/main/java/jp/soars/tutorials/sample10/)
+  - [sample11:モジュール合成](src/main/java/jp/soars/tutorials/sample11/)
+  - [sample12:ステージのロールバック](src/main/java/jp/soars/tutorials/sample12/)
 - セルオートマトン
-  - [ライフゲーム](src/main/java/jp/soars/samples/ca/gol/)
+  - [ライフゲーム](src/main/java/jp/soars/ca/gol/)
+- 強化学習
+  - [迷路問題](src/main/java/jp/soars/q_learning/)
+- NetLogo
+  - [シロアリ](src/main/java/jp/soars/netlogo/termites)
 
-## 目次
-
-- [SOARS toolkit ver.2 samples](#soars-toolkit-ver2-samples)
-  - [目次](#目次)
-  - [ver.1からの変更点](#ver1からの変更点)
-    - [並列化機能](#並列化機能)
-    - [ステージ実行ルール](#ステージ実行ルール)
-    - [モジュール合成機能](#モジュール合成機能)
-      - [ステージ名, オブジェクトタイプ, 役割名の定数化(Enum)](#ステージ名-オブジェクトタイプ-役割名の定数化enum)
-      - [ステージマージ機能](#ステージマージ機能)
-    - [アクティブ役割の仕様変更](#アクティブ役割の仕様変更)
-    - [TModelの廃止とBuilderパターンの導入](#tmodelの廃止とbuilderパターンの導入)
-    - [時間に秒を追加](#時間に秒を追加)
-    - [レイヤー機能](#レイヤー機能)
-    - [スポットの定員機能](#スポットの定員機能)
-    - [ルールログのデバッグ情報出力の仕様変更](#ルールログのデバッグ情報出力の仕様変更)
-    - [ランタイムログの導入](#ランタイムログの導入)
-  - [ver.1から移行する場合の注意点](#ver1から移行する場合の注意点)
-  - [TSOARSBuilderの使い方](#tsoarsbuilderの使い方)
-  - [最適化のための設定項目](#最適化のための設定項目)
-    - [TRoleの設定項目](#troleの設定項目)
-    - [TAgentManager, TSpotManagerの設定項目](#tagentmanager-tspotmanagerの設定項目)
-    - [TSOARSBuilderの設定項目](#tsoarsbuilderの設定項目)
-  - [SOARS2 APIs (JavaDoc)](#soars2-apis-javadoc)
+## SOARS2 APIs (JavaDoc) <!-- omit in toc -->
+- http://www.ic.dis.titech.ac.jp/soars/soars2-apidocs_2_2_0/index.html
 
 ## ver.1からの変更点
+
+- [ver.1からの変更点](#ver1からの変更点)
+  - [並列化機能](#並列化機能)
+  - [ステージ実行ルール](#ステージ実行ルール)
+  - [ステージのロールバック](#ステージのロールバック)
+  - [ステージのアクティブ制御](#ステージのアクティブ制御)
+  - [モジュール合成機能](#モジュール合成機能)
+    - [ステージ名, オブジェクトタイプ, 役割名の定数化(Enum)](#ステージ名-オブジェクトタイプ-役割名の定数化enum)
+    - [ステージマージ機能](#ステージマージ機能)
+  - [アクティブ役割の仕様変更](#アクティブ役割の仕様変更)
+  - [TModelの廃止とBuilderパターンの導入](#tmodelの廃止とbuilderパターンの導入)
+  - [時間に秒を追加](#時間に秒を追加)
+  - [レイヤー機能](#レイヤー機能)
+  - [ランタイムログの導入](#ランタイムログの導入)
+  - [ルールログのデバッグ情報出力の仕様変更](#ルールログのデバッグ情報出力の仕様変更)
+  - [ルールが自動的にシャッフルされるように仕様変更](#ルールが自動的にシャッフルされるように仕様変更)
+- [ver.1から移行する場合の注意点](#ver1から移行する場合の注意点)
+- [TSOARSBuilderの使い方](#tsoarsbuilderの使い方)
+- [最適化のための設定項目](#最適化のための設定項目)
+  - [TRoleの設定項目](#troleの設定項目)
+  - [TAgentManager, TSpotManagerの設定項目](#tagentmanager-tspotmanagerの設定項目)
+  - [TSOARSBuilderの設定項目](#tsoarsbuilderの設定項目)
+
 
 ### 並列化機能
 
@@ -54,6 +64,18 @@ SOARS toolkit ver.2のサンプルプログラム
 定時実行ルール，臨時実行ルールのほかにステージ実行ルールを導入する．
 ステージ実行ルールは定期実行ステージに登録され，定期実行ステージの設定によって定期的に実行される．
 例えば，1時間ごとにルールを実行する定期実行ステージを作成してルールを登録した場合，登録されているルールが1時間ごとに定期的に実行される．(当然役割がアクティブな場合のみ)
+
+### ステージのロールバック
+
+TRuleExecutor.rollbackStage(stage)メソッドでステージを巻き戻す機能を導入する．
+制限として，巻き戻されるステージは全て定期実行ステージでなければならず，ステップを超えることはできない(時間stepを戻すことはできない)．
+この機能を利用することで，スポットの定員などのルールの実行順序の依存関係が発生するモデルを実装することができる．
+(スポットの定員はエージェントが動く順番に依存する(先にルールが実行されたエージェントがスポットに入れる)ためSOARSの基本理念に反する．)
+
+### ステージのアクティブ制御
+
+TRuleExecutor.activateStage(stage), TRuleExecutor.deactivateStage(stage)メソッドでステージのアクティブ制御ができる機能を導入する．
+役割のアクティブ制御と違いステージそのものがスキップされ，臨時実行ルールは実行されずに破棄されるため使い方には注意が必要．
 
 ### モジュール合成機能
 
@@ -90,12 +112,11 @@ Enum型は同じ名前を定義したとしても，定義場所が異なれば�
 - スポットをレイヤーごとに作成して管理することができる機能．
 - 例えば，Real, SNSというレイヤーを作成してそれぞれのレイヤー上にスポットを作成する．エージェントはレイヤーごとに現在スポットをもち，スポットの移動は同じレイヤー上のみで行われる．
 
-### スポットの定員機能
+### ランタイムログの導入
 
-- スポットに定員を設定することができる．
-- TSpot.setCapacity(int capacity)メソッドによって設定することができる．
-- 定員が設定されているスポットが満員の場合に，エージェントが移動しようとすると移動に失敗する．
-- スポットの定員機能を使用する場合の注意点として，ルールの実行順序がある．SOARSライブラリでは，ある時刻・ステージで実行されるルールは実行順序に左右されてはならないという制約がある．しかし，定員のあるスポットの移動はそのスポットからエージェントが先に移動するか，他のスポットからエージェントが先に移動してくるかという順序が発生する．そのため，定員を設けたスポット間の移動は通常の移動とはステージを分け，その移動順にも注意する必要がある．
+- 時刻・ステージごとの実行時間と実行ルール数のログをcsvファイルに出力する．
+- TSOARSBuilder.setRuntimeLoggingEnabled(String runtimeLogCsvFilePath)メソッドによって出力の設定ができる．
+- csvファイルのカラム名はERuntimeLogKeyで定義される．
 
 ### ルールログのデバッグ情報出力の仕様変更
 - ルールログのデバッグ情報出力はver1ではdebugInfoメソッドをオーバーライドすることで実装していたが，ver2ではappendToDebugInfo(String, boolean)を呼ぶだすように変更された．
@@ -103,11 +124,9 @@ Enum型は同じ名前を定義したとしても，定義場所が異なれば�
 - デバッグ情報文字列は，ルールログに吐き出されるたびにクリアされるため，ユーザーの文字的なクリアは不要．
 - また，builder.setRuleDebugModeでデバッグモードを選択でき，ONで強制出力，OFFで強制非出力，LOCALでローカル設定に従う．
 
-### ランタイムログの導入
-
-- 時刻・ステージごとの実行時間と実行ルール数のログをcsvファイルに出力する．
-- TSOARSBuilder.setRuntimeLoggingEnabled(String runtimeLogCsvFilePath)メソッドによって出力の設定ができる．
-- csvファイルのカラム名はERuntimeLogKeyで定義される．
+### ルールが自動的にシャッフルされるように仕様変更
+- SOARS ver.2では，デフォルトでルールが実行前にシャッフルされるように変更された．
+- 実行性能を求める場合，builder.setRulesNotShuffledBeforeExecuted(stage)でステージごとに実行前のルールシャッフルをオフにすることができる．
 
 ## ver.1から移行する場合の注意点
 
@@ -169,8 +188,6 @@ TSOARSBuilderのコンストラクタ
 
 - setRandomSeed(long seed):
   - マスター乱数発生器のシード値を指定する．
-- setInitialValueOfGlobalSharedVariableSet(String key, Object initialValue):
-  - グローバル共有変数のキーと初期値を設定する．
 - setParallelizationStages(int noOfThreads, Enum<?>... stages):
   - [並列化機能](#並列化機能)の導入に基づく設定項目．
   - 引数で指定したステージに登録されているルールを並列に実行する．並列数は第1引数で指定する．
@@ -185,12 +202,6 @@ TSOARSBuilderのコンストラクタ
 - setRuntimeLoggingEnabled(String runtimeLogCsvFilePath):
   - [ランタイムログの導入](#ランタイムログの導入)に基づく設定項目．
   - ルールログ, ランタイムログを出力するように設定する．
-- setRulesSortedBeforeExecutedFlag(boolean flag):
-- setRulesShuffledBeforeExecutedFlag(boolean flag):
-  - ルールを実行前にソート, シャッフルするかを指定する．
-  - ソートは再現性を確保して，実装のチェックを行う場合に利用する．
-  - シャッフルは並列化機能を利用する場合に，ルールの実行順序で結果が変わらないか確認するために利用する．
-  - これらのフラグを同時にtrueにすることはできない．
 - setFlagOfCreatingRandomForEachAgent(boolean flagOfCreatingRandomForEachAgent):
 - setFlagOfCreatingRandomForEachSpot(boolean flagOfCreatingRandomForEachSpot):
   - 各エージェント, スポットに個別に乱数発生器を持たせるかを指定する．
@@ -202,7 +213,6 @@ TSOARSBuilderのコンストラクタ
 - setRuleDebugMode(ERuleDebugMode debugMode):
   - ルールログへのデバッグ情報の吐き出し設定をする．
   - ONで強制出力，OFFで強制非出力，LOCALでローカル設定に従う．
-
 
 ## 最適化のための設定項目
 
@@ -230,6 +240,8 @@ TAgentManager, TSpotManagerでエージェント，スポットを作成する�
 
 TSOARSBuilderのメソッド．
 
+- setRulesNotShuffledBeforeExecuted(Enum<?> stage)
+  - 引数で指定したステージを実行する前に，ルールをシャッフルしないように設定する．
 - setExpectedNoOfRulesPerStage(Enum<?> stage, int expectedNoOfRules):
   - ある時刻のステージ(stage)に登録されるルールの配列の初期サイズを指定する．
   - ルールの配列は，その時刻・ステージにルールが登録されるときに初めて作成される．
@@ -248,6 +260,3 @@ TSOARSBuilderのメソッド．
   - レイヤーとスポットタイプごとにスポットを保持するリストの初期サイズを指定する．
   - レイヤーを入力しない場合は，デフォルトレイヤーが指定される．
   - レイヤーとスポットタイプごとのシミュレーションで作成されるスポット数の最大値の予測値を指定するのがよい．
-
-## SOARS2 APIs (JavaDoc)
-- http://www.ic.dis.titech.ac.jp/soars/soars2-apidocs_2_2_0/index.html

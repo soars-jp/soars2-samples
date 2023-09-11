@@ -1,4 +1,4 @@
-package jp.soars.samples.sample05;
+package jp.soars.tutorials.sample04;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -21,7 +21,7 @@ import jp.soars.core.enums.ERuleDebugMode;
 import jp.soars.utils.random.ICRandom;
 
 /**
- * メインクラス．
+ * メインクラス
  * @author nagakane
  */
 public class TMain {
@@ -32,7 +32,7 @@ public class TMain {
         //   - simulationStart: シミュレーション開始時刻
         //   - simulationEnd: シミュレーション終了時刻
         //   - tick: 1ステップの時間間隔
-        //   - stages: 使用するステージリスト
+        //   - stages: 使用するステージリスト(実行順)
         //   - agentTypes: 使用するエージェントタイプ集合
         //   - spotTypes: 使用するスポットタイプ集合
         // *************************************************************************************************************
@@ -56,7 +56,7 @@ public class TMain {
         builder.setRandomSeed(seed); // シード値設定
 
         // ログ出力設定
-        String pathOfLogDir = "logs" + File.separator + "sample05"; // ログディレクトリ
+        String pathOfLogDir = "logs" + File.separator + "tutorials" + File.separator + "sample05"; // ログディレクトリ
         builder.setRuleLoggingEnabled(pathOfLogDir + File.separator + "rule_log.csv") // ルールログ出力設定
                .setRuntimeLoggingEnabled(pathOfLogDir + File.separator + "runtime_log.csv"); // ランタイムログ出力設定
 
@@ -76,28 +76,29 @@ public class TMain {
 
         // *************************************************************************************************************
         // スポット作成
-        //   - Spot スポットを20つ
+        //   - Home(3)
+        //   - Company(1)
         // *************************************************************************************************************
 
-        int noOfSpots = 20; // スポットの数
-        List<TSpot> spots = spotManager.createSpots(ESpotType.Spot, noOfSpots);
+        int noOfHomes = 3; // 家の数
+        List<TSpot> homes = spotManager.createSpots(ESpotType.Home, noOfHomes); // Homeスポットを生成．(Home1, Home2, Home3)
+        TSpot company = spotManager.createSpot(ESpotType.Company); // Companyスポットを1つ生成．(Company)
 
         // *************************************************************************************************************
         // エージェント作成
-        //   - Agent エージェントを10つ
-        //     - 初期スポットは Spot スポット
-        //     - 役割としてエージェント役割を持つ．
+        //   - Father(3)
+        //     - 初期スポットは Home
+        //     - 父親役割を持つ．
         // *************************************************************************************************************
 
-        int noOfAgents = 10; // エージェント数
-        List<TAgent> agents = agentManager.createAgents(EAgentType.Agent, noOfAgents);
-        for (int i = 0; i < agents.size(); i++) {
-            TAgent agent = agents.get(i);// i番目のエージェントを取り出す．
-            TSpot home = spots.get(i); // i番目のエージェントの自宅を選択
-            agent.initializeCurrentSpot(home); // 初期位置を自宅に設定する．
-
-            new TRoleOfAgent(agent, home); // エージェント役割を生成する．
-            agent.activateRole(ERoleName.Agent); // エージェント役割をアクティブ化する．
+        int noOfFathers = noOfHomes; // 父親の数は家の数と同じ．
+        List<TAgent> fathers = agentManager.createAgents(EAgentType.Father, noOfFathers); // Fatherエージェントを生成．(Father1, Father2, Father3)
+        for (int i = 0; i < noOfFathers; ++i) {
+            TAgent father = fathers.get(i); // i番目のエージェントを取り出す．
+            TSpot home = homes.get(i); // i番目のエージェントの自宅を取り出す．
+            father.initializeCurrentSpot(home); // 初期位置を自宅に設定する．
+            new TRoleOfFather(father, home, company); // 父親役割を生成する．
+            father.activateRole(ERoleName.Father); // 父親役割をアクティブ化する．
         }
 
         // *************************************************************************************************************
@@ -106,12 +107,11 @@ public class TMain {
         // *************************************************************************************************************
 
         // スポットログ用PrintWriter
-        PrintWriter spotLogPW = new PrintWriter(new BufferedWriter(
-                new FileWriter(pathOfLogDir + File.separator + "spot_log.csv")));
+        PrintWriter spotLogPW = new PrintWriter(new BufferedWriter(new FileWriter(pathOfLogDir + File.separator + "spot_log.csv")));
         // スポットログのカラム名出力
-        spotLogPW.print("CurrentTime");
-        for (TAgent agent : agents) {
-            spotLogPW.print("," + agent.getName());
+        spotLogPW.print("CurrentTime,Day");
+        for (TAgent father : fathers) {
+            spotLogPW.print("," + father.getName());
         }
         spotLogPW.println();
 
@@ -119,14 +119,15 @@ public class TMain {
         // シミュレーションのメインループ
         // *************************************************************************************************************
 
-        while (ruleExecutor.executeStep()) { // 1ステップ分のルールを実行
+        while (ruleExecutor.executeStep()) {
             // 標準出力に現在時刻を表示する
             System.out.println(ruleExecutor.getCurrentTime());
 
             // スポットログ出力
             spotLogPW.print(ruleExecutor.getCurrentTime());
-            for (TAgent agent : agents) {
-                spotLogPW.print("," + agent.getCurrentSpotName());
+            spotLogPW.print("," + EDay.values()[ruleExecutor.getCurrentTime().getDay() % 7]);
+            for (TAgent father : fathers) {
+                spotLogPW.print("," + father.getCurrentSpotName());
             }
             spotLogPW.println();
         }

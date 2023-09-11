@@ -38,6 +38,26 @@
       <artifactId>soars-core</artifactId>
       <version>2.4.0</version>
     </dependency>
+    <dependency>
+      <groupId>jp.soars</groupId>
+      <artifactId>onolab-simple-urban-module</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>jp.soars</groupId>
+      <artifactId>onolab-simple-transportation-module</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>jp.soars</groupId>
+      <artifactId>onolab-covid19-filter-model-module</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>jp.soars</groupId>
+      <artifactId>onolab-space-module</artifactId>
+      <version>1.0.0</version>
+    </dependency>
   </dependencies>
 
   <build>

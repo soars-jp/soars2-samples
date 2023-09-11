@@ -1,10 +1,14 @@
-package jp.soars.samples.sample05;
+package jp.soars.tutorials.sample05;
 
 /**
  * スポットタイプ定義
  * @author nagakane
  */
 public enum ESpotType {
-    /** スポット */
-    Spot
+    /** 自宅 */
+    Home,
+    /** 会社 */
+    Company,
+    /** 病院 */
+    Hospital
 }

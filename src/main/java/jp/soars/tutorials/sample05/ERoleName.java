@@ -1,10 +1,12 @@
-package jp.soars.samples.sample05;
+package jp.soars.tutorials.sample05;
 
 /**
  * 役割名定義
  * @author nagakane
  */
 public enum ERoleName {
-    /** エージェント役割 */
-    Agent
+    /** 父親役割 */
+    Father,
+    /** 病人役割 */
+    SickPerson
 }

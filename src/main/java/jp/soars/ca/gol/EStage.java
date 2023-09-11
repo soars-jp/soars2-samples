@@ -7,6 +7,6 @@ package jp.soars.ca.gol;
 public enum EStage {
     /** 近傍エージェントの状態を集計して次の状態を決定するステージ */
     CalculateNextState,
-    /** セルのアップデートステージ */
-    UpdateCell
+    /** 状態遷移ステージ */
+    StateTransition
 }

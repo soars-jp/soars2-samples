@@ -5,6 +5,6 @@ package jp.soars.ca.gol;
  * @author nagakane
  */
 public enum ERoleName {
-    /** セル役割 */
-    Cell
+    /** 状態遷移役割 */
+    StateTransition
 }
