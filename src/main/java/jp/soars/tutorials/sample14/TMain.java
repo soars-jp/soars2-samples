@@ -1,4 +1,4 @@
-package jp.soars.tutorials.sample02;
+package jp.soars.tutorials.sample04;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -40,7 +40,7 @@ public class TMain {
         String simulationStart = "0/00:00:00"; // シミュレーション開始時刻
         String simulationEnd = "7/00:00:00"; // シミュレーション終了時刻
         String tick = "1:00:00"; // １ステップの時間間隔
-        List<Enum<?>> stages = List.of(EStage.AgentMoving); // ステージリスト
+        List<Enum<?>> stages = List.of(EStage.AgentMoving); // ステージリスト(実行順)
         Set<Enum<?>> agentTypes = new HashSet<>(); // 全エージェントタイプ
         Set<Enum<?>> spotTypes = new HashSet<>(); // 全スポットタイプ
         Collections.addAll(agentTypes, EAgentType.values()); // EAgentType に登録されているエージェントタイプをすべて追加
@@ -56,7 +56,7 @@ public class TMain {
         builder.setRandomSeed(seed); // シード値設定
 
         // ログ出力設定
-        String pathOfLogDir = "logs" + File.separator + "tutorials" + File.separator + "sample02"; // ログディレクトリ
+        String pathOfLogDir = "logs" + File.separator + "tutorials" + File.separator + "sample04"; // ログディレクトリ
         builder.setRuleLoggingEnabled(pathOfLogDir + File.separator + "rule_log.csv") // ルールログ出力設定
                .setRuntimeLoggingEnabled(pathOfLogDir + File.separator + "runtime_log.csv"); // ランタイムログ出力設定
 
@@ -109,7 +109,7 @@ public class TMain {
         // スポットログ用PrintWriter
         PrintWriter spotLogPW = new PrintWriter(new BufferedWriter(new FileWriter(pathOfLogDir + File.separator + "spot_log.csv")));
         // スポットログのカラム名出力
-        spotLogPW.print("CurrentTime");
+        spotLogPW.print("CurrentTime,Day");
         for (TAgent father : fathers) {
             spotLogPW.print(',');
             spotLogPW.print(father.getName());
@@ -128,6 +128,8 @@ public class TMain {
 
             // スポットログ出力
             spotLogPW.print(ruleExecutor.getCurrentTime());
+            spotLogPW.print(",");
+            spotLogPW.print(EDay.values()[ruleExecutor.getCurrentTime().getDay() % 7]);
             for (TAgent father : fathers) {
                 spotLogPW.print(',');
                 spotLogPW.print(father.getCurrentSpotName());

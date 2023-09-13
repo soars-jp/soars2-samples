@@ -300,6 +300,7 @@ public final class TRoleOfFather extends TRole {
 ## メインクラスの定義
 
 sample03のメインクラスのログ出力ディレクトリを変更する．
+また，スポットログに曜日を出力するように変更する．
 
 `TMain.java`
 
@@ -320,7 +321,7 @@ public class TMain {
         String simulationStart = "0/00:00:00"; // シミュレーション開始時刻
         String simulationEnd = "7/00:00:00"; // シミュレーション終了時刻
         String tick = "1:00:00"; // １ステップの時間間隔
-        List<Enum<?>> stages = List.of(EStage.AgentMoving); // ステージリスト
+        List<Enum<?>> stages = List.of(EStage.AgentMoving); // ステージリスト(実行順)
         Set<Enum<?>> agentTypes = new HashSet<>(); // 全エージェントタイプ
         Set<Enum<?>> spotTypes = new HashSet<>(); // 全スポットタイプ
         Collections.addAll(agentTypes, EAgentType.values()); // EAgentType に登録されているエージェントタイプをすべて追加
@@ -389,9 +390,10 @@ public class TMain {
         // スポットログ用PrintWriter
         PrintWriter spotLogPW = new PrintWriter(new BufferedWriter(new FileWriter(pathOfLogDir + File.separator + "spot_log.csv")));
         // スポットログのカラム名出力
-        spotLogPW.print("CurrentTime");
+        spotLogPW.print("CurrentTime,Day");
         for (TAgent father : fathers) {
-            spotLogPW.print("," + father.getName());
+            spotLogPW.print(',');
+            spotLogPW.print(father.getName());
         }
         spotLogPW.println();
 
@@ -399,14 +401,19 @@ public class TMain {
         // シミュレーションのメインループ
         // *************************************************************************************************************
 
+        // 1ステップ分のルールを実行 (ruleExecutor.executeStage()で1ステージ毎に実行することもできる)
+        // 実行された場合:true，実行されなかった(終了時刻)場合は:falseが帰ってくるため，while文で回すことができる．
         while (ruleExecutor.executeStep()) {
             // 標準出力に現在時刻を表示する
             System.out.println(ruleExecutor.getCurrentTime());
 
             // スポットログ出力
             spotLogPW.print(ruleExecutor.getCurrentTime());
+            spotLogPW.print(",");
+            spotLogPW.print(EDay.values()[ruleExecutor.getCurrentTime().getDay() % 7]);
             for (TAgent father : fathers) {
-                spotLogPW.print("," + father.getCurrentSpotName());
+                spotLogPW.print(',');
+                spotLogPW.print(father.getCurrentSpotName());
             }
             spotLogPW.println();
         }
