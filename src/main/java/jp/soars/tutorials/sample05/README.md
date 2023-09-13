@@ -2,7 +2,7 @@
 次：
 TODO:
 
-# sample04:曜日概念の導入 <!-- omit in toc -->
+# sample05:役割のアクティブ制御 <!-- omit in toc -->
 
 - [シナリオとシミュレーション条件](#シナリオとシミュレーション条件)
 - [シミュレーション定数の定義](#シミュレーション定数の定義)
@@ -22,18 +22,68 @@ TODO:
 - 父親は，平日(土日以外)は50%の確率で9時，30%の確率で10時，20%の確率で11時に自宅から同じ会社(Company)に移動する．
 - 父親は，会社に移動してから8時間後に会社からそれぞれの自宅に移動する．
 - 父親は，休日(土日)は会社に移動せず自宅にいる．
+- 父親は，6時に25%の確率で病人になる．
+- 病人は，10時に自宅から病院(Hospital)に移動する．
+- 病人は，病院に移動してから2時間後に病院からそれぞれの自宅に移動する．
 
 シミュレーション条件
 
 - エージェント : Father(3)
-- スポット : Home(3), Company(1)
-- ステージ : AgentMoving
+- スポット : Home(3), Company(1), Hospital(1)
+- ステージ : DeterminingHealth, AgentMoving
 - 時刻ステップ間隔：1時間 / step
 - シミュレーション期間：7日間
 
 ## シミュレーション定数の定義
 
-sample03に追加して，曜日を表すenumクラスEDayを新たに定義する．
+sample04に追加して，
+スポットタイプに病院，
+ステージに健康状態決定ステージ，
+役割名に病人役割を新たに定義する．
+
+`EAgentType.java`
+
+```Java
+public enum EAgentType {
+    /** 父親 */
+    Father
+}
+```
+
+`ESpotType.java`
+
+```Java
+public enum ESpotType {
+    /** 自宅 */
+    Home,
+    /** 会社 */
+    Company,
+    /** 病院 */
+    Hospital
+}
+```
+
+`EStage.java`
+
+```Java
+public enum EStage {
+    /** 健康状態決定ステージ */
+    DeterminingHealth,
+    /** エージェント移動ステージ */
+    AgentMoving
+}
+```
+
+`ERoleName.java`
+
+```Java
+public enum ERoleName {
+    /** 父親役割 */
+    Father,
+    /** 病人役割 */
+    SickPerson
+}
+```
 
 `EDay.java`
 
@@ -53,44 +103,6 @@ public enum EDay {
     Friday,
     /** 土曜日 */
     Saturday
-}
-```
-
-`EAgentType.java`
-
-```Java
-public enum EAgentType {
-    /** 父親 */
-    Father
-}
-```
-
-`ESpotType.java`
-
-```Java
-public enum ESpotType {
-    /** 自宅 */
-    Home,
-    /** 会社 */
-    Company
-}
-```
-
-`EStage.java`
-
-```Java
-public enum EStage {
-    /** エージェント移動ステージ */
-    AgentMoving
-}
-```
-
-`ERoleName.java`
-
-```Java
-public enum ERoleName {
-    /** 父親役割 */
-    Father
 }
 ```
 
@@ -341,7 +353,7 @@ public class TMain {
         builder.setRandomSeed(seed);
 
         // ルールログとランタイムログの出力設定
-        String pathOfLogDir = "logs" + File.separator + "tutorials" + File.separator + "sample04";
+        String pathOfLogDir = "logs" + File.separator + "tutorials" + File.separator + "sample05";
         builder.setRuleLoggingEnabled(pathOfLogDir + File.separator + "rule_log.csv");
         builder.setRuntimeLoggingEnabled(pathOfLogDir + File.separator + "runtime_log.csv");
 
