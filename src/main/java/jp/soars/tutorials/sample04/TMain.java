@@ -37,68 +37,68 @@ public class TMain {
         //   - spotTypes:使用するスポットタイプ集合
         // *************************************************************************************************************
 
-        String simulationStart = "0/00:00:00"; // シミュレーション開始時刻
-        String simulationEnd = "7/00:00:00"; // シミュレーション終了時刻
-        String tick = "1:00:00"; // １ステップの時間間隔
-        List<Enum<?>> stages = List.of(EStage.AgentMoving); // ステージリスト(実行順)
-        Set<Enum<?>> agentTypes = new HashSet<>(); // 全エージェントタイプ
-        Set<Enum<?>> spotTypes = new HashSet<>(); // 全スポットタイプ
-        Collections.addAll(agentTypes, EAgentType.values()); // EAgentType に登録されているエージェントタイプをすべて追加
-        Collections.addAll(spotTypes, ESpotType.values()); // ESpotType に登録されているスポットタイプをすべて追加
-        TSOARSBuilder builder = new TSOARSBuilder(simulationStart, simulationEnd, tick, stages, agentTypes, spotTypes); // ビルダー作成
+        String simulationStart = "0/00:00:00";
+        String simulationEnd = "7/00:00:00";
+        String tick = "1:00:00";
+        List<Enum<?>> stages = List.of(EStage.AgentMoving);
+        Set<Enum<?>> agentTypes = new HashSet<>();
+        Collections.addAll(agentTypes, EAgentType.values());
+        Set<Enum<?>> spotTypes = new HashSet<>();
+        Collections.addAll(spotTypes, ESpotType.values());
+        TSOARSBuilder builder = new TSOARSBuilder(simulationStart, simulationEnd, tick, stages, agentTypes, spotTypes);
 
         // *************************************************************************************************************
         // TSOARSBuilderの任意設定項目
         // *************************************************************************************************************
 
         // マスター乱数発生器のシード値設定
-        long seed = 0L; // シード値
-        builder.setRandomSeed(seed); // シード値設定
+        long seed = 0L;
+        builder.setRandomSeed(seed);
 
-        // ログ出力設定
-        String pathOfLogDir = "logs" + File.separator + "tutorials" + File.separator + "sample04"; // ログディレクトリ
-        builder.setRuleLoggingEnabled(pathOfLogDir + File.separator + "rule_log.csv") // ルールログ出力設定
-               .setRuntimeLoggingEnabled(pathOfLogDir + File.separator + "runtime_log.csv"); // ランタイムログ出力設定
+        // ルールログとランタイムログの出力設定
+        String pathOfLogDir = "logs" + File.separator + "tutorials" + File.separator + "sample04";
+        builder.setRuleLoggingEnabled(pathOfLogDir + File.separator + "rule_log.csv");
+        builder.setRuntimeLoggingEnabled(pathOfLogDir + File.separator + "runtime_log.csv");
 
         // ルールログのデバッグ情報出力設定
-        builder.setRuleDebugMode(ERuleDebugMode.LOCAL); // ローカル設定に従う
+        builder.setRuleDebugMode(ERuleDebugMode.LOCAL);
 
         // *************************************************************************************************************
         // TSOARSBuilderでシミュレーションに必要なインスタンスの作成と取得
         // *************************************************************************************************************
 
-        builder.build(); // インスタンスのビルド
-        TRuleExecutor ruleExecutor = builder.getRuleExecutor(); // ルール実行器
-        TAgentManager agentManager = builder.getAgentManager(); // エージェント管理
-        TSpotManager spotManager = builder.getSpotManager(); // スポット管理
-        ICRandom random = builder.getRandom(); // マスター乱数発生器
-        Map<String, Object> globalSharedVariableSet = builder.getGlobalSharedVariableSet(); // グローバル共有変数集合
+        builder.build();
+        TRuleExecutor ruleExecutor = builder.getRuleExecutor();
+        TAgentManager agentManager = builder.getAgentManager();
+        TSpotManager spotManager = builder.getSpotManager();
+        ICRandom random = builder.getRandom();
+        Map<String, Object> globalSharedVariableSet = builder.getGlobalSharedVariableSet();
 
         // *************************************************************************************************************
         // スポット作成
-        //   - Home(3)
-        //   - Company(1)
+        //   - Home:Home1, Home2, Home3
+        //   - Company:Company
         // *************************************************************************************************************
 
         int noOfHomes = 3; // 家の数
-        List<TSpot> homes = spotManager.createSpots(ESpotType.Home, noOfHomes); // Homeスポットを生成．(Home1, Home2, Home3)
-        TSpot company = spotManager.createSpot(ESpotType.Company); // Companyスポットを1つ生成．(Company)
+        List<TSpot> homes = spotManager.createSpots(ESpotType.Home, noOfHomes);
+        TSpot company = spotManager.createSpot(ESpotType.Company);
 
         // *************************************************************************************************************
         // エージェント作成
-        //   - Father(3)
+        //   - Father:Father1, Father2, Father3
         //     - 初期スポット:Home
         //     - 役割:父親役割
         // *************************************************************************************************************
 
         int noOfFathers = noOfHomes; // 父親の数は家の数と同じ．
-        List<TAgent> fathers = agentManager.createAgents(EAgentType.Father, noOfFathers); // Fatherエージェントを生成．(Father1, Father2, Father3)
+        List<TAgent> fathers = agentManager.createAgents(EAgentType.Father, noOfFathers);
         for (int i = 0; i < noOfFathers; ++i) {
-            TAgent father = fathers.get(i); // i番目の父親エージェントを取り出す．
-            TSpot home = homes.get(i); // i番目の父親エージェントの自宅を取り出す．
-            father.initializeCurrentSpot(home); // 初期スポットを自宅に設定する．
-            new TRoleOfFather(father, home, company); // 父親役割を生成する．
-            father.activateRole(ERoleName.Father); // 父親役割をアクティブ化する．
+            TAgent father = fathers.get(i); // i番目の父親エージェント
+            TSpot home = homes.get(i); // i番目の父親エージェントの自宅
+            father.initializeCurrentSpot(home); // 初期スポットを自宅に設定
+            new TRoleOfFather(father, home, company); // 父親役割を生成
+            father.activateRole(ERoleName.Father); // 父親役割をアクティブ化
         }
 
         // *************************************************************************************************************
@@ -141,7 +141,7 @@ public class TMain {
         // シミュレーションの終了処理
         // *************************************************************************************************************
 
-        ruleExecutor.shutdown(); // ルール実行器を終了する
-        spotLogPW.close(); // スポットログを終了する
+        ruleExecutor.shutdown();
+        spotLogPW.close();
     }
 }
