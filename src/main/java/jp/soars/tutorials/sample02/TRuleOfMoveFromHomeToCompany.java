@@ -56,21 +56,18 @@ public final class TRuleOfMoveFromHomeToCompany extends TAgentRule {
     @Override
     public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
             TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
-        boolean debugFlag = true; // デバッグ情報出力フラグ
-        TRoleOfFather role = (TRoleOfFather) getOwnerRole(); // 父親役割(このルールを持っている役割)を取得
-        if (isAt(role.getHome())) { // 自宅にいる場合
-            // 会社に移動する
+        // エージェントが自宅にいるならば，会社に移動する．
+        boolean debugFlag = true;
+        TRoleOfFather role = (TRoleOfFather) getOwnerRole();
+        if (isAt(role.getHome())) {
             moveTo(role.getCompany());
-            // 移動ルールが正常に実行されたことをデバッグ情報としてルールログに出力
             appendToDebugInfo("success", debugFlag);
 
-            // 現在時刻にインターバルを足した時刻を会社から自宅に移動するルールの発火時刻とする．
+            // 会社から自宅に移動するルールの発火時刻を計算して臨時実行ルールとして予約する．
             fTimeOfReturnHome.copyFrom(currentTime).add(fIntervalTimeOfReturnHome);
-            // 会社から自宅に移動するルールを臨時実行ルールとして予約する．
             fRuleOfReturnHome.setTimeAndStage(fTimeOfReturnHome.getDay(), fTimeOfReturnHome.getHour(),
                     fTimeOfReturnHome.getMinute(), fTimeOfReturnHome.getSecond(), fStageOfReturnHome);
-        } else { // 自宅にいない場合
-            // 移動ルールが実行されなかったことをデバッグ情報としてルールログに出力
+        } else {
             appendToDebugInfo("fail", debugFlag);
         }
     }

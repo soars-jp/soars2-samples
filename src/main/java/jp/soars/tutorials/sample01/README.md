@@ -48,11 +48,11 @@ TSOARSBuilderで作成されるSOARSシミュレーションに必須のクラ�
 - Map<String, Object> : グローバル共有変数集合．すべてのオブジェクトのルール間で共有しておきたい変数を保持する．
 
 これらのクラスのインスタンスはシミュレーションモデル中で唯一である．
-
 以下に，SOARS Toolkitを用いたシミュレーションのメインクラスの雛形を示す．
 
 `TMain.java`
-```java
+
+```Java
 public class TMain {
 
     public static void main(String[] args) throws IOException {
@@ -66,24 +66,24 @@ public class TMain {
         //   - spotTypes:使用するスポットタイプ集合
         // *************************************************************************************************************
 
-        String simulationStart = "dd/hh:mm:ss"; // シミュレーション開始時刻
-        String simulationEnd = "dd/hh:mm:ss"; // シミュレーション終了時刻
-        String tick = "hh:mm:ss"; // １ステップの時間間隔
-        List<Enum<?>> stages = List.of(); // ステージリスト
-        Set<Enum<?>> agentTypes = new HashSet<>(); // 全エージェントタイプ
-        Set<Enum<?>> spotTypes = new HashSet<>(); // 全スポットタイプ
-        TSOARSBuilder builder = new TSOARSBuilder(simulationStart, simulationEnd, tick, stages, agentTypes, spotTypes); // ビルダー作成
+        String simulationStart = "dd/hh:mm:ss";
+        String simulationEnd = "dd/hh:mm:ss";
+        String tick = "hh:mm:ss";
+        List<Enum<?>> stages = List.of();
+        Set<Enum<?>> agentTypes = new HashSet<>();
+        Set<Enum<?>> spotTypes = new HashSet<>();
+        TSOARSBuilder builder = new TSOARSBuilder(simulationStart, simulationEnd, tick, stages, agentTypes, spotTypes);
 
         // *************************************************************************************************************
         // TSOARSBuilderでシミュレーションに必要なインスタンスの作成と取得
         // *************************************************************************************************************
 
-        builder.build(); // インスタンスのビルド
-        TRuleExecutor ruleExecutor = builder.getRuleExecutor(); // ルール実行器
-        TAgentManager agentManager = builder.getAgentManager(); // エージェント管理
-        TSpotManager spotManager = builder.getSpotManager(); // スポット管理
-        ICRandom random = builder.getRandom(); // マスター乱数発生器
-        Map<String, Object> globalSharedVariableSet = builder.getGlobalSharedVariableSet(); // グローバル共有変数集合
+        builder.build();
+        TRuleExecutor ruleExecutor = builder.getRuleExecutor();
+        TAgentManager agentManager = builder.getAgentManager();
+        TSpotManager spotManager = builder.getSpotManager();
+        ICRandom random = builder.getRandom();
+        Map<String, Object> globalSharedVariableSet = builder.getGlobalSharedVariableSet();
 
         // *************************************************************************************************************
         // スポット作成
@@ -106,26 +106,31 @@ public class TMain {
         // シミュレーションの終了処理
         // *************************************************************************************************************
 
-        ruleExecutor.shutdown(); // ルール実行器を終了する
+        ruleExecutor.shutdown();
     }
 }
 ```
 
 ## シミュレーションモデル構築 step1
 
-sample01のシミュレーション条件に従ってシミュレーションに必要な定数などを定義する．
+sample01のシミュレーション条件に従ってシミュレーションに必要な定数を定義する．
 
 sample01に必要なエージェントは父親のみである．
+
 `EAgentType.java`
-```java
+
+```Java
 public enum EAgentType {
     /** 父親 */
     Father
 }
 ```
+
 sample01に必要なスポットは父親の自宅と会社である．
+
 `ESpotType.java`
-```java
+
+```Java
 public enum ESpotType {
     /** 自宅 */
     Home,
@@ -133,18 +138,24 @@ public enum ESpotType {
     Company
 }
 ```
+
 sample01に必要なステージはエージェント移動ステージである．
 自宅から会社，会社から自宅への移動はそれぞれ9時と17時に実行されるため，1つのステージで競合することなく定義することができる．
+
 `EStage.java`
-```java
+
+```Java
 public enum EStage {
     /** エージェント移動ステージ */
     AgentMoving
 }
 ```
+
 sample01に必要な役割名は父親役割のみである．
+
 `ERoleName.java`
-```java
+
+```Java
 public enum ERoleName {
     /** 父親役割 */
     Father
@@ -152,8 +163,10 @@ public enum ERoleName {
 ```
 
 以上のシミュレーションに必要な定数とシミュレーションの開始時刻，終了時刻，tick(1stepの時間間隔)を定義したメインクラスは以下のようになる．
+
 `TMain.java`
-```java
+
+```Java
 public class TMain {
 
     public static void main(String[] args) throws IOException {
@@ -167,26 +180,26 @@ public class TMain {
         //   - spotTypes:使用するスポットタイプ集合
         // *************************************************************************************************************
 
-        String simulationStart = "0/00:00:00"; // シミュレーション開始時刻
-        String simulationEnd = "7/00:00:00"; // シミュレーション終了時刻
-        String tick = "1:00:00"; // １ステップの時間間隔
-        List<Enum<?>> stages = List.of(EStage.AgentMoving); // ステージリスト
-        Set<Enum<?>> agentTypes = new HashSet<>(); // 全エージェントタイプ
-        Set<Enum<?>> spotTypes = new HashSet<>(); // 全スポットタイプ
-        Collections.addAll(agentTypes, EAgentType.values()); // EAgentType に登録されているエージェントタイプをすべて追加
-        Collections.addAll(spotTypes, ESpotType.values()); // ESpotType に登録されているスポットタイプをすべて追加
-        TSOARSBuilder builder = new TSOARSBuilder(simulationStart, simulationEnd, tick, stages, agentTypes, spotTypes); // ビルダー作成
+        String simulationStart = "0/00:00:00";
+        String simulationEnd = "7/00:00:00";
+        String tick = "1:00:00";
+        List<Enum<?>> stages = List.of(EStage.AgentMoving);
+        Set<Enum<?>> agentTypes = new HashSet<>();
+        Collections.addAll(agentTypes, EAgentType.values());
+        Set<Enum<?>> spotTypes = new HashSet<>();
+        Collections.addAll(spotTypes, ESpotType.values());
+        TSOARSBuilder builder = new TSOARSBuilder(simulationStart, simulationEnd, tick, stages, agentTypes, spotTypes);
 
         // *************************************************************************************************************
         // TSOARSBuilderでシミュレーションに必要なインスタンスの作成と取得
         // *************************************************************************************************************
 
-        builder.build(); // インスタンスのビルド
-        TRuleExecutor ruleExecutor = builder.getRuleExecutor(); // ルール実行器
-        TAgentManager agentManager = builder.getAgentManager(); // エージェント管理
-        TSpotManager spotManager = builder.getSpotManager(); // スポット管理
-        ICRandom random = builder.getRandom(); // マスター乱数発生器
-        Map<String, Object> globalSharedVariableSet = builder.getGlobalSharedVariableSet(); // グローバル共有変数集合
+        builder.build();
+        TRuleExecutor ruleExecutor = builder.getRuleExecutor();
+        TAgentManager agentManager = builder.getAgentManager();
+        TSpotManager spotManager = builder.getSpotManager();
+        ICRandom random = builder.getRandom();
+        Map<String, Object> globalSharedVariableSet = builder.getGlobalSharedVariableSet();
 
         // *************************************************************************************************************
         // スポット作成
@@ -209,7 +222,7 @@ public class TMain {
         // シミュレーションの終了処理
         // *************************************************************************************************************
 
-        ruleExecutor.shutdown(); // ルール実行器を終了する
+        ruleExecutor.shutdown();
     }
 }
 ```
@@ -221,7 +234,8 @@ public class TMain {
 メインクラスは以下のようになる．
 
 `TMain.java`
-```java
+
+```Java
 public class TMain {
 
     public static void main(String[] args) throws IOException {
@@ -235,44 +249,44 @@ public class TMain {
         //   - spotTypes:使用するスポットタイプ集合
         // *************************************************************************************************************
 
-        String simulationStart = "0/00:00:00"; // シミュレーション開始時刻
-        String simulationEnd = "7/00:00:00"; // シミュレーション終了時刻
-        String tick = "1:00:00"; // １ステップの時間間隔
-        List<Enum<?>> stages = List.of(EStage.AgentMoving); // ステージリスト
-        Set<Enum<?>> agentTypes = new HashSet<>(); // 全エージェントタイプ
-        Set<Enum<?>> spotTypes = new HashSet<>(); // 全スポットタイプ
-        Collections.addAll(agentTypes, EAgentType.values()); // EAgentType に登録されているエージェントタイプをすべて追加
-        Collections.addAll(spotTypes, ESpotType.values()); // ESpotType に登録されているスポットタイプをすべて追加
-        TSOARSBuilder builder = new TSOARSBuilder(simulationStart, simulationEnd, tick, stages, agentTypes, spotTypes); // ビルダー作成
+        String simulationStart = "0/00:00:00";
+        String simulationEnd = "7/00:00:00";
+        String tick = "1:00:00";
+        List<Enum<?>> stages = List.of(EStage.AgentMoving);
+        Set<Enum<?>> agentTypes = new HashSet<>();
+        Collections.addAll(agentTypes, EAgentType.values());
+        Set<Enum<?>> spotTypes = new HashSet<>();
+        Collections.addAll(spotTypes, ESpotType.values());
+        TSOARSBuilder builder = new TSOARSBuilder(simulationStart, simulationEnd, tick, stages, agentTypes, spotTypes);
 
         // *************************************************************************************************************
         // TSOARSBuilderでシミュレーションに必要なインスタンスの作成と取得
         // *************************************************************************************************************
 
-        builder.build(); // インスタンスのビルド
-        TRuleExecutor ruleExecutor = builder.getRuleExecutor(); // ルール実行器
-        TAgentManager agentManager = builder.getAgentManager(); // エージェント管理
-        TSpotManager spotManager = builder.getSpotManager(); // スポット管理
-        ICRandom random = builder.getRandom(); // マスター乱数発生器
-        Map<String, Object> globalSharedVariableSet = builder.getGlobalSharedVariableSet(); // グローバル共有変数集合
+        builder.build();
+        TRuleExecutor ruleExecutor = builder.getRuleExecutor();
+        TAgentManager agentManager = builder.getAgentManager();
+        TSpotManager spotManager = builder.getSpotManager();
+        ICRandom random = builder.getRandom();
+        Map<String, Object> globalSharedVariableSet = builder.getGlobalSharedVariableSet();
 
         // *************************************************************************************************************
         // スポット作成
-        //   - Home(3)
-        //   - Company(1)
+        //   - Home:Home1, Home2, Home3
+        //   - Company:Company
         // *************************************************************************************************************
 
         int noOfHomes = 3; // 家の数
-        List<TSpot> homes = spotManager.createSpots(ESpotType.Home, noOfHomes); // Homeスポットを生成．(Home1, Home2, Home3)
-        TSpot company = spotManager.createSpot(ESpotType.Company); // Companyスポットを1つ生成．(Company)
+        List<TSpot> homes = spotManager.createSpots(ESpotType.Home, noOfHomes);
+        TSpot company = spotManager.createSpot(ESpotType.Company);
 
         // *************************************************************************************************************
         // エージェント作成
-        //   - Father(3)
+        //   - Father:Father1, Father2, Father3
         // *************************************************************************************************************
 
         int noOfFathers = noOfHomes; // 父親の数は家の数と同じ．
-        List<TAgent> fathers = agentManager.createAgents(EAgentType.Father, noOfFathers); // Fatherエージェントを生成．(Father1, Father2, Father3)
+        List<TAgent> fathers = agentManager.createAgents(EAgentType.Father, noOfFathers);
 
         // *************************************************************************************************************
         // シミュレーションのメインループ
@@ -287,14 +301,14 @@ public class TMain {
         // シミュレーションの終了処理
         // *************************************************************************************************************
 
-        ruleExecutor.shutdown(); // ルール実行器を終了する
+        ruleExecutor.shutdown();
     }
 }
 ```
 
 ## シミュレーションモデル構築 step3
 
-次に父親役割とエージェント移動ルールのクラスを定義し，メインクラスで父親エージェントに父親役割を設定する．
+次に父親役割とエージェント移動ルールを定義し，メインクラスで父親エージェントに父親役割を設定する．
 
 ### TRoleOfFather:父親役割
 
@@ -306,7 +320,7 @@ TRuleOfMoveFromCompanyToHomeは毎日17時のエージェント移動ステー�
 
 `TRoleOfFather.java`
 
-```java
+```Java
 public final class TRoleOfFather extends TRole {
 
     /** 自宅 */
@@ -367,24 +381,25 @@ public final class TRoleOfFather extends TRole {
 
 ### TRuleOfMoveFromHomeToCompany:自宅から会社に移動するルール
 
-ルールはTRuleもしくはTAgentRuleを継承し，親クラスのdoItメソッドをオーバーライドして，そこにルールの動作を定義する．
+ルールはTRuleまたはTAgentRuleを継承し，親クラスのdoItメソッドをオーバーライドして，そこにルールの動作を定義する．
 doItメソッドの引数は現在時刻，現在ステージ，スポット管理，エージェント管理，グローバル共有変数集合である．
-このうち，スポット管理，エージェント管理，グローバル共有変数集合はメインクラスでTSOARSBuilderから受け取ったインスタンスと同じものである．
-これによって，ルールはシミュレーション中に存在する他のエージェントやスポットを参照することができる．
+スポット管理，エージェント管理，グローバル共有変数集合はメインクラスでTSOARSBuilderから受け取ったインスタンスと同じものである．
+これにより，ルールはシミュレーション中に存在する他のエージェントやスポットを参照することができる．
 
 TRuleOfMoveFromHomeToCompanyは自宅から会社に移動するルールである．
 自宅と会社の情報は父親役割が持っており，そこから取得する．
-取得したい役割がこのルールを持っている役割であることが確定している場合には，getOwnerRole()メソッドでこのルールを持っている役割を取得できる．
-また，getRole(role name)メソッドでこのルールを持っている大元のオブジェクトに登録されている任意の役割を取得することができる．
+取得したい役割がこのルールを持っている役割の場合には，getOwnerRole()メソッドで取得できる．
+また，getRole(Enum roleName)メソッドでこのルールを持っている大元のオブジェクトに登録されている任意の役割を取得することができる．
 
 TRuleOfMoveFromHomeToCompanyはTAgentRuleを継承することにより，エージェントの移動を実行する．
 TAgentRuleはエージェント専用のメソッドが用意されており，現在地を判定するisAtや，スポットを移動するmoveToなどが実装されている．
 
 ※appendToDebugInfoメソッドは後述するルールログにデバッグ情報を出力するメソッドで，
-第1引数がデバッグ情報文字列，第2引数は出力するか否かの制御boolean．
+第1引数がデバッグ情報文字列，第2引数はデバッグ情報を出力するか否かの制御boolean．
 
 `TRuleOfMoveFromHomeToCompany.java`
-```java
+
+```Java
 public final class TRuleOfMoveFromHomeToCompany extends TAgentRule {
 
     /**
@@ -408,15 +423,16 @@ public final class TRuleOfMoveFromHomeToCompany extends TAgentRule {
     @Override
     public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
             TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
-        boolean debugFlag = true; // デバッグ情報出力フラグ
-        TRoleOfFather role = (TRoleOfFather) getOwnerRole(); // 父親役割(このルールを持っている役割)を取得
-        if (isAt(role.getHome())) { // 自宅にいる場合
-            // 会社に移動する
+        // エージェントが自宅にいるならば，会社に移動する．
+        // getOwnerRole()メソッドはこのルールを持っている役割を取得する．
+        // appendToDebugInfoはルールログにユーザー定義のデバッグ情報を出力する．
+        // 第1引数はデバッグ情報文字列，第2引数はデバッグ情報を出力するか否かの制御boolean．
+        boolean debugFlag = true;
+        TRoleOfFather role = (TRoleOfFather) getOwnerRole();
+        if (isAt(role.getHome())) {
             moveTo(role.getCompany());
-            // 移動ルールが正常に実行されたことをデバッグ情報としてルールログに出力
             appendToDebugInfo("success", debugFlag);
-        } else { // 自宅にいない場合
-            // 移動ルールが実行されなかったことをデバッグ情報としてルールログに出力
+        } else {
             appendToDebugInfo("fail", debugFlag);
         }
     }
@@ -429,7 +445,8 @@ TRuleOfMoveFromCompanyToHomeは会社から自宅に移動するルールであ�
 内容はTRuleOfMoveFromHomeToCompanyとほぼ同様である．
 
 `TRuleOfMoveFromCompanyToHome.java`
-```java
+
+```Java
 public final class TRuleOfMoveFromCompanyToHome extends TAgentRule {
 
     /**
@@ -453,15 +470,16 @@ public final class TRuleOfMoveFromCompanyToHome extends TAgentRule {
     @Override
     public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
             TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
-        boolean debugFlag = true; // デバッグ情報出力フラグ
-        TRoleOfFather role = (TRoleOfFather) getOwnerRole(); // 父親役割(このルールを持っている役割)を取得
-        if (isAt(role.getCompany())) { // 会社にいる場合
-            // 自宅に移動する
+        // エージェントが会社にいるならば，自宅に移動する．
+        // getOwnerRole()メソッドはこのルールを持っている役割を取得する．
+        // appendToDebugInfoはルールログにユーザー定義のデバッグ情報を出力する．
+        // 第1引数はデバッグ情報文字列，第2引数はデバッグ情報を出力するか否かの制御boolean．
+        boolean debugFlag = true;
+        TRoleOfFather role = (TRoleOfFather) getOwnerRole();
+        if (isAt(role.getCompany())) {
             moveTo(role.getHome());
-            // 移動ルールが正常に実行されたことをデバッグ情報としてルールログに出力
             appendToDebugInfo("success", debugFlag);
-        } else { // 会社にいない場合
-            // 移動ルールが実行されなかったことをデバッグ情報としてルールログに出力
+        } else {
             appendToDebugInfo("fail", debugFlag);
         }
     }
@@ -475,7 +493,8 @@ public final class TRuleOfMoveFromCompanyToHome extends TAgentRule {
 メインクラスは以下のようになる．
 
 `TMain.java`
-```java
+
+```Java
 public class TMain {
 
     public static void main(String[] args) throws IOException {
@@ -569,7 +588,9 @@ public class TMain {
 - スポットログの出力設定：
   - シミュレーションモデルが正常に機能しているかを確かめるために各時刻におけるエージェントの現在地をスポットログとして出力する．このログはユーザーが独自に定義するものであり，ライブラリの機能によるものではない．
 
-```Java:TMain.java
+`TMain.java`
+
+```Java
 public class TMain {
 
     public static void main(String[] args) throws IOException {
