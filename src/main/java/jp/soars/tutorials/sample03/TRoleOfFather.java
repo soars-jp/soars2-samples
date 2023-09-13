@@ -40,12 +40,12 @@ public final class TRoleOfFather extends TRole {
         fCompany = company;
 
         // 役割が持つルールの登録
-        // 会社から自宅に移動するルール．予約はTRuleOfStochasticallyMoveFromHomeToCompanyで相対時刻指定で行われる．
+        // 会社から自宅に移動するルール．予約はTRuleOfMoveFromHomeToCompanyで相対時刻指定で行われる．
         TRule ruleOfReturnHome = new TRuleOfMoveFromCompanyToHome(RULE_NAME_OF_MOVE_FROM_COMPANY_TO_HOME, this);
 
         // 自宅から会社に移動するルール．初日の9時(50%)，10時(30%)，11時(20%)/エージェント移動ステージに臨時実行ルールとして予約する．
         // 初日以降は，ルール自身が臨時実行ルールとして再予約する．
-        double p = getRandom().nextDouble(); // [0, 1]のdouble
+        double p = getRandom().nextDouble();
         int hour;
         if (p <= 0.5) {
             hour = 9; // 50%

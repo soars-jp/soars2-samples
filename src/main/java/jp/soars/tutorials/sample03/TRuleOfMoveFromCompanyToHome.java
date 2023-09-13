@@ -35,15 +35,13 @@ public final class TRuleOfMoveFromCompanyToHome extends TAgentRule {
     @Override
     public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
             TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
-        boolean debugFlag = true; // デバッグ情報出力フラグ
-        TRoleOfFather role = (TRoleOfFather) getOwnerRole(); // 父親役割(このルールを持っている役割)を取得
-        if (isAt(role.getCompany())) { // 会社にいる場合
-            // 自宅に移動する
+        // エージェントが会社にいるならば，自宅に移動する．
+        boolean debugFlag = true;
+        TRoleOfFather role = (TRoleOfFather) getOwnerRole();
+        if (isAt(role.getCompany())) {
             moveTo(role.getHome());
-            // 移動ルールが正常に実行されたことをデバッグ情報としてルールログに出力
             appendToDebugInfo("success", debugFlag);
-        } else { // 会社にいない場合
-            // 移動ルールが実行されなかったことをデバッグ情報としてルールログに出力
+        } else {
             appendToDebugInfo("fail", debugFlag);
         }
     }
