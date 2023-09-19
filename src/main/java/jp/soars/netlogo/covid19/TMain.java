@@ -1,4 +1,4 @@
-package jp.soars.tutorials.sample02;
+package jp.soars.netlogo.covid19;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -18,6 +18,8 @@ import jp.soars.core.TSOARSBuilder;
 import jp.soars.core.TSpot;
 import jp.soars.core.TSpotManager;
 import jp.soars.core.enums.ERuleDebugMode;
+import jp.soars.netlogo.covid19.agent.TRoleOfCOVID19;
+import jp.soars.netlogo.covid19.agent.TRoleOfResident;
 import jp.soars.utils.random.ICRandom;
 
 /**
@@ -38,9 +40,9 @@ public class TMain {
         // *************************************************************************************************************
 
         String simulationStart = "0/00:00:00";
-        String simulationEnd = "7/00:00:00";
+        String simulationEnd = "180/00:00:00";
         String tick = "1:00:00";
-        List<Enum<?>> stages = List.of(EStage.AgentMoving);
+        List<Enum<?>> stages = List.of();
         Set<Enum<?>> agentTypes = new HashSet<>();
         Collections.addAll(agentTypes, EAgentType.values());
         Set<Enum<?>> spotTypes = new HashSet<>();
@@ -56,7 +58,7 @@ public class TMain {
         builder.setRandomSeed(seed);
 
         // ルールログとランタイムログの出力設定
-        String pathOfLogDir = "logs" + File.separator + "tutorials" + File.separator + "sample02";
+        String pathOfLogDir = "logs" + File.separator + "tutorials" + File.separator + "sample01";
         builder.setRuleLoggingEnabled(pathOfLogDir + File.separator + "rule_log.csv");
         builder.setRuntimeLoggingEnabled(pathOfLogDir + File.separator + "runtime_log.csv");
 
@@ -76,45 +78,67 @@ public class TMain {
 
         // *************************************************************************************************************
         // スポット作成
-        //   - Home:Home1, Home2, Home3
-        //   - Company:Company
+        //   - Home(36)
+        //   - ClassRoom(1)
+        //   - Gym(1)
+        //   - Office(1)
+        //   - Hospital(1)
+        //   - Grave(1)
         // *************************************************************************************************************
 
-        int noOfHomes = 3; // 家の数
-        List<TSpot> homes = spotManager.createSpots(ESpotType.Home, noOfHomes);
-        TSpot company = spotManager.createSpot(ESpotType.Company);
+        int noOfHomes = 36;
+        int noOfClassRoom = 1;
+        int noOfGym = 1;
+        int noOfOffice = 1;
+        int noOfHospital = 1;
+        int noOfGrave = 1;
+        List<TSpot> homes = spotManager.createSpots(ESpotType.Home, noOfHomes, , );
+        TSpot classRoom = spotManager.createSpot(ESpotType.ClassRoom, , );
+        TSpot gym = spotManager.createSpot(ESpotType.ClassRoom, , );
+        TSpot office = spotManager.createSpot(ESpotType.ClassRoom, , );
+        TSpot hospital = spotManager.createSpot(ESpotType.ClassRoom, , );
+        TSpot grave = spotManager.createSpot(ESpotType.ClassRoom, , );
 
         // *************************************************************************************************************
         // エージェント作成
-        //   - Father:Father1, Father2, Father3
-        //     - 初期スポット:Home
-        //     - 役割:父親役割
+        //  - Resident
         // *************************************************************************************************************
 
-        int noOfFathers = noOfHomes; // 父親の数は家の数と同じ．
-        List<TAgent> fathers = agentManager.createAgents(EAgentType.Father, noOfFathers);
-        for (int i = 0; i < noOfFathers; ++i) {
-            TAgent father = fathers.get(i); // i番目の父親エージェント
-            TSpot home = homes.get(i); // i番目の父親エージェントの自宅
-            father.initializeCurrentSpot(home); // 初期スポットを自宅に設定
-            new TRoleOfFather(father, home, company); // 父親役割を作成
-            father.activateRole(ERoleName.Father); // 父親役割をアクティブ化
+        int noOfResidents = 100; // 住人人数
+        List<TAgent> residents = agentManager.createAgents(EAgentType.Resident, noOfResidents, );
+        for (TAgent resident : residents) {
+            TSpot home = homes.get(random.nextInt(noOfHomes));
+            double p = random.nextDouble();
+            EAgeGroup ageGroup;
+            if (p <= 0.2) {
+                ageGroup = EAgeGroup.Young;
+            } else if (p <= 0.6) {
+                ageGroup = EAgeGroup.Middle;
+            } else {
+                ageGroup = EAgeGroup.Old;
+            }
+
+            new TRoleOfCOVID19(resident);
+            new TRoleOfResident(resident, ageGroup, home);
+
+            resident.initializeCurrentSpot(home);
+        }
+
+        // 初期感染者を設定．
+        int noOfInitialInfected = 5;
+        // 非復元抽出．WithoutCopy付きは引数に入力したリストの順番が変わるので注意(破壊的操作をする)．
+        // 順番を変えたくない場合は chooseWithoutReplacement メソッドを利用する．
+        List<TAgent> patients = random.chooseWithoutReplacementWithoutCopy(residents, noOfInitialInfected);
+        for (TAgent patient : patients) {
+            TRoleOfCOVID19 role = (TRoleOfCOVID19) patient.getRole(ERoleName.COVID19);
+            role.setInfected(true);
+            role.setDiseaseLevel(EDiseaseLevel.LATENT_NO_CONTAGION);
         }
 
         // *************************************************************************************************************
         // 独自に作成するログ用のPrintWriter
-        //   - スポットログ:各時刻での各エージェントの現在位置ログ
         // *************************************************************************************************************
 
-        // スポットログ用PrintWriter
-        PrintWriter spotLogPW = new PrintWriter(new BufferedWriter(new FileWriter(pathOfLogDir + File.separator + "spot_log.csv")));
-        // スポットログのカラム名出力
-        spotLogPW.print("CurrentTime");
-        for (TAgent father : fathers) {
-            spotLogPW.print(',');
-            spotLogPW.print(father.getName());
-        }
-        spotLogPW.println();
 
         // *************************************************************************************************************
         // シミュレーションのメインループ
@@ -125,14 +149,6 @@ public class TMain {
         while (ruleExecutor.executeStep()) {
             // 標準出力に現在時刻を表示する
             System.out.println(ruleExecutor.getCurrentTime());
-
-            // スポットログ出力
-            spotLogPW.print(ruleExecutor.getCurrentTime());
-            for (TAgent father : fathers) {
-                spotLogPW.print(',');
-                spotLogPW.print(father.getCurrentSpotName());
-            }
-            spotLogPW.println();
         }
 
         // *************************************************************************************************************
@@ -140,6 +156,5 @@ public class TMain {
         // *************************************************************************************************************
 
         ruleExecutor.shutdown();
-        spotLogPW.close();
     }
 }

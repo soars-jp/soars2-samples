@@ -1,4 +1,4 @@
-package jp.soars.tutorials.sample04;
+package jp.soars.tutorials.sample05_1;
 
 import java.util.Map;
 

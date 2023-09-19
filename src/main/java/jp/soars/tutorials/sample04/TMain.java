@@ -97,7 +97,7 @@ public class TMain {
             TAgent father = fathers.get(i); // i番目の父親エージェント
             TSpot home = homes.get(i); // i番目の父親エージェントの自宅
             father.initializeCurrentSpot(home); // 初期スポットを自宅に設定
-            new TRoleOfFather(father, home, company); // 父親役割を生成
+            new TRoleOfFather(father, home, company); // 父親役割を作成
             father.activateRole(ERoleName.Father); // 父親役割をアクティブ化
         }
 

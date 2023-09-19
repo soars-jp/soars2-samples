@@ -74,13 +74,16 @@ public enum ERoleName {
 ### TRuleOfStochasticallyMoveFromHomeToCompany:確率的に自宅から会社に移動するルール
 
 sample02のTRuleOfMoveFromHomeToCompanyを拡張する．
-初日の予約は父親役割で行い，
-初日以降はルールが自分自身を次の日の9時(50%)，10時(30%)，11時(20%)のエージェント移動ステージに臨時実行ルールとして再予約する．
+コンストラクタで移動確率[0, 1]を受け取り，その確率条件を満たした場合に移動するように変更する．
+また，ルールログのデバッグ情報で移動しなかった場合の理由がスポット条件か，確率条件かを出力する．
 
 `TRuleOfStochasticallyMoveFromHomeToCompany.java`
 
 ```Java
 public final class TRuleOfStochasticallyMoveFromHomeToCompany extends TAgentRule {
+
+    /** 移動確率[0, 1] */
+    private final double fProbability;
 
     /** 会社から自宅に移動するルール */
     private final TRule fRuleOfReturnHome;
@@ -98,14 +101,19 @@ public final class TRuleOfStochasticallyMoveFromHomeToCompany extends TAgentRule
      * コンストラクタ
      * @param name ルール名
      * @param owner このルールをもつ役割
+     * @param probability 移動確率[0, 1]
      * @param ruleOfReturnHome 会社から自宅に移動するルール
      * @param intervalTimeOfReturnHome 会社から自宅に移動するルールを実行するまでの時間間隔
      * @param stageOfReturnHome 会社から自宅に移動するルールを実行するステージ
      */
-    public TRuleOfStochasticallyMoveFromHomeToCompany(String name, TRole owner,
+    public TRuleOfStochasticallyMoveFromHomeToCompany(String name, TRole owner, double probability,
             TRule ruleOfReturnHome, String intervalTimeOfReturnHome, Enum<?> stageOfReturnHome) {
         // 親クラスのコンストラクタを呼び出す．
         super(name, owner);
+        if (probability < 0.0 || 1.0 < probability) {
+            throw new RuntimeException("Invalid probability. Probability value must be between 0 and 1.");
+        }
+        fProbability = probability;
         fRuleOfReturnHome = ruleOfReturnHome;
         fIntervalTimeOfReturnHome = new TTime(intervalTimeOfReturnHome);
         fTimeOfReturnHome = new TTime();
@@ -123,33 +131,24 @@ public final class TRuleOfStochasticallyMoveFromHomeToCompany extends TAgentRule
     @Override
     public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
             TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
-        // エージェントが自宅にいるならば，会社に移動する．
+        // エージェントが自宅にいるかつ移動確率を満たしたならば，会社に移動する．
         boolean debugFlag = true;
         TRoleOfFather role = (TRoleOfFather) getOwnerRole();
         if (isAt(role.getHome())) {
-            moveTo(role.getCompany());
-            appendToDebugInfo("success", debugFlag);
+            if (getRandom().nextDouble() <= fProbability) {
+                moveTo(role.getCompany());
+                appendToDebugInfo("success", debugFlag);
 
-            // 会社から自宅に移動するルールの発火時刻を計算して臨時実行ルールとして予約する．
-            fTimeOfReturnHome.copyFrom(currentTime).add(fIntervalTimeOfReturnHome);
-            fRuleOfReturnHome.setTimeAndStage(fTimeOfReturnHome.getDay(), fTimeOfReturnHome.getHour(),
-                    fTimeOfReturnHome.getMinute(), fTimeOfReturnHome.getSecond(), fStageOfReturnHome);
+                // 会社から自宅に移動するルールの発火時刻を計算して臨時実行ルールとして予約する．
+                fTimeOfReturnHome.copyFrom(currentTime).add(fIntervalTimeOfReturnHome);
+                fRuleOfReturnHome.setTimeAndStage(fTimeOfReturnHome.getDay(), fTimeOfReturnHome.getHour(),
+                        fTimeOfReturnHome.getMinute(), fTimeOfReturnHome.getSecond(), fStageOfReturnHome);
+            } else {
+                appendToDebugInfo("fail (probability)", debugFlag);
+            }
         } else {
-            appendToDebugInfo("fail", debugFlag);
+            appendToDebugInfo("fail (spot)", debugFlag);
         }
-
-        // 次の日の9時(50%)，10時(30%)，11時(20%)のエージェント移動ステージに自分自身を再予約する．
-        double p = getRandom().nextDouble();
-        int hour;
-        if (p <= 0.5) {
-            hour = 9; // 50%
-        } else if (p <= 0.8) {
-            hour = 10; // 30%
-        } else {
-            hour = 11; // 20%
-        }
-        setTimeAndStage(currentTime.getDay() + 1, hour, 0, 0, EStage.AgentMoving);
-        appendToDebugInfo("/next time = " + hour, debugFlag);
     }
 }
 ```
@@ -201,8 +200,15 @@ public final class TRuleOfMoveFromCompanyToHome extends TAgentRule {
 ### TRoleOfFather:父親役割
 
 sample02のTRoleOfFatherを拡張する．
-TRoleOfFatherではTRuleOfMoveFromCompanyToHomeの予約を行わない．
-TRuleOfStochasticallyMoveFromHomeToCompanyを初日の9時(50%)，10時(30%)，11時(20%)のエージェント移動ステージに予約する．
+シミュレーションシナリオ(父親は，50%の確率で9時，30%の確率で10時，20%の確率で11時に自宅から同じ会社(Company)に移動する．)
+を実現するために，9時，10時，11時に自宅から会社に移動するルールを提示実行ルールとして登録し，移動確率をそれぞれ0.5, 0.6, 1.0に設定する．
+これによって，各時刻における移動確率は以下のようになる．
+
+- 9時に移動する確率は，0.5 = 50%
+- 10時に移動する確率は，9時に移動していない かつ 0.6 = (1.0 - 0.5) * 0.6 = 30%
+- 11時に移動する確率は，9時に移動していない かつ 10時に移動していない かつ 1.0 = (1.0 - 0.5) * (1.0 - 0.6) * 1.0 = 20%
+
+また，例えば9時に会社に移動した場合，10時，11時のルール実行時にはエージェントは会社にいるため，自宅にいるという条件を満たすことができず移動は実行されない．
 
 `TRoleOfFather.java`
 
@@ -215,8 +221,14 @@ public final class TRoleOfFather extends TRole {
     /** 会社 */
     private final TSpot fCompany;
 
-    /** 自宅から会社に移動するルール名 */
-    private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY = "MoveFromHomeToCompany";
+    /** 9時に自宅から会社に移動するルール名 */
+    private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_9 = "MoveFromHomeToCompany9";
+
+    /** 10時に自宅から会社に移動するルール名 */
+    private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_10 = "MoveFromHomeToCompany10";
+
+    /** 11時に自宅から会社に移動するルール名 */
+    private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_11 = "MoveFromHomeToCompany11";
 
     /** 会社から自宅に移動するルール名 */
     private static final String RULE_NAME_OF_MOVE_FROM_COMPANY_TO_HOME = "MoveFromCompanyToHome";
@@ -241,20 +253,22 @@ public final class TRoleOfFather extends TRole {
         // 会社から自宅に移動するルール．予約はTRuleOfMoveFromHomeToCompanyで相対時刻指定で行われる．
         TRule ruleOfReturnHome = new TRuleOfMoveFromCompanyToHome(RULE_NAME_OF_MOVE_FROM_COMPANY_TO_HOME, this);
 
-        // 自宅から会社に移動するルール．初日の9時(50%)，10時(30%)，11時(20%)/エージェント移動ステージに臨時実行ルールとして予約する．
-        // 初日以降は，ルール自身が臨時実行ルールとして再予約する．
-        double p = getRandom().nextDouble();
-        int hour;
-        if (p <= 0.5) {
-            hour = 9; // 50%
-        } else if (p <= 0.8) {
-            hour = 10; // 30%
-        } else {
-            hour = 11; // 20%
-        }
-        new TRuleOfStochasticallyMoveFromHomeToCompany(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY, this,
-                ruleOfReturnHome, "8:00:00", EStage.AgentMoving)
-                .setTimeAndStage(0, hour, 0, 0, EStage.AgentMoving);
+        // 確率的に自宅から会社に移動するルール．9:00:00, 10:00:00, 11:00:00/エージェント移動ステージに定時実行ルールとして予約する．
+        // 移動確率をそれぞれ 9:00:00 -> 0.5, 10:00:00 -> 0.6, 11:00:00 ->1.0 に設定する．これによって，
+        //  9時に移動する確率は，0.5 = 50%
+        // 10時に移動する確率は，9時に移動していない かつ 0.6 = (1.0 - 0.5) * 0.6 = 30%
+        // 11時に移動する確率は，9時に移動していない かつ 10時に移動していない かつ 1.0 = (1.0 - 0.5) * (1.0 - 0.6) * 1.0 = 20%
+        new TRuleOfStochasticallyMoveFromHomeToCompany(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_9, this,
+                0.5, ruleOfReturnHome, "8:00:00", EStage.AgentMoving)
+                .setTimeAndStage(9, 0, 0, EStage.AgentMoving);
+
+        new TRuleOfStochasticallyMoveFromHomeToCompany(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_10, this,
+                0.6, ruleOfReturnHome, "8:00:00", EStage.AgentMoving)
+                .setTimeAndStage(10, 0, 0, EStage.AgentMoving);
+
+        new TRuleOfStochasticallyMoveFromHomeToCompany(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_11, this,
+                1.0, ruleOfReturnHome, "8:00:00", EStage.AgentMoving)
+                .setTimeAndStage(11, 0, 0, EStage.AgentMoving);
     }
 
     /**
@@ -355,7 +369,7 @@ public class TMain {
             TAgent father = fathers.get(i); // i番目の父親エージェント
             TSpot home = homes.get(i); // i番目の父親エージェントの自宅
             father.initializeCurrentSpot(home); // 初期スポットを自宅に設定
-            new TRoleOfFather(father, home, company); // 父親役割を生成
+            new TRoleOfFather(father, home, company); // 父親役割を作成
             father.activateRole(ERoleName.Father); // 父親役割をアクティブ化
         }
 

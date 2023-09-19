@@ -17,8 +17,14 @@ public final class TRoleOfFather extends TRole {
     /** 会社 */
     private final TSpot fCompany;
 
-    /** 自宅から会社に移動するルール名 */
-    private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY = "MoveFromHomeToCompany";
+    /** 9時に自宅から会社に移動するルール名 */
+    private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_9 = "MoveFromHomeToCompany9";
+
+    /** 10時に自宅から会社に移動するルール名 */
+    private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_10 = "MoveFromHomeToCompany10";
+
+    /** 11時に自宅から会社に移動するルール名 */
+    private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_11 = "MoveFromHomeToCompany11";
 
     /** 会社から自宅に移動するルール名 */
     private static final String RULE_NAME_OF_MOVE_FROM_COMPANY_TO_HOME = "MoveFromCompanyToHome";
@@ -43,20 +49,22 @@ public final class TRoleOfFather extends TRole {
         // 会社から自宅に移動するルール．予約はTRuleOfMoveFromHomeToCompanyで相対時刻指定で行われる．
         TRule ruleOfReturnHome = new TRuleOfMoveFromCompanyToHome(RULE_NAME_OF_MOVE_FROM_COMPANY_TO_HOME, this);
 
-        // 自宅から会社に移動するルール．初日の9時(50%)，10時(30%)，11時(20%)/エージェント移動ステージに臨時実行ルールとして予約する．
-        // 初日以降は，ルール自身が臨時実行ルールとして再予約する．
-        double p = getRandom().nextDouble();
-        int hour;
-        if (p <= 0.5) {
-            hour = 9; // 50%
-        } else if (p <= 0.8) {
-            hour = 10; // 30%
-        } else {
-            hour = 11; // 20%
-        }
-        new TRuleOfStochasticallyMoveFromHomeToCompany(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY, this,
-                ruleOfReturnHome, "8:00:00", EStage.AgentMoving)
-                .setTimeAndStage(0, hour, 0, 0, EStage.AgentMoving);
+        // 確率的に自宅から会社に移動するルール．9:00:00, 10:00:00, 11:00:00/エージェント移動ステージに定時実行ルールとして予約する．
+        // 移動確率をそれぞれ 9:00:00 -> 0.5, 10:00:00 -> 0.6, 11:00:00 ->1.0 に設定する．これによって，
+        //  9時に移動する確率は，0.5 = 50%
+        // 10時に移動する確率は，9時に移動していない かつ 0.6 = (1.0 - 0.5) * 0.6 = 30%
+        // 11時に移動する確率は，9時に移動していない かつ 10時に移動していない かつ 1.0 = (1.0 - 0.5) * (1.0 - 0.6) * 1.0 = 20%
+        new TRuleOfStochasticallyMoveFromHomeToCompany(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_9, this,
+                0.5, ruleOfReturnHome, "8:00:00", EStage.AgentMoving)
+                .setTimeAndStage(9, 0, 0, EStage.AgentMoving);
+
+        new TRuleOfStochasticallyMoveFromHomeToCompany(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_10, this,
+                0.6, ruleOfReturnHome, "8:00:00", EStage.AgentMoving)
+                .setTimeAndStage(10, 0, 0, EStage.AgentMoving);
+
+        new TRuleOfStochasticallyMoveFromHomeToCompany(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_11, this,
+                1.0, ruleOfReturnHome, "8:00:00", EStage.AgentMoving)
+                .setTimeAndStage(11, 0, 0, EStage.AgentMoving);
     }
 
     /**

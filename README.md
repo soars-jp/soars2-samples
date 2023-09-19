@@ -8,17 +8,17 @@ SOARS toolkit ver.2のサンプルプログラム
   - [sample02:臨時実行ルールによる相対時刻指定](src/main/java/jp/soars/tutorials/sample02/)
   - [sample03:確率的なルールの定義](src/main/java/jp/soars/tutorials/sample03/)
   - [sample04:曜日概念の導入](src/main/java/jp/soars/tutorials/sample04/)
-  - [sample05:役割のアクティブ制御](src/main/java/jp/soars/tutorials/sample05/)
-
-
-子役割による役割の同時アクティブ制御
-  - [sample03:ステージ実行ルールによるルールの定期実行](src/main/java/jp/soars/tutorials/sample03/)
-  - [sample07:スポット・エージェントの動的追加・削除](src/main/java/jp/soars/tutorials/sample07/)
-  - [sample08:ルールの並列実行](src/main/java/jp/soars/tutorials/sample08/)
-  - [sample09:ステージ実行ルールとグローバル共有変数集合](src/main/java/jp/soars/tutorials/sample09/)
-  - [sample10:レイヤー機能](src/main/java/jp/soars/tutorials/sample10/)
-  - [sample11:モジュール合成](src/main/java/jp/soars/tutorials/sample11/)
-  - [sample12:ステージのロールバック](src/main/java/jp/soars/tutorials/sample12/)
+  - [sample05-1:役割のアクティブ制御](src/main/java/jp/soars/tutorials/sample05_1/)
+  - [sample05-2:ルールの汎化](src/main/java/jp/soars/tutorials/sample05_2/)
+  - [sample06:子役割による役割のアクティブ制御](src/main/java/jp/soars/tutorials/sample06/)
+  - [sample07:オブジェクトの動的追加・削除](src/main/java/jp/soars/tutorials/sample07/)
+  - [sample08:ステージ実行ルールによるルールの定期実行](src/main/java/jp/soars/tutorials/sample08/)
+  - [sample09:グローバル共有変数集合の利用](src/main/java/jp/soars/tutorials/sample09/)
+  - [sample10:レイヤー機能の利用](src/main/java/jp/soars/tutorials/sample10/)
+  - [sample11:ステージのロールバック](src/main/java/jp/soars/tutorials/sample11/)
+  - [sample12:モジュール合成](src/main/java/jp/soars/tutorials/sample12/)
+  - [sample13:ルールの並列実行](src/main/java/jp/soars/tutorials/sample13/)
+  - [sample14:大規模実験のための最適化設定](src/main/java/jp/soars/tutorials/sample14/)
 - セルオートマトン
   - [ライフゲーム](src/main/java/jp/soars/ca/gol/)
 - 強化学習

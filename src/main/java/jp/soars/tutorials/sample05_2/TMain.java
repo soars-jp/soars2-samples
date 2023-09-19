@@ -1,4 +1,4 @@
-package jp.soars.tutorials.sample02;
+package jp.soars.tutorials.sample05_2;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -40,7 +40,9 @@ public class TMain {
         String simulationStart = "0/00:00:00";
         String simulationEnd = "7/00:00:00";
         String tick = "1:00:00";
-        List<Enum<?>> stages = List.of(EStage.AgentMoving);
+        List<Enum<?>> stages = List.of(EStage.DeterminingHealth,
+                                       EStage.AgentMoving,
+                                       EStage.RecoveringFromSick);
         Set<Enum<?>> agentTypes = new HashSet<>();
         Collections.addAll(agentTypes, EAgentType.values());
         Set<Enum<?>> spotTypes = new HashSet<>();
@@ -56,7 +58,7 @@ public class TMain {
         builder.setRandomSeed(seed);
 
         // ルールログとランタイムログの出力設定
-        String pathOfLogDir = "logs" + File.separator + "tutorials" + File.separator + "sample02";
+        String pathOfLogDir = "logs" + File.separator + "tutorials" + File.separator + "sample05_1";
         builder.setRuleLoggingEnabled(pathOfLogDir + File.separator + "rule_log.csv");
         builder.setRuntimeLoggingEnabled(pathOfLogDir + File.separator + "runtime_log.csv");
 
@@ -78,17 +80,19 @@ public class TMain {
         // スポット作成
         //   - Home:Home1, Home2, Home3
         //   - Company:Company
+        //   - Hospital:Hospital
         // *************************************************************************************************************
 
         int noOfHomes = 3; // 家の数
         List<TSpot> homes = spotManager.createSpots(ESpotType.Home, noOfHomes);
         TSpot company = spotManager.createSpot(ESpotType.Company);
+        TSpot hospital = spotManager.createSpot(ESpotType.Hospital);
 
         // *************************************************************************************************************
         // エージェント作成
         //   - Father:Father1, Father2, Father3
         //     - 初期スポット:Home
-        //     - 役割:父親役割
+        //     - 役割:父親役割，病人役割
         // *************************************************************************************************************
 
         int noOfFathers = noOfHomes; // 父親の数は家の数と同じ．
@@ -98,6 +102,7 @@ public class TMain {
             TSpot home = homes.get(i); // i番目の父親エージェントの自宅
             father.initializeCurrentSpot(home); // 初期スポットを自宅に設定
             new TRoleOfFather(father, home, company); // 父親役割を作成
+            new TRoleOfSickPerson(father); // 病人役割を作成
             father.activateRole(ERoleName.Father); // 父親役割をアクティブ化
         }
 
@@ -109,7 +114,7 @@ public class TMain {
         // スポットログ用PrintWriter
         PrintWriter spotLogPW = new PrintWriter(new BufferedWriter(new FileWriter(pathOfLogDir + File.separator + "spot_log.csv")));
         // スポットログのカラム名出力
-        spotLogPW.print("CurrentTime");
+        spotLogPW.print("CurrentTime,Day");
         for (TAgent father : fathers) {
             spotLogPW.print(',');
             spotLogPW.print(father.getName());
@@ -128,6 +133,8 @@ public class TMain {
 
             // スポットログ出力
             spotLogPW.print(ruleExecutor.getCurrentTime());
+            spotLogPW.print(",");
+            spotLogPW.print(EDay.values()[ruleExecutor.getCurrentTime().getDay() % 7]);
             for (TAgent father : fathers) {
                 spotLogPW.print(',');
                 spotLogPW.print(father.getCurrentSpotName());

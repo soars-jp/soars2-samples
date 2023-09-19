@@ -1,4 +1,4 @@
-package jp.soars.tutorials.sample03;
+package jp.soars.tutorials.sample05_2;
 
 import jp.soars.core.TAgent;
 import jp.soars.core.TRole;
@@ -16,6 +16,9 @@ public final class TRoleOfFather extends TRole {
 
     /** 会社 */
     private final TSpot fCompany;
+
+    /** 健康状態決定ルール */
+    private static final String RULE_NAME_OF_DETERMINING_HEALTH = "DeterminingHealth";
 
     /** 9時に自宅から会社に移動するルール名 */
     private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_9 = "MoveFromHomeToCompany9";
@@ -40,20 +43,20 @@ public final class TRoleOfFather extends TRole {
         // 以下の2つの引数は省略可能で，その場合デフォルト値で設定される．
         // 第3引数:この役割が持つルール数 (デフォルト値 10)
         // 第4引数:この役割が持つ子役割数 (デフォルト値 5)
-        super(ERoleName.Father, owner, 2, 0);
+        super(ERoleName.Father, owner, 3, 0);
 
         fHome = home;
         fCompany = company;
 
         // 役割が持つルールの登録
+        // 健康状態決定ルール．6:00:00/健康状態決定ステージに定時実行ルールとして予約する．病人になる確率は25%(0.25)とする．
+        new TRuleOfDeterminingHealth(RULE_NAME_OF_DETERMINING_HEALTH, this, 0.25)
+                .setTimeAndStage(6, 0, 0, EStage.DeterminingHealth);
+
         // 会社から自宅に移動するルール．予約はTRuleOfMoveFromHomeToCompanyで相対時刻指定で行われる．
         TRule ruleOfReturnHome = new TRuleOfMoveFromCompanyToHome(RULE_NAME_OF_MOVE_FROM_COMPANY_TO_HOME, this);
 
         // 確率的に自宅から会社に移動するルール．9:00:00, 10:00:00, 11:00:00/エージェント移動ステージに定時実行ルールとして予約する．
-        // 移動確率をそれぞれ 9:00:00 -> 0.5, 10:00:00 -> 0.6, 11:00:00 ->1.0 に設定する．これによって，
-        //  9時に移動する確率は，0.5 = 50%
-        // 10時に移動する確率は，9時に移動していない かつ 0.6 = (1.0 - 0.5) * 0.6 = 30%
-        // 11時に移動する確率は，9時に移動していない かつ 10時に移動していない かつ 1.0 = (1.0 - 0.5) * (1.0 - 0.6) * 1.0 = 20%
         new TRuleOfStochasticallyMoveFromHomeToCompany(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_9, this,
                 0.5, ruleOfReturnHome, "8:00:00", EStage.AgentMoving)
                 .setTimeAndStage(9, 0, 0, EStage.AgentMoving);
