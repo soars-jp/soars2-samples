@@ -57,16 +57,16 @@ public final class TRoleOfFather extends TRole {
         TRule ruleOfReturnHome = new TRuleOfMoveFromCompanyToHome(RULE_NAME_OF_MOVE_FROM_COMPANY_TO_HOME, this);
 
         // 確率的に自宅から会社に移動するルール．9:00:00, 10:00:00, 11:00:00/エージェント移動ステージに定時実行ルールとして予約する．
-        new TRuleOfStochasticallyMoveFromHomeToCompany(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_9, this,
-                0.5, ruleOfReturnHome, "8:00:00", EStage.AgentMoving)
+        new TRuleOfStochasticallyMoveFromHomeToCompanyOnWeekdays(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_9,
+                this, 0.5, ruleOfReturnHome, "8:00:00", EStage.AgentMoving)
                 .setTimeAndStage(9, 0, 0, EStage.AgentMoving);
 
-        new TRuleOfStochasticallyMoveFromHomeToCompany(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_10, this,
-                0.6, ruleOfReturnHome, "8:00:00", EStage.AgentMoving)
+        new TRuleOfStochasticallyMoveFromHomeToCompanyOnWeekdays(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_10,
+                this, 0.6, ruleOfReturnHome, "8:00:00", EStage.AgentMoving)
                 .setTimeAndStage(10, 0, 0, EStage.AgentMoving);
 
-        new TRuleOfStochasticallyMoveFromHomeToCompany(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_11, this,
-                1.0, ruleOfReturnHome, "8:00:00", EStage.AgentMoving)
+        new TRuleOfStochasticallyMoveFromHomeToCompanyOnWeekdays(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_11,
+                this, 1.0, ruleOfReturnHome, "8:00:00", EStage.AgentMoving)
                 .setTimeAndStage(11, 0, 0, EStage.AgentMoving);
     }
 

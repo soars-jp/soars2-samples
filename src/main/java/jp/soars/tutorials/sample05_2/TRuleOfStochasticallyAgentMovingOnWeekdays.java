@@ -6,17 +6,24 @@ import jp.soars.core.TAgentManager;
 import jp.soars.core.TAgentRule;
 import jp.soars.core.TRole;
 import jp.soars.core.TRule;
+import jp.soars.core.TSpot;
 import jp.soars.core.TSpotManager;
 import jp.soars.core.TTime;
 
 /**
- * 確率的に自宅から会社に移動するルール
+ * 確率的にエージェント移動するルール
  * @author nagakane
  */
-public final class TRuleOfStochasticallyMoveFromHomeToCompany extends TAgentRule {
+public final class TRuleOfStochasticallyAgentMovingOnWeekdays extends TAgentRule {
 
     /** 移動確率[0, 1] */
     private final double fProbability;
+
+    /** 出発地 */
+    private final TSpot fSource;
+
+    /** 目的地 */
+    private final TSpot fDestination;
 
     /** 会社から自宅に移動するルール */
     private final TRule fRuleOfReturnHome;
@@ -39,14 +46,16 @@ public final class TRuleOfStochasticallyMoveFromHomeToCompany extends TAgentRule
      * @param intervalTimeOfReturnHome 会社から自宅に移動するルールを実行するまでの時間間隔
      * @param stageOfReturnHome 会社から自宅に移動するルールを実行するステージ
      */
-    public TRuleOfStochasticallyMoveFromHomeToCompany(String name, TRole owner, double probability,
-            TRule ruleOfReturnHome, String intervalTimeOfReturnHome, Enum<?> stageOfReturnHome) {
+    public TRuleOfStochasticallyAgentMovingOnWeekdays(String name, TRole owner, double probability, TSpot source,
+            TSpot destination, TRule ruleOfReturnHome, String intervalTimeOfReturnHome, Enum<?> stageOfReturnHome) {
         // 親クラスのコンストラクタを呼び出す．
         super(name, owner);
         if (probability < 0.0 || 1.0 < probability) {
             throw new RuntimeException("Invalid probability. Probability value must be between 0 and 1.");
         }
         fProbability = probability;
+        fSource = source;
+        fDestination = destination;
         fRuleOfReturnHome = ruleOfReturnHome;
         fIntervalTimeOfReturnHome = new TTime(intervalTimeOfReturnHome);
         fTimeOfReturnHome = new TTime();
@@ -64,18 +73,15 @@ public final class TRuleOfStochasticallyMoveFromHomeToCompany extends TAgentRule
     @Override
     public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
             TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
-        // エージェントが平日(土日以外)に自宅にいるかつ移動確率を満たしたならば，会社に移動する．
+        // エージェントが平日(土日以外)に出発地にいるかつ移動確率を満たしたならば，目的地に移動する．
         boolean debugFlag = true;
-        // 現在時刻の日を7で割った余りで曜日を取得．どの曜日が何番になっているかはenumの定義順による．
         EDay day = EDay.values()[currentTime.getDay() % 7];
         if (day != EDay.Sunday && day != EDay.Saturday) {
-            TRoleOfFather role = (TRoleOfFather) getOwnerRole();
-            if (isAt(role.getHome())) {
+            if (isAt(fSource)) {
                 if (getRandom().nextDouble() <= fProbability) {
-                    moveTo(role.getCompany());
+                    moveTo(fDestination);
                     appendToDebugInfo("success", debugFlag);
 
-                    // 会社から自宅に移動するルールの発火時刻を計算して臨時実行ルールとして予約する．
                     fTimeOfReturnHome.copyFrom(currentTime).add(fIntervalTimeOfReturnHome);
                     fRuleOfReturnHome.setTimeAndStage(fTimeOfReturnHome.getDay(), fTimeOfReturnHome.getHour(),
                             fTimeOfReturnHome.getMinute(), fTimeOfReturnHome.getSecond(), fStageOfReturnHome);

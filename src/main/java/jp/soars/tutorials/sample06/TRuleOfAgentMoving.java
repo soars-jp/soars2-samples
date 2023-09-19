@@ -1,27 +1,38 @@
-package jp.soars.tutorials.sample05_2;
+package jp.soars.tutorials.sample06;
 
 import java.util.Map;
 
 import jp.soars.core.TAgentManager;
 import jp.soars.core.TAgentRule;
 import jp.soars.core.TRole;
+import jp.soars.core.TSpot;
 import jp.soars.core.TSpotManager;
 import jp.soars.core.TTime;
 
 /**
- * 会社から自宅に移動するルール
+ * エージェント移動ルール
  * @author nagakane
  */
-public final class TRuleOfMoveFromCompanyToHome extends TAgentRule {
+public final class TRuleOfAgentMoving extends TAgentRule {
+
+    /** 出発地 */
+    private final TSpot fSource;
+
+    /** 目的地 */
+    private final TSpot fDestination;
 
     /**
      * コンストラクタ
      * @param name ルール名
      * @param owner このルールをもつ役割
+     * @param source 出発地
+     * @param destination 目的地
      */
-    public TRuleOfMoveFromCompanyToHome(String name, TRole owner) {
+    public TRuleOfAgentMoving(String name, TRole owner, TSpot source, TSpot destination) {
         // 親クラスのコンストラクタを呼び出す．
         super(name, owner);
+        fSource = source;
+        fDestination = destination;
     }
 
     /**
@@ -35,11 +46,10 @@ public final class TRuleOfMoveFromCompanyToHome extends TAgentRule {
     @Override
     public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
             TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
-        // エージェントが会社にいるならば，自宅に移動する．
+        // エージェントが出発地にいるならば，目的地に移動する．
         boolean debugFlag = true;
-        TRoleOfFather role = (TRoleOfFather) getOwnerRole();
-        if (isAt(role.getCompany())) {
-            moveTo(role.getHome());
+        if (isAt(fSource)) {
+            moveTo(fDestination);
             appendToDebugInfo("success", debugFlag);
         } else {
             appendToDebugInfo("fail", debugFlag);

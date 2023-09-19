@@ -54,16 +54,16 @@ public final class TRoleOfFather extends TRole {
         //  9時に移動する確率は，0.5 = 50%
         // 10時に移動する確率は，9時に移動していない かつ 0.6 = (1.0 - 0.5) * 0.6 = 30%
         // 11時に移動する確率は，9時に移動していない かつ 10時に移動していない かつ 1.0 = (1.0 - 0.5) * (1.0 - 0.6) * 1.0 = 20%
-        new TRuleOfStochasticallyMoveFromHomeToCompany(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_9, this,
-                0.5, ruleOfReturnHome, "8:00:00", EStage.AgentMoving)
+        new TRuleOfStochasticallyMoveFromHomeToCompanyOnWeekdays(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_9,
+                this, 0.5, ruleOfReturnHome, "8:00:00", EStage.AgentMoving)
                 .setTimeAndStage(9, 0, 0, EStage.AgentMoving);
 
-        new TRuleOfStochasticallyMoveFromHomeToCompany(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_10, this,
-                0.6, ruleOfReturnHome, "8:00:00", EStage.AgentMoving)
+        new TRuleOfStochasticallyMoveFromHomeToCompanyOnWeekdays(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_10,
+                this, 0.6, ruleOfReturnHome, "8:00:00", EStage.AgentMoving)
                 .setTimeAndStage(10, 0, 0, EStage.AgentMoving);
 
-        new TRuleOfStochasticallyMoveFromHomeToCompany(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_11, this,
-                1.0, ruleOfReturnHome, "8:00:00", EStage.AgentMoving)
+        new TRuleOfStochasticallyMoveFromHomeToCompanyOnWeekdays(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_11,
+                this, 1.0, ruleOfReturnHome, "8:00:00", EStage.AgentMoving)
                 .setTimeAndStage(11, 0, 0, EStage.AgentMoving);
     }
 

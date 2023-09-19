@@ -7,7 +7,7 @@ TODO:
 - [シナリオとシミュレーション条件](#シナリオとシミュレーション条件)
 - [シミュレーション定数の定義](#シミュレーション定数の定義)
 - [ルールの定義](#ルールの定義)
-  - [TRuleOfStochasticallyMoveFromHomeToCompany:確率的に自宅から会社に移動するルール](#truleofstochasticallymovefromhometocompany確率的に自宅から会社に移動するルール)
+  - [TRuleOfStochasticallyMoveFromHomeToCompanyOnWeekdays:平日に確率的に自宅から会社に移動するルール](#truleofstochasticallymovefromhometocompanyonweekdays平日に確率的に自宅から会社に移動するルール)
   - [TRuleOfMoveFromCompanyToHome:会社から自宅に移動するルール](#truleofmovefromcompanytohome会社から自宅に移動するルール)
 - [役割の定義](#役割の定義)
   - [TRoleOfFather:父親役割](#troleoffather父親役割)
@@ -95,15 +95,15 @@ public enum ERoleName {
 ```
 
 ## ルールの定義
-### TRuleOfStochasticallyMoveFromHomeToCompany:確率的に自宅から会社に移動するルール
+### TRuleOfStochasticallyMoveFromHomeToCompanyOnWeekdays:平日に確率的に自宅から会社に移動するルール
 
 sample03のTRuleOfStochasticallyMoveFromHomeToCompanyを拡張する．
 現在時刻の日付を7で割った余りで曜日を計算し，土日の場合は会社に移動せず，会社から自宅に移動するルールの予約も行わないように変更する．
 
-`TRuleOfStochasticallyMoveFromHomeToCompany.java`
+`TRuleOfStochasticallyMoveFromHomeToCompanyOnWeekdays.java`
 
 ```Java
-public final class TRuleOfStochasticallyMoveFromHomeToCompany extends TAgentRule {
+public final class TRuleOfStochasticallyMoveFromHomeToCompanyOnWeekdays extends TAgentRule {
 
     /** 移動確率[0, 1] */
     private final double fProbability;
@@ -129,7 +129,7 @@ public final class TRuleOfStochasticallyMoveFromHomeToCompany extends TAgentRule
      * @param intervalTimeOfReturnHome 会社から自宅に移動するルールを実行するまでの時間間隔
      * @param stageOfReturnHome 会社から自宅に移動するルールを実行するステージ
      */
-    public TRuleOfStochasticallyMoveFromHomeToCompany(String name, TRole owner, double probability,
+    public TRuleOfStochasticallyMoveFromHomeToCompanyOnWeekdays(String name, TRole owner, double probability,
             TRule ruleOfReturnHome, String intervalTimeOfReturnHome, Enum<?> stageOfReturnHome) {
         // 親クラスのコンストラクタを呼び出す．
         super(name, owner);
@@ -278,16 +278,16 @@ public final class TRoleOfFather extends TRole {
         //  9時に移動する確率は，0.5 = 50%
         // 10時に移動する確率は，9時に移動していない かつ 0.6 = (1.0 - 0.5) * 0.6 = 30%
         // 11時に移動する確率は，9時に移動していない かつ 10時に移動していない かつ 1.0 = (1.0 - 0.5) * (1.0 - 0.6) * 1.0 = 20%
-        new TRuleOfStochasticallyMoveFromHomeToCompany(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_9, this,
-                0.5, ruleOfReturnHome, "8:00:00", EStage.AgentMoving)
+        new TRuleOfStochasticallyMoveFromHomeToCompanyOnWeekdays(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_9,
+                this, 0.5, ruleOfReturnHome, "8:00:00", EStage.AgentMoving)
                 .setTimeAndStage(9, 0, 0, EStage.AgentMoving);
 
-        new TRuleOfStochasticallyMoveFromHomeToCompany(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_10, this,
-                0.6, ruleOfReturnHome, "8:00:00", EStage.AgentMoving)
+        new TRuleOfStochasticallyMoveFromHomeToCompanyOnWeekdays(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_10,
+                this, 0.6, ruleOfReturnHome, "8:00:00", EStage.AgentMoving)
                 .setTimeAndStage(10, 0, 0, EStage.AgentMoving);
 
-        new TRuleOfStochasticallyMoveFromHomeToCompany(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_11, this,
-                1.0, ruleOfReturnHome, "8:00:00", EStage.AgentMoving)
+        new TRuleOfStochasticallyMoveFromHomeToCompanyOnWeekdays(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_11,
+                this, 1.0, ruleOfReturnHome, "8:00:00", EStage.AgentMoving)
                 .setTimeAndStage(11, 0, 0, EStage.AgentMoving);
     }
 

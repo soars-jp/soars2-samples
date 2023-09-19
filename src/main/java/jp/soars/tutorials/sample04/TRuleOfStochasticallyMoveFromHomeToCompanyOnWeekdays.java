@@ -10,10 +10,10 @@ import jp.soars.core.TSpotManager;
 import jp.soars.core.TTime;
 
 /**
- * 確率的に自宅から会社に移動するルール
+ * 平日に確率的に自宅から会社に移動するルール
  * @author nagakane
  */
-public final class TRuleOfStochasticallyMoveFromHomeToCompany extends TAgentRule {
+public final class TRuleOfStochasticallyMoveFromHomeToCompanyOnWeekdays extends TAgentRule {
 
     /** 移動確率[0, 1] */
     private final double fProbability;
@@ -39,7 +39,7 @@ public final class TRuleOfStochasticallyMoveFromHomeToCompany extends TAgentRule
      * @param intervalTimeOfReturnHome 会社から自宅に移動するルールを実行するまでの時間間隔
      * @param stageOfReturnHome 会社から自宅に移動するルールを実行するステージ
      */
-    public TRuleOfStochasticallyMoveFromHomeToCompany(String name, TRole owner, double probability,
+    public TRuleOfStochasticallyMoveFromHomeToCompanyOnWeekdays(String name, TRole owner, double probability,
             TRule ruleOfReturnHome, String intervalTimeOfReturnHome, Enum<?> stageOfReturnHome) {
         // 親クラスのコンストラクタを呼び出す．
         super(name, owner);

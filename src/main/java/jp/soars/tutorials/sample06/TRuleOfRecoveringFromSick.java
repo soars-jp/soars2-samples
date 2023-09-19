@@ -1,4 +1,4 @@
-package jp.soars.tutorials.sample05_2;
+package jp.soars.tutorials.sample06;
 
 import java.util.Map;
 
@@ -9,17 +9,17 @@ import jp.soars.core.TSpotManager;
 import jp.soars.core.TTime;
 
 /**
- * 病院から自宅に移動するルール
+ * 病気から回復するルール
  * @author nagakane
  */
-public final class TRuleOfMoveFromHospitalToHome extends TAgentRule {
+public final class TRuleOfRecoveringFromSick extends TAgentRule {
 
     /**
      * コンストラクタ
      * @param name ルール名
      * @param owner このルールをもつ役割
      */
-    public TRuleOfMoveFromHospitalToHome(String name, TRole owner) {
+    public TRuleOfRecoveringFromSick(String name, TRole owner) {
         // 親クラスのコンストラクタを呼び出す．
         super(name, owner);
     }
@@ -35,15 +35,8 @@ public final class TRuleOfMoveFromHospitalToHome extends TAgentRule {
     @Override
     public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
             TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
-        // エージェントが病院にいるならば，自宅に移動する．
-        boolean debugFlag = true;
-        // スポットタイプ Hospital は1つしか作成しないので，spotManager からスポットタイプが
-        // ESpotType.Hospital のスポットリストを受け取って，最初のスポットをとる．
-        if (isAt(spotManager.getSpots(ESpotType.Hospital).get(0))) {
-            moveTo(((TRoleOfFather) getRole(ERoleName.Father)).getHome());
-            appendToDebugInfo("success", debugFlag);
-        } else {
-            appendToDebugInfo("fail", debugFlag);
-        }
+        // 病人役割を非アクティブ化して父親役割をアクティブ化する．
+        getAgent().deactivateRole(ERoleName.SickPerson);
+        getAgent().activateRole(ERoleName.Father);
     }
 }
