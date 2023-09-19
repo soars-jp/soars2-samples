@@ -4,6 +4,8 @@ TODO:
 
 # sample05-1:役割のアクティブ制御 <!-- omit in toc -->
 
+sample05-1では役割のアクティブ制御による，より複雑なモデルの実装方法について解説する．
+
 - [シナリオとシミュレーション条件](#シナリオとシミュレーション条件)
 - [シミュレーション定数の定義](#シミュレーション定数の定義)
 - [ルールの定義](#ルールの定義)
@@ -444,7 +446,7 @@ public final class TRoleOfFather extends TRole {
     /** 会社 */
     private final TSpot fCompany;
 
-    /** 健康状態決定ルール */
+    /** 健康状態決定ルール名 */
     private static final String RULE_NAME_OF_DETERMINING_HEALTH = "DeterminingHealth";
 
     /** 9時に自宅から会社に移動するルール名 */
@@ -470,7 +472,7 @@ public final class TRoleOfFather extends TRole {
         // 以下の2つの引数は省略可能で，その場合デフォルト値で設定される．
         // 第3引数:この役割が持つルール数 (デフォルト値 10)
         // 第4引数:この役割が持つ子役割数 (デフォルト値 5)
-        super(ERoleName.Father, owner, 3, 0);
+        super(ERoleName.Father, owner, 5, 0);
 
         fHome = home;
         fCompany = company;

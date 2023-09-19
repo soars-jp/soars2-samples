@@ -40,7 +40,7 @@ public final class TRoleOfFather extends TRole {
         // 以下の2つの引数は省略可能で，その場合デフォルト値で設定される．
         // 第3引数:この役割が持つルール数 (デフォルト値 10)
         // 第4引数:この役割が持つ子役割数 (デフォルト値 5)
-        super(ERoleName.Father, owner, 2, 0);
+        super(ERoleName.Father, owner, 4, 0);
 
         fHome = home;
         fCompany = company;

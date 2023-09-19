@@ -26,6 +26,7 @@ public final class TRuleOfDeterminingHealth extends TAgentRule {
      * @param name ルール名
      * @param owner このルールを持つ役割
      * @param probability 病気になる確率[0, 1]
+     * @param home 自宅
      */
     public TRuleOfDeterminingHealth(String name, TRole owner, double probability, TSpot home) {
         super(name, owner);

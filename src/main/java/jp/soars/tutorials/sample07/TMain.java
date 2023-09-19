@@ -1,4 +1,4 @@
-package jp.soars.tutorials.sample06;
+package jp.soars.tutorials.sample07;
 
 import java.io.BufferedWriter;
 import java.io.File;

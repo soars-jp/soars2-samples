@@ -1,28 +1,38 @@
-package jp.soars.tutorials.sample06;
+package jp.soars.tutorials.sample07;
 
 import java.util.Map;
 
-import jp.soars.core.TAgent;
 import jp.soars.core.TAgentManager;
 import jp.soars.core.TAgentRule;
 import jp.soars.core.TRole;
+import jp.soars.core.TSpot;
 import jp.soars.core.TSpotManager;
 import jp.soars.core.TTime;
 
 /**
- * 病気から回復するルール
+ * エージェント移動ルール
  * @author nagakane
  */
-public final class TRuleOfRecoveringFromSick extends TAgentRule {
+public final class TRuleOfAgentMoving extends TAgentRule {
+
+    /** 出発地 */
+    private final TSpot fSource;
+
+    /** 目的地 */
+    private final TSpot fDestination;
 
     /**
      * コンストラクタ
      * @param name ルール名
      * @param owner このルールをもつ役割
+     * @param source 出発地
+     * @param destination 目的地
      */
-    public TRuleOfRecoveringFromSick(String name, TRole owner) {
+    public TRuleOfAgentMoving(String name, TRole owner, TSpot source, TSpot destination) {
         // 親クラスのコンストラクタを呼び出す．
         super(name, owner);
+        fSource = source;
+        fDestination = destination;
     }
 
     /**
@@ -36,15 +46,13 @@ public final class TRuleOfRecoveringFromSick extends TAgentRule {
     @Override
     public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
             TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
-        // 病人役割を非アクティブ化して父親役割か子ども役割をアクティブ化する．
-        TAgent owner = getAgent();
-        owner.deactivateRole(ERoleName.SickPerson);
-        if (owner.getType() == EAgentType.Father) {
-            owner.activateRole(ERoleName.Father);
-        } else if (owner.getType() == EAgentType.Child) {
-            owner.activateRole(ERoleName.Child);
+        // エージェントが出発地にいるならば，目的地に移動する．
+        boolean debugFlag = true;
+        if (isAt(fSource)) {
+            moveTo(fDestination);
+            appendToDebugInfo("success", debugFlag);
         } else {
-            throw new RuntimeException("Unexpected agent type.");
+            appendToDebugInfo("fail", debugFlag);
         }
     }
 }

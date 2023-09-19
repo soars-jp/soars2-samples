@@ -1,4 +1,4 @@
-package jp.soars.tutorials.sample06;
+package jp.soars.tutorials.sample07;
 
 import jp.soars.core.TAgent;
 import jp.soars.core.TRole;

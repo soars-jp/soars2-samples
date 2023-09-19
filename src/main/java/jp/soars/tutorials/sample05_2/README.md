@@ -4,7 +4,7 @@ TODO:
 
 # sample05-2:ルールの汎化 <!-- omit in toc -->
 
-シミュレーションのシナリオはsample05-1と同じだが，
+sample05-2ではシミュレーションシナリオはsample05-1と同じだが，
 エージェントの移動ルールを移動前スポットと移動先スポットの組み合わせごとに新しく定義していくのは面倒なので，
 エージェントの移動として汎用的に使えるルールを定義する．
 具体的には，ルールに出発地と目的地を持たせ，ルールをnewするときにそれぞれのスポットを渡すように変更する．
@@ -283,6 +283,7 @@ public final class TRuleOfDeterminingHealth extends TAgentRule {
      * @param name ルール名
      * @param owner このルールを持つ役割
      * @param probability 病気になる確率[0, 1]
+     * @param home 自宅
      */
     public TRuleOfDeterminingHealth(String name, TRole owner, double probability, TSpot home) {
         super(name, owner);
@@ -370,7 +371,7 @@ sample05-1のTRoleOfFatherを変更する．
 ```Java
 public final class TRoleOfFather extends TRole {
 
-    /** 健康状態決定ルール */
+    /** 健康状態決定ルール名 */
     private static final String RULE_NAME_OF_DETERMINING_HEALTH = "DeterminingHealth";
 
     /** 9時に自宅から会社に移動するルール名 */
@@ -396,7 +397,7 @@ public final class TRoleOfFather extends TRole {
         // 以下の2つの引数は省略可能で，その場合デフォルト値で設定される．
         // 第3引数:この役割が持つルール数 (デフォルト値 10)
         // 第4引数:この役割が持つ子役割数 (デフォルト値 5)
-        super(ERoleName.Father, owner, 3, 0);
+        super(ERoleName.Father, owner, 5, 0);
 
         // 役割が持つルールの登録
         // 健康状態決定ルール．6:00:00/健康状態決定ステージに定時実行ルールとして予約する．病人になる確率は25%(0.25)とする．

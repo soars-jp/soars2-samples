@@ -4,6 +4,8 @@ TODO:
 
 # sample03:確率的なルールの定義 <!-- omit in toc -->
 
+sample03では確率的なルールの実装方法について解説する．
+
 - [シナリオとシミュレーション条件](#シナリオとシミュレーション条件)
 - [シミュレーション定数の定義](#シミュレーション定数の定義)
 - [ルールの定義](#ルールの定義)
@@ -244,7 +246,7 @@ public final class TRoleOfFather extends TRole {
         // 以下の2つの引数は省略可能で，その場合デフォルト値で設定される．
         // 第3引数:この役割が持つルール数 (デフォルト値 10)
         // 第4引数:この役割が持つ子役割数 (デフォルト値 5)
-        super(ERoleName.Father, owner, 2, 0);
+        super(ERoleName.Father, owner, 4, 0);
 
         fHome = home;
         fCompany = company;

@@ -17,7 +17,7 @@ public final class TRoleOfFather extends TRole {
     /** 会社 */
     private final TSpot fCompany;
 
-    /** 健康状態決定ルール */
+    /** 健康状態決定ルール名 */
     private static final String RULE_NAME_OF_DETERMINING_HEALTH = "DeterminingHealth";
 
     /** 9時に自宅から会社に移動するルール名 */
@@ -43,7 +43,7 @@ public final class TRoleOfFather extends TRole {
         // 以下の2つの引数は省略可能で，その場合デフォルト値で設定される．
         // 第3引数:この役割が持つルール数 (デフォルト値 10)
         // 第4引数:この役割が持つ子役割数 (デフォルト値 5)
-        super(ERoleName.Father, owner, 3, 0);
+        super(ERoleName.Father, owner, 5, 0);
 
         fHome = home;
         fCompany = company;
