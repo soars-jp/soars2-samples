@@ -15,7 +15,7 @@ sample06では子役割を登録して複数の役割のアクティブ状態を
   - [TRuleOfDeterminingHealth:健康状態決定ルール](#truleofdetermininghealth健康状態決定ルール)
   - [TRuleOfRecoveringFromSick:病気から回復するルール](#truleofrecoveringfromsick病気から回復するルール)
 - [役割の定義](#役割の定義)
-  - [共通役割](#共通役割)
+  - [TRoleOfCommon:共通役割](#troleofcommon共通役割)
   - [TRoleOfFather:父親役割](#troleoffather父親役割)
   - [TRoleOfChild:子ども役割](#troleofchild子ども役割)
   - [TRoleOfSickPerson:病人役割](#troleofsickperson病人役割)
@@ -445,7 +445,7 @@ public final class TRuleOfRecoveringFromSick extends TAgentRule {
 
 ## 役割の定義
 
-### 共通役割
+### TRoleOfCommon:共通役割
 
 シナリオ「父親と子どもは，6時に自宅にいる場合に25%の確率で病気になる．」より，
 病気になるという動作は父親，子どもに関わらず共通である．

@@ -13,7 +13,6 @@ import java.util.Set;
 
 import jp.soars.core.TAgent;
 import jp.soars.core.TAgentManager;
-import jp.soars.core.TRole;
 import jp.soars.core.TRuleExecutor;
 import jp.soars.core.TSOARSBuilder;
 import jp.soars.core.TSpot;
@@ -41,9 +40,7 @@ public class TMain {
         String simulationStart = "0/00:00:00";
         String simulationEnd = "7/00:00:00";
         String tick = "1:00:00";
-        List<Enum<?>> stages = List.of(EStage.DeterminingHealth,
-                                       EStage.AgentMoving,
-                                       EStage.RecoveringFromSick);
+        List<Enum<?>> stages = List.of(EStage.AgentMoving);
         Set<Enum<?>> agentTypes = new HashSet<>();
         Collections.addAll(agentTypes, EAgentType.values());
         Set<Enum<?>> spotTypes = new HashSet<>();
@@ -54,12 +51,15 @@ public class TMain {
         // TSOARSBuilderの任意設定項目
         // *************************************************************************************************************
 
+        // エージェント移動ステージを毎時刻ルールが実行される定期実行ステージとして登録
+        builder.setPeriodicallyExecutedStage(EStage.AgentMoving, simulationStart, tick);
+
         // マスター乱数発生器のシード値設定
         long seed = 0L;
         builder.setRandomSeed(seed);
 
         // ルールログとランタイムログの出力設定
-        String pathOfLogDir = "logs" + File.separator + "tutorials" + File.separator + "sample06";
+        String pathOfLogDir = "logs" + File.separator + "tutorials" + File.separator + "sample07";
         builder.setRuleLoggingEnabled(pathOfLogDir + File.separator + "rule_log.csv");
         builder.setRuntimeLoggingEnabled(pathOfLogDir + File.separator + "runtime_log.csv");
 
@@ -79,52 +79,27 @@ public class TMain {
 
         // *************************************************************************************************************
         // スポット作成
-        //   - Home:Home1, Home2, Home3
-        //   - Company:Company
-        //   - School:School
-        //   - Hospital:Hospital
+        //   - Spot:Spot1-Spot10
         // *************************************************************************************************************
 
-        int noOfHomes = 3; // 家の数
-        List<TSpot> homes = spotManager.createSpots(ESpotType.Home, noOfHomes);
-        TSpot company = spotManager.createSpot(ESpotType.Company);
-        TSpot school = spotManager.createSpot(ESpotType.School);
-        TSpot hospital = spotManager.createSpot(ESpotType.Hospital);
+        int noOfSpots = 10; // スポットの数
+        List<TSpot> spots = spotManager.createSpots(ESpotType.Spot, noOfSpots);
 
         // *************************************************************************************************************
         // エージェント作成
-        //   - Father:Father1, Father2, Father3
+        //   - Agent:Agent1-Agent10
         //     - 初期スポット:Home
-        //     - 役割:共通役割，父親役割，病人役割
-        //   - Child:Child1, Child2, Child3
-        //     - 初期スポット:Home
-        //     - 役割:共通役割，子ども役割，病人役割
+        //     - 役割:エージェント役割
         // *************************************************************************************************************
 
-        int noOfFathers = noOfHomes; // 父親の数は家の数と同じ．
-        List<TAgent> fathers = agentManager.createAgents(EAgentType.Father, noOfFathers);
-        for (int i = 0; i < noOfFathers; ++i) {
-            TAgent father = fathers.get(i); // i番目の父親エージェント
-            TSpot home = homes.get(i); // i番目の父親エージェントの自宅
-            father.initializeCurrentSpot(home); // 初期スポットを自宅に設定
-            TRole roleOfCommon = new TRoleOfCommon(father, home); // 共通役割を作成
-            TRole roleOfFather = new TRoleOfFather(father, home, company); // 父親役割を作成
-            new TRoleOfSickPerson(father, home, hospital); // 病人役割を作成
-            roleOfFather.addChildRole(roleOfCommon); // 共通役割を父親役割の子役割に設定
-            father.activateRole(ERoleName.Father); // 父親役割をアクティブ化
-        }
-
-        int noOfChildren = noOfHomes; // 子どもの数は家の数と同じ．
-        List<TAgent> children = agentManager.createAgents(EAgentType.Child, noOfChildren);
-        for (int i = 0; i < noOfChildren; ++i) {
-            TAgent child = children.get(i); // i番目の子どもエージェント
-            TSpot home = homes.get(i); // i番目の子どもエージェントの自宅
-            child.initializeCurrentSpot(home); // 初期スポットを自宅に設定
-            TRole roleOfCommon = new TRoleOfCommon(child, home); // 共通役割を作成
-            TRole roleOfChild = new TRoleOfChild(child, home, school); // 子ども役割を作成
-            new TRoleOfSickPerson(child, home, hospital); // 病人役割を作成
-            roleOfChild.addChildRole(roleOfCommon); // 共通役割を子ども役割の子役割に設定
-            child.activateRole(ERoleName.Child); // 子ども役割をアクティブ化
+        int noOfAgents = noOfSpots; // エージェントの数はスポットの数と同じ．
+        List<TAgent> agents = agentManager.createAgents(EAgentType.Agent, noOfAgents);
+        for (int i = 0; i < noOfAgents; ++i) {
+            TAgent agent = agents.get(i); // i番目のエージェント
+            TSpot spot = spots.get(i); // i番目のスポット
+            agent.initializeCurrentSpot(spot); // 初期スポット設定
+            new TRoleOfAgent(agent); // エージェント役割作成
+            agent.activateRole(ERoleName.Agent); // エージェント役割をアクティブ化
         }
 
         // *************************************************************************************************************
@@ -135,8 +110,8 @@ public class TMain {
         // スポットログ用PrintWriter
         PrintWriter spotLogPW = new PrintWriter(new BufferedWriter(new FileWriter(pathOfLogDir + File.separator + "spot_log.csv")));
         // スポットログのカラム名出力
-        spotLogPW.print("CurrentTime,Day");
-        for (TAgent agent : agentManager.getAgents()) {
+        spotLogPW.print("CurrentTime");
+        for (TAgent agent : agents) {
             spotLogPW.print(',');
             spotLogPW.print(agent.getName());
         }
@@ -154,9 +129,7 @@ public class TMain {
 
             // スポットログ出力
             spotLogPW.print(ruleExecutor.getCurrentTime());
-            spotLogPW.print(",");
-            spotLogPW.print(EDay.values()[ruleExecutor.getCurrentTime().getDay() % 7]);
-            for (TAgent agent : agentManager.getAgents()) {
+            for (TAgent agent : agents) {
                 spotLogPW.print(',');
                 spotLogPW.print(agent.getCurrentSpotName());
             }

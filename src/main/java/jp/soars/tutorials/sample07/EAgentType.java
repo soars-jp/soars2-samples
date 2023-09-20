@@ -5,8 +5,6 @@ package jp.soars.tutorials.sample07;
  * @author nagakane
  */
 public enum EAgentType {
-    /** 父親 */
-    Father,
-    /** 子ども */
-    Child
+    /** エージェント */
+    Agent
 }
