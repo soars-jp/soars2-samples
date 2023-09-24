@@ -1,6 +1,6 @@
 前：
 次：
-TODO:
+
 
 # sample04:曜日概念の導入 <!-- omit in toc -->
 
@@ -445,4 +445,3 @@ public class TMain {
 
 前：
 次：
-TODO:

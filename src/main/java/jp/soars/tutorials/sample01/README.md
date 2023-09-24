@@ -1,6 +1,6 @@
 前：
 次：
-TODO:
+
 
 # sample01:最も簡単なプログラム <!-- omit in toc -->
 
@@ -719,4 +719,3 @@ public class TMain {
 
 前：
 次：
-TODO:

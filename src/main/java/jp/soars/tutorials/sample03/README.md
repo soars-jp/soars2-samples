@@ -1,6 +1,6 @@
 前：
 次：
-TODO:
+
 
 # sample03:確率的なルールの定義 <!-- omit in toc -->
 
@@ -422,4 +422,3 @@ public class TMain {
 
 前：
 次：
-TODO:

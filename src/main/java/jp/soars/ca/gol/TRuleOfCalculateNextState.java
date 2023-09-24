@@ -7,11 +7,11 @@ import jp.soars.core.TRole;
 import jp.soars.core.TRule;
 import jp.soars.core.TSpotManager;
 import jp.soars.core.TTime;
-import jp.soars.modules.onolab.space.ESpaceRoleName;
-import jp.soars.modules.onolab.space.TRoleOf2DCell;
+import jp.soars.modules.onolab.cell.ECellModuleRoleName;
+import jp.soars.modules.onolab.cell.TRoleOf2DCell;
 
 /**
- * 近傍エージェントの状態チェックと次の状態決定ルール
+ * 次の状態決定ルール
  * @author nagakane
  */
 public final class TRuleOfCalculateNextState extends TRule {
@@ -39,7 +39,7 @@ public final class TRuleOfCalculateNextState extends TRule {
             TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
         int noOfAgentsAlive = 0; // 生きているエージェントの数
         // 2次元セル役割を取得
-        TRoleOf2DCell roleOf2DCell = (TRoleOf2DCell) getRole(ESpaceRoleName.Cell);
+        TRoleOf2DCell roleOf2DCell = (TRoleOf2DCell) getRole(ECellModuleRoleName.Cell);
         for (int x = -1; x <= 1; ++x) {
             for (int y = -1; y <= 1; ++y) {
                 if (x == 0 && y == 0) { // (0, 0)は自分自身なのでスキップ

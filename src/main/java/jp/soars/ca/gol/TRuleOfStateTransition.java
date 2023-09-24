@@ -9,7 +9,7 @@ import jp.soars.core.TSpotManager;
 import jp.soars.core.TTime;
 
 /**
- * セルのアップデートルール
+ * 状態遷移ルール
  * @author nagakane
  */
 public final class TRuleOfStateTransition extends TRule {

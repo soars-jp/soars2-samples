@@ -1,6 +1,5 @@
 前：
 次：
-TODO:
 
 # sample07:ステージ実行ルールによるルールの定期実行 <!-- omit in toc -->
 
@@ -297,7 +296,5 @@ public class TMain {
 }
 ```
 
-
 前：
 次：
-TODO:

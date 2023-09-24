@@ -1,6 +1,5 @@
 前：
 次：
-TODO:
 
 # sample02:臨時実行ルールによる相対時刻指定 <!-- omit in toc -->
 
@@ -389,7 +388,5 @@ public class TMain {
 }
 ```
 
-
 前：
 次：
-TODO:

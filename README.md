@@ -13,23 +13,24 @@ SOARS toolkit ver.2のサンプルプログラム
   - [sample06:子役割による役割のアクティブ制御](src/main/java/jp/soars/tutorials/sample06/)
   - [sample07:ステージ実行ルールによるルールの定期実行](src/main/java/jp/soars/tutorials/sample07/)
 
-
-  - [sample08:レイヤー機能の利用](src/main/java/jp/soars/tutorials/sample08/)
+  <!-- - [sample08:レイヤー機能の利用](src/main/java/jp/soars/tutorials/sample08/)
   - [sample09:グローバル共有変数集合の利用](src/main/java/jp/soars/tutorials/sample09/)
   - [sample10:ステージのロールバック](src/main/java/jp/soars/tutorials/sample10/)
   - [sample11:モジュール合成](src/main/java/jp/soars/tutorials/sample11/)
-  - [sample12:ルールの並列実行](src/main/java/jp/soars/tutorials/sample12/)
-  - [sample13:大規模実験のための最適化設定](src/main/java/jp/soars/tutorials/sample13/)
-
-オブジェクトの動的追加・削除
-ルールの上書きサンプルは，明示的にリムーブしてから追加で実装．リムーブしない場合はワーニングが出ることを説明
-
+  # サンプルは，明示的にリムーブしてから追加で実装．リムーブしない場合はワーニングが出ることを説明
+  - [sample12:ルールの上書きと追加](src/main/java/jp/soars/tutorials/sample12/)
+  - [sample13:ルールの並列実行](src/main/java/jp/soars/tutorials/sample13/)
+  - [sample14:大規模実験のための最適化設定](src/main/java/jp/soars/tutorials/sample14/)
+  - [sample15:オブジェクトの動的追加・削除](src/main/java/jp/soars/tutorials/sample15/) -->
+- 小野研モジュール
+  - [セル空間モジュール](src/main/java/jp/soars/onolab/cell)
 - セルオートマトン
   - [ライフゲーム](src/main/java/jp/soars/ca/gol/)
 - 強化学習
-  - [迷路問題](src/main/java/jp/soars/q_learning/)
-- NetLogo
-  - [シロアリ](src/main/java/jp/soars/netlogo/termites)
+  - [迷路問題](src/main/java/jp/soars/q_learning/maze)
+
+<!-- - NetLogo
+  - [シロアリ](src/main/java/jp/soars/netlogo/termites) -->
 
 ## SOARS2 APIs (JavaDoc) <!-- omit in toc -->
 - http://www.ic.dis.titech.ac.jp/soars/soars2-apidocs_2_2_0/index.html

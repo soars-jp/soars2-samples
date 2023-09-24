@@ -4,7 +4,7 @@ import jp.soars.core.TRole;
 import jp.soars.core.TSpot;
 
 /**
- * セル役割
+ * 状態遷移役割
  * @author nagakane
  */
 public final class TRoleOfStateTransition extends TRole {

@@ -1,6 +1,6 @@
 前：
 次：
-TODO:
+
 
 # sample06:子役割による役割のアクティブ制御 <!-- omit in toc -->
 
@@ -785,4 +785,3 @@ public class TMain {
 
 前：
 次：
-TODO:

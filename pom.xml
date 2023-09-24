@@ -55,7 +55,12 @@
     </dependency>
     <dependency>
       <groupId>jp.soars</groupId>
-      <artifactId>onolab-space-module</artifactId>
+      <artifactId>onolab-cell-module</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>jp.soars</groupId>
+      <artifactId>onolab-spatial-spot-module</artifactId>
       <version>1.0.0</version>
     </dependency>
   </dependencies>

@@ -1,6 +1,6 @@
 前：
 次：
-TODO:
+
 
 # sample05-2:ルールの汎化 <!-- omit in toc -->
 
@@ -605,4 +605,3 @@ public class TMain {
 
 前：
 次：
-TODO:
