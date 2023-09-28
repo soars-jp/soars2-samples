@@ -1,6 +1,6 @@
 前：[sample07:ステージ実行ルールによるルールの定期実行](src/main/java/jp/soars/tutorials/sample07/)
 
-次：
+次：[sample09:グローバル共有変数集合の利用](src/main/java/jp/soars/tutorials/sample09/)
 
 # sample08:レイヤ機能の利用 <!-- omit in toc -->
 
@@ -36,6 +36,16 @@ sample08ではレイヤ機能の使い方について解説する．
 sample07に追加して，
 現実レイヤ Real と SNSレイヤ SNS を新たに定義する．
 
+`ELayer.java`
+```Java
+public enum ELayer {
+    /** 現実 */
+    Real,
+    /** SNS */
+    SNS
+}
+```
+
 `EAgentType.java`
 
 ```Java
@@ -69,16 +79,6 @@ public enum EStage {
 public enum ERoleName {
     /** エージェント役割 */
     Agent
-}
-```
-
-`ELayer.java`
-```Java
-public enum ELayer {
-    /** 現実 */
-    Real,
-    /** SNS */
-    SNS
 }
 ```
 
@@ -261,7 +261,7 @@ public class TMain {
         // *************************************************************************************************************
         // エージェント作成
         //   - Agent:Agent1-Agent10
-        //     - 初期スポット:Home
+        //     - 初期スポット:Spot
         //     - 役割:エージェント役割
         // *************************************************************************************************************
 
@@ -325,4 +325,4 @@ public class TMain {
 
 前：[sample07:ステージ実行ルールによるルールの定期実行](src/main/java/jp/soars/tutorials/sample07/)
 
-次：
+次：[sample09:グローバル共有変数集合の利用](src/main/java/jp/soars/tutorials/sample09/)

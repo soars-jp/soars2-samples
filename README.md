@@ -13,10 +13,10 @@ SOARS toolkit ver.2のサンプルプログラム
   - [sample06:子役割による役割のアクティブ制御](src/main/java/jp/soars/tutorials/sample06/)
   - [sample07:ステージ実行ルールによるルールの定期実行](src/main/java/jp/soars/tutorials/sample07/)
   - [sample08:レイヤ機能の利用](src/main/java/jp/soars/tutorials/sample08/)
-
-
-
   - [sample09:グローバル共有変数集合の利用](src/main/java/jp/soars/tutorials/sample09/)
+
+
+
   - [sample10:ステージのロールバック](src/main/java/jp/soars/tutorials/sample10/)
   - [sample11:モジュール合成](src/main/java/jp/soars/tutorials/sample11/)
   # サンプルは，明示的にリムーブしてから追加で実装．リムーブしない場合はワーニングが出ることを説明

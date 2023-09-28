@@ -1,4 +1,4 @@
-package jp.soars.tutorials.sample08;
+package jp.soars.tutorials.sample09;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -64,7 +64,7 @@ public class TMain {
         builder.setRandomSeed(seed);
 
         // ルールログとランタイムログの出力設定
-        String pathOfLogDir = "logs" + File.separator + "tutorials" + File.separator + "sample08";
+        String pathOfLogDir = "logs" + File.separator + "tutorials" + File.separator + "sample09";
         builder.setRuleLoggingEnabled(pathOfLogDir + File.separator + "rule_log.csv");
         builder.setRuntimeLoggingEnabled(pathOfLogDir + File.separator + "runtime_log.csv");
 
@@ -112,19 +112,24 @@ public class TMain {
         }
 
         // *************************************************************************************************************
-        // 独自に作成するログ用のPrintWriter
-        //   - スポットログ:各時刻での各エージェントの現在位置ログ
+        // グローバル共有変数集合の初期値設定
         // *************************************************************************************************************
 
-        // スポットログ用PrintWriter
-        PrintWriter spotLogPW = new PrintWriter(new BufferedWriter(new FileWriter(pathOfLogDir + File.separator + "spot_log.csv")));
-        // スポットログのカラム名出力
-        spotLogPW.print("CurrentTime");
-        for (TAgent agent : agents) {
-            spotLogPW.print(',');
-            spotLogPW.print(agent.getName());
-        }
-        spotLogPW.println();
+        globalSharedVariableSet.put(TGlobalSharedVariableSetKey.MOVE, 0);
+        globalSharedVariableSet.put(TGlobalSharedVariableSetKey.NO_MOVE, 0);
+
+        // *************************************************************************************************************
+        // 独自に作成するログ用のPrintWriter
+        //   - グローバル共有変数集合ログ
+        // *************************************************************************************************************
+
+        // グローバル共有変数集合ログ用PrintWriter
+        PrintWriter gsbsPW = new PrintWriter(new BufferedWriter(new FileWriter(pathOfLogDir + File.separator + "global_shared_variable_log.csv")));
+        // グローバル共有変数集合ログのカラム名出力
+        gsbsPW.print("CurrentTime,");
+        gsbsPW.print(TGlobalSharedVariableSetKey.MOVE);
+        gsbsPW.print(',');
+        gsbsPW.println(TGlobalSharedVariableSetKey.NO_MOVE);
 
         // *************************************************************************************************************
         // シミュレーションのメインループ
@@ -136,15 +141,12 @@ public class TMain {
             // 標準出力に現在時刻を表示する
             System.out.println(ruleExecutor.getCurrentTime());
 
-            // スポットログ出力
-            spotLogPW.print(ruleExecutor.getCurrentTime());
-            for (TAgent agent : agents) {
-                spotLogPW.print(',');
-                spotLogPW.print(agent.getCurrentSpotName(ELayer.Real));
-                spotLogPW.print(':');
-                spotLogPW.print(agent.getCurrentSpotName(ELayer.SNS));
-            }
-            spotLogPW.println();
+            // グローバル共有変数集合ログ出力
+            gsbsPW.print(ruleExecutor.getCurrentTime());
+            gsbsPW.print(',');
+            gsbsPW.print(globalSharedVariableSet.get(TGlobalSharedVariableSetKey.MOVE));
+            gsbsPW.print(',');
+            gsbsPW.println(globalSharedVariableSet.get(TGlobalSharedVariableSetKey.NO_MOVE));
         }
 
         // *************************************************************************************************************
@@ -152,6 +154,6 @@ public class TMain {
         // *************************************************************************************************************
 
         ruleExecutor.shutdown();
-        spotLogPW.close();
+        gsbsPW.close();
     }
 }
