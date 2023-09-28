@@ -1,10 +1,10 @@
-前：[sample06:子役割による役割のアクティブ制御](src/main/java/jp/soars/tutorials/sample06/)
+前：[sample07:ステージ実行ルールによるルールの定期実行](src/main/java/jp/soars/tutorials/sample07/)
 
-次：[sample08:レイヤ機能の利用](src/main/java/jp/soars/tutorials/sample08/)
+次：
 
-# sample07:ステージ実行ルールによるルールの定期実行 <!-- omit in toc -->
+# sample08:レイヤ機能の利用 <!-- omit in toc -->
 
-sample07では，ステージ実行ルールの利用方法について解説する．
+sample08ではレイヤ機能の使い方について解説する．
 
 - [シナリオとシミュレーション条件](#シナリオとシミュレーション条件)
 - [シミュレーション定数の定義](#シミュレーション定数の定義)
@@ -19,24 +19,22 @@ sample07では，ステージ実行ルールの利用方法について解説す
 
 以下のシナリオを考える．
 
-- 10人のエージェント(Agent1〜Agent10)は，毎時刻10個のスポット(Spot1〜Spot10)上をランダムに動き回る．
+- 10人のエージェント(Agent1〜Agent10)は，毎時刻現実レイヤ(Real)上の10個のスポット(Spot1〜Spot10)上をランダムに動き回る．
+- 10人のエージェント(Agent1〜Agent10)は，毎時刻SNSレイヤ(SNS)上の10個のスポット(Spot11〜Spot20)上をランダムに動き回る．
 
 シミュレーション条件
 
 - エージェント : Agent(10)
-- スポット : Spot(10)
+- スポット : Spot(20)
 - ステージ : AgentMoving
+- レイヤ : Real, SNS
 - 時刻ステップ間隔：1時間 / step
 - シミュレーション期間：7日間
 
 ## シミュレーション定数の定義
 
-sample07では，
-エージェントタイプとしてエージェント，
-スポットタイプとしてスポット，
-ステージとしてエージェント移動ステージ，
-役割名としてエージェント役割を定義する．
-
+sample07に追加して，
+現実レイヤ Real と SNSレイヤ SNS を新たに定義する．
 
 `EAgentType.java`
 
@@ -74,11 +72,25 @@ public enum ERoleName {
 }
 ```
 
+`ELayer.java`
+```Java
+public enum ELayer {
+    /** 現実 */
+    Real,
+    /** SNS */
+    SNS
+}
+```
+
 ## ルールの定義
 
 ### TRuleOfAgentRandomMoving:エージェントランダム移動ルール
 
-エージェントランダム移動ルールはコンストラクタで受け取ったスポットタイプのスポットの中からランダムに1つ選択してそこに移動する．
+sample07のTRuleOfAgentRandomMovingを拡張する．
+getSpotsInLayer メソッドを利用することで，レイヤ上の特定スポットタイプのスポットリストを取得することができる．
+エージェントの移動は今までと同様で moveTo メソッドを使えばよい．
+また，今まで使用していた getSpots メソッドはレイヤを使用するシミュレーションの場合，
+メインクラスで指定するデフォルトレイヤからスポットを取得するメソッドとして定義されるため注意が必要．
 
 `TRuleOfAgentRandomMoving.java`
 
@@ -111,11 +123,20 @@ public final class TRuleOfAgentRandomMoving extends TAgentRule {
     public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
             TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
         // fSpotType のスポットからランダムに移動先を選択して移動
+        // スポットがあるレイヤーの情報はスポット自身が持っており，moveToは引数として入力されたスポットがあるレイヤー上を移動する．
         boolean debugFlag = true;
-        List<TSpot> spots = spotManager.getSpots(fSpotType);
-        TSpot spot = spots.get(getRandom().nextInt(spots.size()));
-        moveTo(spot);
-        appendToDebugInfo("move to " + spot.getName(), debugFlag);
+        { // Real
+            List<TSpot> spots = spotManager.getSpotsInLayer(ELayer.Real, fSpotType);
+            TSpot spot = spots.get(getRandom().nextInt(spots.size()));
+            moveTo(spot);
+            appendToDebugInfo("Real:" + spot.getName(), debugFlag);
+        }
+        { // SNS
+            List<TSpot> spots = spotManager.getSpotsInLayer(ELayer.SNS, fSpotType);
+            TSpot spot = spots.get(getRandom().nextInt(spots.size()));
+            moveTo(spot);
+            appendToDebugInfo(" SNS:" + spot.getName(), debugFlag);
+        }
     }
 }
 ```
@@ -124,10 +145,7 @@ public final class TRuleOfAgentRandomMoving extends TAgentRule {
 
 ### TRoleOfAgent:エージェント役割
 
-エージェント役割はエージェントランダム移動ルールを1つだけ持つ役割．
-エージェントランダム移動ルールは時刻指定せず，ステージ実行ルールとして登録する．
-ステージ実行ルールはステージに設定された実行タイミングで定期的に実行される．
-ステージ実行ルールを登録するための定期実行ステージの設定はメインクラスで行う．
+sample07と同じ．
 
 `TRoleOfAgent.java`
 
@@ -158,19 +176,16 @@ public final class TRoleOfAgent extends TRole {
 
 ## メインクラスの定義
 
-メインクラスでは，エージェント移動ステージを定期実行ステージとして登録する．
-定期実行ステージの登録は，TSOARSBuilderのsetPeriodicallyExecutedStage(stage, firstTime, interval)メソッドで行う．
-引数の意味は以下の通りである．
+メインクラスはレイヤを定義して使用できるように変更する．
 
-- stage:定期実行ステージとして登録するステージ名．
-- firstTime:定期実行を開始する時刻．sample07ではsimulationStartとしており，シミュレーション開始時刻が最初の実行時刻となる．
-- interval:定期実行する時間間隔．sample07ではtickとしており，1tick間隔つまり毎時刻ルールが実行される．
-
-定期実行ステージとして登録されたステージには定時実行ルール，臨時実行ルールは登録できず，
-ステージ実行ルールとしてしかルールを登録できなくなる．
-登録されたルールは上記のfirstTime,intervalの設定に従って定期的に実行される．
-
-そのほかの変更点は，エージェント，スポットの作成部分とスポットログ部分であるが，内容は今までとほぼ同様なので説明は省略する．
+- シミュレーションで使用するレイヤの指定
+  - レイヤの指定はTSOARSBuilderのコンストラクタで行う．
+  - レイヤの集合とデフォルトレイヤを指定する．デフォルトレイヤはレイヤを指定するべきメソッドで，レイヤを指定していない場合にデフォルトで選択されるレイヤである．
+- スポット作成時のレイヤ指定
+  - スポットを作成するときに，そのスポットをどのレイヤ上に生成するかを指定する．指定されていない場合はデフォルトレイヤ上に作成される．
+- エージェントの初期スポットを各レイヤで設定する．
+  - エージェントの現在スポットはレイヤごとに設定する必要がある．
+- スポットログに出力する現在位置スポット名を現実レイヤとSNSレイヤの2つに変更．
 
 `TMain.java`
 
@@ -186,6 +201,8 @@ public class TMain {
         //   - stages:使用するステージリスト(実行順)
         //   - agentTypes:使用するエージェントタイプ集合
         //   - spotTypes:使用するスポットタイプ集合
+        //   - layers:使用するレイヤー集合
+        //   - defaultLayer:デフォルトレイヤー
         // *************************************************************************************************************
 
         String simulationStart = "0/00:00:00";
@@ -196,7 +213,10 @@ public class TMain {
         Collections.addAll(agentTypes, EAgentType.values());
         Set<Enum<?>> spotTypes = new HashSet<>();
         Collections.addAll(spotTypes, ESpotType.values());
-        TSOARSBuilder builder = new TSOARSBuilder(simulationStart, simulationEnd, tick, stages, agentTypes, spotTypes);
+        Set<Enum<?>> layers = new HashSet<>();
+        Collections.addAll(layers, ELayer.values());
+        ELayer defaultLayer = ELayer.Real;
+        TSOARSBuilder builder = new TSOARSBuilder(simulationStart, simulationEnd, tick, stages, agentTypes, spotTypes, layers, defaultLayer);
 
         // *************************************************************************************************************
         // TSOARSBuilderの任意設定項目
@@ -210,7 +230,7 @@ public class TMain {
         builder.setRandomSeed(seed);
 
         // ルールログとランタイムログの出力設定
-        String pathOfLogDir = "logs" + File.separator + "tutorials" + File.separator + "sample07";
+        String pathOfLogDir = "logs" + File.separator + "tutorials" + File.separator + "sample08";
         builder.setRuleLoggingEnabled(pathOfLogDir + File.separator + "rule_log.csv");
         builder.setRuntimeLoggingEnabled(pathOfLogDir + File.separator + "runtime_log.csv");
 
@@ -230,11 +250,13 @@ public class TMain {
 
         // *************************************************************************************************************
         // スポット作成
-        //   - Spot:Spot1-Spot10
+        //   - Spot:Spot1-Spot10 (Real)
+        //   - Spot:Spot11-Spot20 (SNS)
         // *************************************************************************************************************
 
         int noOfSpots = 10; // スポットの数
-        List<TSpot> spots = spotManager.createSpots(ESpotType.Spot, noOfSpots);
+        List<TSpot> realSpots = spotManager.createSpots(ESpotType.Spot, noOfSpots, ELayer.Real);
+        List<TSpot> snsSpots = spotManager.createSpots(ESpotType.Spot, noOfSpots, ELayer.SNS);
 
         // *************************************************************************************************************
         // エージェント作成
@@ -247,8 +269,10 @@ public class TMain {
         List<TAgent> agents = agentManager.createAgents(EAgentType.Agent, noOfAgents);
         for (int i = 0; i < noOfAgents; ++i) {
             TAgent agent = agents.get(i); // i番目のエージェント
-            TSpot spot = spots.get(i); // i番目のスポット
-            agent.initializeCurrentSpot(spot); // 初期スポット設定
+            TSpot realSpot = realSpots.get(i); // i番目の現実スポット
+            TSpot snsSpot = snsSpots.get(i); // i番目のSNSスポット
+            agent.initializeCurrentSpot(realSpot); // 現実の初期スポット設定
+            agent.initializeCurrentSpot(snsSpot); // SNSの初期スポット設定
             new TRoleOfAgent(agent); // エージェント役割作成
             agent.activateRole(ERoleName.Agent); // エージェント役割をアクティブ化
         }
@@ -282,7 +306,9 @@ public class TMain {
             spotLogPW.print(ruleExecutor.getCurrentTime());
             for (TAgent agent : agents) {
                 spotLogPW.print(',');
-                spotLogPW.print(agent.getCurrentSpotName());
+                spotLogPW.print(agent.getCurrentSpotName(ELayer.Real));
+                spotLogPW.print(':');
+                spotLogPW.print(agent.getCurrentSpotName(ELayer.SNS));
             }
             spotLogPW.println();
         }
@@ -297,6 +323,6 @@ public class TMain {
 }
 ```
 
-前：[sample06:子役割による役割のアクティブ制御](src/main/java/jp/soars/tutorials/sample06/)
+前：[sample07:ステージ実行ルールによるルールの定期実行](src/main/java/jp/soars/tutorials/sample07/)
 
-次：[sample08:レイヤ機能の利用](src/main/java/jp/soars/tutorials/sample08/)
+次：

@@ -1,5 +1,6 @@
-前：
-次：
+前：[SOARSの基本概念](src/main/java/jp/soars/tutorials/sample00/)
+
+次：[sample02:臨時実行ルールによる相対時刻指定](src/main/java/jp/soars/tutorials/sample02/)
 
 
 # sample01:最も簡単なプログラム <!-- omit in toc -->
@@ -717,5 +718,6 @@ public class TMain {
 ```
 
 
-前：
-次：
+前：[SOARSの基本概念](src/main/java/jp/soars/tutorials/sample00/)
+
+次：[sample02:臨時実行ルールによる相対時刻指定](src/main/java/jp/soars/tutorials/sample02/)

@@ -1,5 +1,6 @@
-前：
-次：
+前：[sample05-1:役割のアクティブ制御](src/main/java/jp/soars/tutorials/sample05_1/)
+
+次：[sample06:子役割による役割のアクティブ制御](src/main/java/jp/soars/tutorials/sample06/)
 
 
 # sample05-2:ルールの汎化 <!-- omit in toc -->
@@ -603,5 +604,6 @@ public class TMain {
 ```
 
 
-前：
-次：
+前：[sample05-1:役割のアクティブ制御](src/main/java/jp/soars/tutorials/sample05_1/)
+
+次：[sample06:子役割による役割のアクティブ制御](src/main/java/jp/soars/tutorials/sample06/)

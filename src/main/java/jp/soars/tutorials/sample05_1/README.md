@@ -1,5 +1,6 @@
-前：
-次：
+前：[sample04:曜日概念の導入](src/main/java/jp/soars/tutorials/sample04/)
+
+次：[sample05-2:ルールの汎化](src/main/java/jp/soars/tutorials/sample05_2/)
 
 
 # sample05-1:役割のアクティブ制御 <!-- omit in toc -->
@@ -696,5 +697,6 @@ public class TMain {
 ```
 
 
-前：
-次：
+前：[sample04:曜日概念の導入](src/main/java/jp/soars/tutorials/sample04/)
+
+次：[sample05-2:ルールの汎化](src/main/java/jp/soars/tutorials/sample05_2/)

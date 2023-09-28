@@ -1,5 +1,6 @@
-前：
-次：
+前：[sample02:臨時実行ルールによる相対時刻指定](src/main/java/jp/soars/tutorials/sample02/)
+
+次：[sample04:曜日概念の導入](src/main/java/jp/soars/tutorials/sample04/)
 
 
 # sample03:確率的なルールの定義 <!-- omit in toc -->
@@ -203,7 +204,7 @@ public final class TRuleOfMoveFromCompanyToHome extends TAgentRule {
 
 sample02のTRoleOfFatherを拡張する．
 シミュレーションシナリオ(父親は，50%の確率で9時，30%の確率で10時，20%の確率で11時に自宅から同じ会社(Company)に移動する．)
-を実現するために，9時，10時，11時に自宅から会社に移動するルールを提示実行ルールとして登録し，移動確率をそれぞれ0.5, 0.6, 1.0に設定する．
+を実現するために，9時，10時，11時に自宅から会社に移動するルールを定時実行ルールとして登録し，移動確率をそれぞれ0.5, 0.6, 1.0に設定する．
 これによって，各時刻における移動確率は以下のようになる．
 
 - 9時に移動する確率は，0.5 = 50%
@@ -420,5 +421,6 @@ public class TMain {
 ```
 
 
-前：
-次：
+前：[sample02:臨時実行ルールによる相対時刻指定](src/main/java/jp/soars/tutorials/sample02/)
+
+次：[sample04:曜日概念の導入](src/main/java/jp/soars/tutorials/sample04/)
