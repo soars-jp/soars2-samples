@@ -1,16 +1,12 @@
-package jp.soars.tutorials.sample06;
+package jp.soars.tutorials.sample12.module2;
 
 /**
  * 役割名定義
  * @author nagakane
  */
-public enum ERoleName {
+public enum EModule2RoleName {
     /** 健康状態決定役割 */
     DeterminingHealth,
-    /** 父親役割 */
-    Father,
-    /** 子ども役割 */
-    Child,
     /** 病人役割 */
     SickPerson
 }

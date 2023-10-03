@@ -1,4 +1,4 @@
-package jp.soars.tutorials.sample06;
+package jp.soars.tutorials.sample12.module2;
 
 import java.util.Map;
 
@@ -41,7 +41,7 @@ public final class TRuleOfRecoveringFromSick extends TAgentRule {
     public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
             TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
         // 病人役割を非アクティブ化して父親役割か子ども役割をアクティブ化する．
-        getAgent().deactivateRole(ERoleName.SickPerson);
+        getAgent().deactivateRole(EModule2RoleName.SickPerson);
         getAgent().activateRole(fOriginalRoleName);
     }
 }

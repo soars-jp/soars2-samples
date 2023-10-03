@@ -14,16 +14,19 @@ SOARS toolkit ver.2のサンプルプログラム
   - [sample07:ステージ実行ルールによるルールの定期実行](src/main/java/jp/soars/tutorials/sample07/)
   - [sample08:レイヤ機能の利用](src/main/java/jp/soars/tutorials/sample08/)
   - [sample09:グローバル共有変数集合の利用](src/main/java/jp/soars/tutorials/sample09/)
-
-
-
   - [sample10:ステージのロールバック](src/main/java/jp/soars/tutorials/sample10/)
-  - [sample11:モジュール合成](src/main/java/jp/soars/tutorials/sample11/)
-  # サンプルは，明示的にリムーブしてから追加で実装．リムーブしない場合はワーニングが出ることを説明
-  - [sample12:ルールの上書きと追加](src/main/java/jp/soars/tutorials/sample12/)
+  - [sample11:ステージのアクティブ制御](src/main/java/jp/soars/tutorials/sample11/)
+  - [sample12:モジュール合成](src/main/java/jp/soars/tutorials/sample12/)
+
+
+  <!-- - 
+  <!-- # サンプルは，明示的にリムーブしてから追加で実装．リムーブしない場合はワーニングが出ることを説明 -->
+  <!-- - [sample12:ルールの上書きと追加](src/main/java/jp/soars/tutorials/sample12/)
   - [sample13:ルールの並列実行](src/main/java/jp/soars/tutorials/sample13/)
   - [sample14:大規模実験のための最適化設定](src/main/java/jp/soars/tutorials/sample14/)
-  - [sample15:オブジェクトの動的追加・削除](src/main/java/jp/soars/tutorials/sample15/)
+  - [sample15:オブジェクトの動的追加・削除](src/main/java/jp/soars/tutorials/sample15/) -->
+
+
 - 小野研モジュール
   - [セル空間モジュール](src/main/java/jp/soars/onolab/cell)
 - セルオートマトン
@@ -39,28 +42,27 @@ SOARS toolkit ver.2のサンプルプログラム
 
 ## ver.1からの変更点
 
-- [サンプルは，明示的にリムーブしてから追加で実装．リムーブしない場合はワーニングが出ることを説明](#サンプルは明示的にリムーブしてから追加で実装リムーブしない場合はワーニングが出ることを説明)
-  - [ver.1からの変更点](#ver1からの変更点)
-    - [並列化機能](#並列化機能)
-    - [ステージ実行ルール](#ステージ実行ルール)
-    - [ステージのロールバック](#ステージのロールバック)
-    - [ステージのアクティブ制御](#ステージのアクティブ制御)
-    - [モジュール合成機能](#モジュール合成機能)
-      - [ステージ名, オブジェクトタイプ, 役割名の定数化(Enum)](#ステージ名-オブジェクトタイプ-役割名の定数化enum)
-      - [ステージマージ機能](#ステージマージ機能)
-    - [アクティブ役割の仕様変更](#アクティブ役割の仕様変更)
-    - [TModelの廃止とBuilderパターンの導入](#tmodelの廃止とbuilderパターンの導入)
-    - [時間に秒を追加](#時間に秒を追加)
-    - [レイヤ機能](#レイヤ機能)
-    - [ランタイムログの導入](#ランタイムログの導入)
-    - [ルールログのデバッグ情報出力の仕様変更](#ルールログのデバッグ情報出力の仕様変更)
-    - [ルールが自動的にシャッフルされるように仕様変更](#ルールが自動的にシャッフルされるように仕様変更)
-  - [ver.1から移行する場合の注意点](#ver1から移行する場合の注意点)
-  - [TSOARSBuilderの使い方](#tsoarsbuilderの使い方)
-  - [最適化のための設定項目](#最適化のための設定項目)
-    - [TRoleの設定項目](#troleの設定項目)
-    - [TAgentManager, TSpotManagerの設定項目](#tagentmanager-tspotmanagerの設定項目)
-    - [TSOARSBuilderの設定項目](#tsoarsbuilderの設定項目)
+- [ver.1からの変更点](#ver1からの変更点)
+  - [並列化機能](#並列化機能)
+  - [ステージ実行ルール](#ステージ実行ルール)
+  - [ステージのロールバック](#ステージのロールバック)
+  - [ステージのアクティブ制御](#ステージのアクティブ制御)
+  - [モジュール合成機能](#モジュール合成機能)
+    - [ステージ名, オブジェクトタイプ, 役割名の定数化(Enum)](#ステージ名-オブジェクトタイプ-役割名の定数化enum)
+    - [ステージマージ機能](#ステージマージ機能)
+  - [アクティブ役割の仕様変更](#アクティブ役割の仕様変更)
+  - [TModelの廃止とBuilderパターンの導入](#tmodelの廃止とbuilderパターンの導入)
+  - [時間に秒を追加](#時間に秒を追加)
+  - [レイヤ機能](#レイヤ機能)
+  - [ランタイムログの導入](#ランタイムログの導入)
+  - [ルールログのデバッグ情報出力の仕様変更](#ルールログのデバッグ情報出力の仕様変更)
+  - [ルールが自動的にシャッフルされるように仕様変更](#ルールが自動的にシャッフルされるように仕様変更)
+- [ver.1から移行する場合の注意点](#ver1から移行する場合の注意点)
+- [TSOARSBuilderの使い方](#tsoarsbuilderの使い方)
+- [最適化のための設定項目](#最適化のための設定項目)
+  - [TRoleの設定項目](#troleの設定項目)
+  - [TAgentManager, TSpotManagerの設定項目](#tagentmanager-tspotmanagerの設定項目)
+  - [TSOARSBuilderの設定項目](#tsoarsbuilderの設定項目)
 
 
 ### 並列化機能

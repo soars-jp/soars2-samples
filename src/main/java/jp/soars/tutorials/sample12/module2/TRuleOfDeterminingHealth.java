@@ -1,4 +1,4 @@
-package jp.soars.tutorials.sample06;
+package jp.soars.tutorials.sample12.module2;
 
 import java.util.Map;
 
@@ -58,7 +58,7 @@ public final class TRuleOfDeterminingHealth extends TAgentRule {
         if (isAt(fHome)) {
             if (getRandom().nextDouble() <= fProbability) {
                 getAgent().deactivateRole(fOriginalRoleName);
-                getAgent().activateRole(ERoleName.SickPerson);
+                getAgent().activateRole(EModule2RoleName.SickPerson);
                 appendToDebugInfo("get sick.", debugFlag);
             } else {
                 appendToDebugInfo("Don't get sick. (probability)", debugFlag);

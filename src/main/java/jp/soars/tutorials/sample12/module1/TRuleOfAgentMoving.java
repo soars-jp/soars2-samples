@@ -1,32 +1,38 @@
-package jp.soars.tutorials.sample06;
+package jp.soars.tutorials.sample12.module1;
 
 import java.util.Map;
 
 import jp.soars.core.TAgentManager;
 import jp.soars.core.TAgentRule;
 import jp.soars.core.TRole;
+import jp.soars.core.TSpot;
 import jp.soars.core.TSpotManager;
 import jp.soars.core.TTime;
 
 /**
- * 病気から回復するルール
+ * エージェント移動ルール
  * @author nagakane
  */
-public final class TRuleOfRecoveringFromSick extends TAgentRule {
+public final class TRuleOfAgentMoving extends TAgentRule {
 
-    /** 病気から回復した時にアクティブ化する役割名 */
-    private final Enum<?> fOriginalRoleName;
+    /** 出発地 */
+    private final TSpot fSource;
+
+    /** 目的地 */
+    private final TSpot fDestination;
 
     /**
      * コンストラクタ
      * @param name ルール名
      * @param owner このルールをもつ役割
-     * @param originalRoleName 元の役割．病気から回復した時にアクティブ化する．
+     * @param source 出発地
+     * @param destination 目的地
      */
-    public TRuleOfRecoveringFromSick(String name, TRole owner, Enum<?> originalRoleName) {
+    public TRuleOfAgentMoving(String name, TRole owner, TSpot source, TSpot destination) {
         // 親クラスのコンストラクタを呼び出す．
         super(name, owner);
-        fOriginalRoleName = originalRoleName;
+        fSource = source;
+        fDestination = destination;
     }
 
     /**
@@ -40,8 +46,13 @@ public final class TRuleOfRecoveringFromSick extends TAgentRule {
     @Override
     public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
             TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
-        // 病人役割を非アクティブ化して父親役割か子ども役割をアクティブ化する．
-        getAgent().deactivateRole(ERoleName.SickPerson);
-        getAgent().activateRole(fOriginalRoleName);
+        // エージェントが出発地にいるならば，目的地に移動する．
+        boolean debugFlag = true;
+        if (isAt(fSource)) {
+            moveTo(fDestination);
+            appendToDebugInfo("success", debugFlag);
+        } else {
+            appendToDebugInfo("fail", debugFlag);
+        }
     }
 }

@@ -1,26 +1,32 @@
-前：[sample05-2:ルールの汎化](src/main/java/jp/soars/tutorials/sample05_2/)
+前：
 
-次：[sample07:ステージ実行ルールによるルールの定期実行](src/main/java/jp/soars/tutorials/sample07/)
+次：
 
+# sample12:モジュール合成 <!-- omit in toc -->
 
-# sample06:子役割による役割のアクティブ制御 <!-- omit in toc -->
+sample12では，sample06のモデルを2つのモジュールに分割してそれらを合成することでsample06と同様のシミュレーションを構築する．
 
-sample06では子役割を登録して複数の役割のアクティブ状態を同期する(統一する)方法について解説する．
-
-- [シナリオとシミュレーション条件](#シナリオとシミュレーション条件)
-- [シミュレーション定数の定義](#シミュレーション定数の定義)
-- [ルールの定義](#ルールの定義)
-  - [TRuleOfAgentMoving:エージェント移動ルール](#truleofagentmovingエージェント移動ルール)
-  - [TRuleOfAgentMovingOnWeekdays:平日エージェント移動ルール](#truleofagentmovingonweekdays平日エージェント移動ルール)
-  - [TRuleOfStochasticallyAgentMovingOnWeekdays:平日に確率的にエージェント移動するルール](#truleofstochasticallyagentmovingonweekdays平日に確率的にエージェント移動するルール)
-  - [TRuleOfDeterminingHealth:健康状態決定ルール](#truleofdetermininghealth健康状態決定ルール)
-  - [TRuleOfRecoveringFromSick:病気から回復するルール](#truleofrecoveringfromsick病気から回復するルール)
-- [役割の定義](#役割の定義)
-  - [TRoleOfDeterminingHealth:健康状態決定役割](#troleofdetermininghealth健康状態決定役割)
-  - [TRoleOfFather:父親役割](#troleoffather父親役割)
-  - [TRoleOfChild:子ども役割](#troleofchild子ども役割)
-  - [TRoleOfSickPerson:病人役割](#troleofsickperson病人役割)
-- [メインクラスの定義](#メインクラスの定義)
+- [module1](#module1)
+  - [シミュレーション定数の定義](#シミュレーション定数の定義)
+  - [ルールの定義](#ルールの定義)
+    - [TRuleOfAgentMoving:エージェント移動ルール](#truleofagentmovingエージェント移動ルール)
+    - [TRuleOfAgentMovingOnWeekdays:平日エージェント移動ルール](#truleofagentmovingonweekdays平日エージェント移動ルール)
+    - [TRuleOfStochasticallyAgentMovingOnWeekdays:平日に確率的にエージェント移動するルール](#truleofstochasticallyagentmovingonweekdays平日に確率的にエージェント移動するルール)
+  - [役割の定義](#役割の定義)
+    - [TRoleOfFather:父親役割](#troleoffather父親役割)
+    - [TRoleOfChild:子ども役割](#troleofchild子ども役割)
+- [module2](#module2)
+  - [シミュレーション定数の定義](#シミュレーション定数の定義-1)
+  - [ルールの定義](#ルールの定義-1)
+    - [TRuleOfAgentMoving:エージェント移動ルール](#truleofagentmovingエージェント移動ルール-1)
+    - [TRuleOfDeterminingHealth:健康状態決定ルール](#truleofdetermininghealth健康状態決定ルール)
+    - [TRuleOfRecoveringFromSick:病気から回復するルール](#truleofrecoveringfromsick病気から回復するルール)
+  - [役割の定義](#役割の定義-1)
+    - [TRoleOfDeterminingHealth:健康状態決定役割](#troleofdetermininghealth健康状態決定役割)
+    - [TRoleOfSickPerson:病人役割](#troleofsickperson病人役割)
+- [モジュール合成](#モジュール合成)
+  - [シミュレーション定数の定義](#シミュレーション定数の定義-2)
+  - [メインクラスの定義](#メインクラスの定義)
 
 
 ## シナリオとシミュレーション条件
@@ -47,64 +53,41 @@ sample06では子役割を登録して複数の役割のアクティブ状態を
 - 時刻ステップ間隔：1時間 / step
 - シミュレーション期間：7日間
 
+# module1
+
+module1は父親と子どもの普段の生活が定義されているモジュールである．
+module1で実現されるシナリオは以下の通りである．
+
+- 3人の父親(Father1, Father2, Father3)は，それぞれ自宅(Home1, Home2, Home3)を持つ．
+- 父親は，平日(土日以外)は50%の確率で9時，30%の確率で10時，20%の確率で11時に自宅から同じ会社(Company)に移動する．
+- 父親は，会社に移動してから8時間後に会社からそれぞれの自宅に移動する．
+- 父親は，休日(土日)は会社に移動せず自宅にいる．
+- 3人の子ども(Child1, Child2, Child3)は，それぞれ自宅(Home1, Home2, Home3)を持つ．
+- 子どもは，平日(土日以外)は8時に自宅から同じ学校(School)に移動する．
+- 子どもは，平日(土日以外)は15時に学校からそれぞれの自宅に移動する．
+- 子どもは，休日(土日)は学校に移動せず自宅にいる．
+
 ## シミュレーション定数の定義
 
-sample05-2に追加して，
-エージェントタイプに子ども，
-スポットタイプに学校，
-役割名に健康状態決定役割と子ども役割を新たに定義する．
+sample06からmodule1に必要な定数のみ抜き出して定義する．
 
-`EAgentType.java`
+`EModule1Stage.java`
 
 ```Java
-public enum EAgentType {
-    /** 父親 */
-    Father,
-    /** 子ども */
-    Child
-}
-```
-
-`ESpotType.java`
-
-```Java
-public enum ESpotType {
-    /** 自宅 */
-    Home,
-    /** 会社 */
-    Company,
-    /** 学校 */
-    School,
-    /** 病院 */
-    Hospital
-}
-```
-
-`EStage.java`
-
-```Java
-public enum EStage {
-    /** 健康状態決定ステージ */
-    DeterminingHealth,
+public enum EModule1Stage {
     /** エージェント移動ステージ */
-    AgentMoving,
-    /** 病気回復ステージ */
-    RecoveringFromSick
+    AgentMoving
 }
 ```
 
-`ERoleName.java`
+`EModule1RoleName.java`
 
 ```Java
-public enum ERoleName {
-    /** 健康状態決定役割 */
-    DeterminingHealth,
+public enum EModule1RoleName {
     /** 父親役割 */
     Father,
     /** 子ども役割 */
-    Child,
-    /** 病人役割 */
-    SickPerson
+    Child
 }
 ```
 
@@ -133,7 +116,7 @@ public enum EDay {
 
 ### TRuleOfAgentMoving:エージェント移動ルール
 
-sample05-2と同じ．
+sample06と同じ．
 
 `TRuleOfAgentMoving.java`
 
@@ -185,8 +168,7 @@ public final class TRuleOfAgentMoving extends TAgentRule {
 
 ### TRuleOfAgentMovingOnWeekdays:平日エージェント移動ルール
 
-TRuleOfAgentMovingを拡張する．
-平日(土日以外)のみ移動するように変更する．
+sample06と同じ．
 
 `TRuleOfAgentMovingOnWeekdays.java`
 
@@ -243,7 +225,7 @@ public final class TRuleOfAgentMovingOnWeekdays extends TAgentRule {
 
 ### TRuleOfStochasticallyAgentMovingOnWeekdays:平日に確率的にエージェント移動するルール
 
-sample05-2と同じ．
+sample06と同じ．
 
 `TRuleOfStochasticallyAgentMovingOnWeekdays.java`
 
@@ -332,10 +314,196 @@ public final class TRuleOfStochasticallyAgentMovingOnWeekdays extends TAgentRule
 }
 ```
 
+## 役割の定義
+
+### TRoleOfFather:父親役割
+
+sample06と同じ．
+
+`TRoleOfFather.java`
+
+```Java
+public final class TRoleOfFather extends TRole {
+
+    /** 9時に自宅から会社に移動するルール名 */
+    private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_9 = "MoveFromHomeToCompany9";
+
+    /** 10時に自宅から会社に移動するルール名 */
+    private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_10 = "MoveFromHomeToCompany10";
+
+    /** 11時に自宅から会社に移動するルール名 */
+    private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_11 = "MoveFromHomeToCompany11";
+
+    /** 会社から自宅に移動するルール名 */
+    private static final String RULE_NAME_OF_MOVE_FROM_COMPANY_TO_HOME = "MoveFromCompanyToHome";
+
+    /**
+     * コンストラクタ
+     * @param owner この役割を持つエージェント
+     * @param home 自宅
+     * @param company 会社
+     */
+    public TRoleOfFather(TAgent owner, TSpot home, TSpot company) {
+        // 親クラスのコンストラクタを呼び出す．
+        // 以下の2つの引数は省略可能で，その場合デフォルト値で設定される．
+        // 第3引数:この役割が持つルール数 (デフォルト値 10)
+        // 第4引数:この役割が持つ子役割数 (デフォルト値 5)
+        super(ERoleName.Father, owner, 4, 0);
+
+        // 役割が持つルールの登録
+        // 会社から自宅に移動するルール．予約はTRuleOfMoveFromHomeToCompanyで相対時刻指定で行われる．
+        TRule ruleOfReturnHome = new TRuleOfAgentMoving(RULE_NAME_OF_MOVE_FROM_COMPANY_TO_HOME, this, company, home);
+
+        // 確率的に自宅から会社に移動するルール．9:00:00, 10:00:00, 11:00:00/エージェント移動ステージに定時実行ルールとして予約する．
+        new TRuleOfStochasticallyAgentMovingOnWeekdays(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_9,
+                this, 0.5, home, company, ruleOfReturnHome, "8:00:00", EStage.AgentMoving)
+                .setTimeAndStage(9, 0, 0, EStage.AgentMoving);
+
+        new TRuleOfStochasticallyAgentMovingOnWeekdays(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_10,
+                this, 0.6, home, company, ruleOfReturnHome, "8:00:00", EStage.AgentMoving)
+                .setTimeAndStage(10, 0, 0, EStage.AgentMoving);
+
+        new TRuleOfStochasticallyAgentMovingOnWeekdays(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_11,
+                this, 1.0, home, company, ruleOfReturnHome, "8:00:00", EStage.AgentMoving)
+                .setTimeAndStage(11, 0, 0, EStage.AgentMoving);
+    }
+}
+```
+
+### TRoleOfChild:子ども役割
+
+sample06と同じ．
+
+`TRoleOfChild.java`
+
+```Java
+public final class TRoleOfChild extends TRole {
+
+    /** 自宅から学校に移動するルール名 */
+    private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_SCHOOL = "MoveFromHomeToSchool";
+
+    /** 学校から自宅に移動するルール名 */
+    private static final String RULE_NAME_OF_MOVE_FROM_SCHOOL_TO_HOME = "MoveFromSchoolToHome";
+
+    /**
+     * コンストラクタ
+     * @param owner この役割を持つエージェント
+     * @param home 自宅
+     * @param school 学校
+     */
+    public TRoleOfChild(TAgent owner, TSpot home, TSpot school) {
+        // 親クラスのコンストラクタを呼び出す．
+        // 以下の2つの引数は省略可能で，その場合デフォルト値で設定される．
+        // 第3引数:この役割が持つルール数 (デフォルト値 10)
+        // 第4引数:この役割が持つ子役割数 (デフォルト値 5)
+        super(ERoleName.Child, owner, 2, 0);
+
+        // 役割が持つルールの登録
+        // 自宅から学校に移動するルール．8:00:00/エージェント移動ステージに定時実行ルールとして予約する．
+        new TRuleOfAgentMovingOnWeekdays(RULE_NAME_OF_MOVE_FROM_HOME_TO_SCHOOL, this, home, school)
+                .setTimeAndStage(8, 0, 0, EStage.AgentMoving);
+
+        // 学校から自宅に移動するルール．15:00:00/エージェント移動ステージに定時実行ルールとして予約する．
+        new TRuleOfAgentMoving(RULE_NAME_OF_MOVE_FROM_SCHOOL_TO_HOME, this, school, home)
+                .setTimeAndStage(15, 0, 0, EStage.AgentMoving);
+    }
+}
+```
+
+# module2
+
+module2は病人の行動が定義されているモジュールである．
+module2で実現されるシナリオは以下の通りである．
+
+- 父親と子どもは，6時に自宅にいる場合に25%の確率で病気になる．
+- 病人は，10時に自宅から病院(Hospital)に移動する．
+- 病人は，父親の場合12時，子どもの場合13時に病院からそれぞれの自宅に移動して病気が治る．
+
+## シミュレーション定数の定義
+
+sample06からmodule1に必要な定数のみ抜き出して定義する．
+
+`EModule2Stage.java`
+
+```Java
+public enum EModule2Stage {
+    /** 健康状態決定ステージ */
+    DeterminingHealth,
+    /** エージェント移動ステージ */
+    AgentMoving,
+    /** 病気回復ステージ */
+    RecoveringFromSick
+}
+```
+
+`EModule2RoleName.java`
+
+```Java
+public enum EModule2RoleName {
+    /** 健康状態決定役割 */
+    DeterminingHealth,
+    /** 病人役割 */
+    SickPerson
+}
+```
+
+## ルールの定義
+
+### TRuleOfAgentMoving:エージェント移動ルール
+
+sample06と同じ．
+
+`TRuleOfAgentMoving.java`
+
+```Java
+public final class TRuleOfAgentMoving extends TAgentRule {
+
+    /** 出発地 */
+    private final TSpot fSource;
+
+    /** 目的地 */
+    private final TSpot fDestination;
+
+    /**
+     * コンストラクタ
+     * @param name ルール名
+     * @param owner このルールをもつ役割
+     * @param source 出発地
+     * @param destination 目的地
+     */
+    public TRuleOfAgentMoving(String name, TRole owner, TSpot source, TSpot destination) {
+        // 親クラスのコンストラクタを呼び出す．
+        super(name, owner);
+        fSource = source;
+        fDestination = destination;
+    }
+
+    /**
+     * ルールを実行する．
+     * @param currentTime 現在時刻
+     * @param currentStage 現在ステージ
+     * @param spotManager スポット管理
+     * @param agentManager エージェント管理
+     * @param globalSharedVariables グローバル共有変数集合
+     */
+    @Override
+    public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
+            TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
+        // エージェントが出発地にいるならば，目的地に移動する．
+        boolean debugFlag = true;
+        if (isAt(fSource)) {
+            moveTo(fDestination);
+            appendToDebugInfo("success", debugFlag);
+        } else {
+            appendToDebugInfo("fail", debugFlag);
+        }
+    }
+}
+```
+
 ### TRuleOfDeterminingHealth:健康状態決定ルール
 
-sample05-2のTRuleOfDeterminingHealthを変更する．
-コンストラクタで非アクティブ化する役割名を受け取る．
+sample06と同じ．
 
 `TRuleOfDeterminingHealth.java`
 
@@ -399,8 +567,7 @@ public final class TRuleOfDeterminingHealth extends TAgentRule {
 
 ### TRuleOfRecoveringFromSick:病気から回復するルール
 
-sample05-2のTRuleOfRecoveringFromSickを変更する．
-コンストラクタでアクティブ化する役割名を受け取る．
+sample06と同じ．
 
 `TRuleOfRecoveringFromSick.java`
 
@@ -444,12 +611,7 @@ public final class TRuleOfRecoveringFromSick extends TAgentRule {
 
 ### TRoleOfDeterminingHealth:健康状態決定役割
 
-シナリオ「父親と子どもは，6時に自宅にいる場合に25%の確率で病気になる．」より，
-病気になるという動作は父親，子どもに関わらず共通である．
-そこで，健康状態決定役割を定義して健康状態決定ルールを持たせる．
-健康状態決定役割はメインクラスで父親役割か子ども役割の子役割として登録する．
-子役割として登録すると，父親役割か子ども役割をアクティブ化した場合に健康状態決定役割も同時にアクティブ化され，
-ルールが実行される．
+sample06と同じ．
 
 `TRoleOfDeterminingHealth.java`
 
@@ -475,105 +637,9 @@ public final class TRoleOfDeterminingHealth extends TRole {
 }
 ```
 
-### TRoleOfFather:父親役割
-
-sample05-2のTRoleOfFatherを変更する．
-健康状態決定ルールは健康状態決定役割に設定するため，父親役割からは外す．
-
-`TRoleOfFather.java`
-
-```Java
-public final class TRoleOfFather extends TRole {
-
-    /** 9時に自宅から会社に移動するルール名 */
-    private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_9 = "MoveFromHomeToCompany9";
-
-    /** 10時に自宅から会社に移動するルール名 */
-    private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_10 = "MoveFromHomeToCompany10";
-
-    /** 11時に自宅から会社に移動するルール名 */
-    private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_11 = "MoveFromHomeToCompany11";
-
-    /** 会社から自宅に移動するルール名 */
-    private static final String RULE_NAME_OF_MOVE_FROM_COMPANY_TO_HOME = "MoveFromCompanyToHome";
-
-    /**
-     * コンストラクタ
-     * @param owner この役割を持つエージェント
-     * @param home 自宅
-     * @param company 会社
-     */
-    public TRoleOfFather(TAgent owner, TSpot home, TSpot company) {
-        // 親クラスのコンストラクタを呼び出す．
-        // 以下の2つの引数は省略可能で，その場合デフォルト値で設定される．
-        // 第3引数:この役割が持つルール数 (デフォルト値 10)
-        // 第4引数:この役割が持つ子役割数 (デフォルト値 5)
-        super(ERoleName.Father, owner, 4, 0);
-
-        // 役割が持つルールの登録
-        // 会社から自宅に移動するルール．予約はTRuleOfMoveFromHomeToCompanyで相対時刻指定で行われる．
-        TRule ruleOfReturnHome = new TRuleOfAgentMoving(RULE_NAME_OF_MOVE_FROM_COMPANY_TO_HOME, this, company, home);
-
-        // 確率的に自宅から会社に移動するルール．9:00:00, 10:00:00, 11:00:00/エージェント移動ステージに定時実行ルールとして予約する．
-        new TRuleOfStochasticallyAgentMovingOnWeekdays(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_9,
-                this, 0.5, home, company, ruleOfReturnHome, "8:00:00", EStage.AgentMoving)
-                .setTimeAndStage(9, 0, 0, EStage.AgentMoving);
-
-        new TRuleOfStochasticallyAgentMovingOnWeekdays(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_10,
-                this, 0.6, home, company, ruleOfReturnHome, "8:00:00", EStage.AgentMoving)
-                .setTimeAndStage(10, 0, 0, EStage.AgentMoving);
-
-        new TRuleOfStochasticallyAgentMovingOnWeekdays(RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_11,
-                this, 1.0, home, company, ruleOfReturnHome, "8:00:00", EStage.AgentMoving)
-                .setTimeAndStage(11, 0, 0, EStage.AgentMoving);
-    }
-}
-```
-
-### TRoleOfChild:子ども役割
-
-子ども役割は子どもエージェントの自宅と学校の移動ルールを持つ．
-
-`TRoleOfChild.java`
-
-```Java
-public final class TRoleOfChild extends TRole {
-
-    /** 自宅から学校に移動するルール名 */
-    private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_SCHOOL = "MoveFromHomeToSchool";
-
-    /** 学校から自宅に移動するルール名 */
-    private static final String RULE_NAME_OF_MOVE_FROM_SCHOOL_TO_HOME = "MoveFromSchoolToHome";
-
-    /**
-     * コンストラクタ
-     * @param owner この役割を持つエージェント
-     * @param home 自宅
-     * @param school 学校
-     */
-    public TRoleOfChild(TAgent owner, TSpot home, TSpot school) {
-        // 親クラスのコンストラクタを呼び出す．
-        // 以下の2つの引数は省略可能で，その場合デフォルト値で設定される．
-        // 第3引数:この役割が持つルール数 (デフォルト値 10)
-        // 第4引数:この役割が持つ子役割数 (デフォルト値 5)
-        super(ERoleName.Child, owner, 2, 0);
-
-        // 役割が持つルールの登録
-        // 自宅から学校に移動するルール．8:00:00/エージェント移動ステージに定時実行ルールとして予約する．
-        new TRuleOfAgentMovingOnWeekdays(RULE_NAME_OF_MOVE_FROM_HOME_TO_SCHOOL, this, home, school)
-                .setTimeAndStage(8, 0, 0, EStage.AgentMoving);
-
-        // 学校から自宅に移動するルール．15:00:00/エージェント移動ステージに定時実行ルールとして予約する．
-        new TRuleOfAgentMoving(RULE_NAME_OF_MOVE_FROM_SCHOOL_TO_HOME, this, school, home)
-                .setTimeAndStage(15, 0, 0, EStage.AgentMoving);
-    }
-}
-```
-
 ### TRoleOfSickPerson:病人役割
 
-sample05-2のTRoleOfSickPersonを変更する．
-コンストラクタの引数 medicHour, originalRoleName は父親か子どもかによって変わる．
+sample06と同じ．
 
 `TRoleOfSickPerson.java`
 
@@ -616,14 +682,44 @@ public final class TRoleOfSickPerson extends TRole {
 }
 ```
 
+# モジュール合成
+
+モジュールを合成する場合は，エージェント，スポットタイプとメインクラスを定義する．
+
+## シミュレーション定数の定義
+
+`EAgentType.java`
+
+```Java
+public enum EAgentType {
+    /** 父親 */
+    Father,
+    /** 子ども */
+    Child
+}
+```
+
+`ESpotType.java`
+
+```Java
+public enum ESpotType {
+    /** 自宅 */
+    Home,
+    /** 会社 */
+    Company,
+    /** 学校 */
+    School,
+    /** 病院 */
+    Hospital
+}
+```
+
 ## メインクラスの定義
 
-sample05-2のメインクラスのログ出力ディレクトリを変更する．そのほかの変更は以下に示す．
-
-- 学校スポットを1つ作成する．
-- 父親エージェントの設定で健康状態決定役割を作成して，父親役割の子役割として登録する．
-- 子どもエージェントを作成して自宅，健康状態決定役割，子ども役割，病人役割を設定する．設定方法は父親エージェントと同様である．
-- スポットログに子どもエージェントのスポットを出力するように変更する．agentManagerのgetAgents()メソッドはシミュレーション中に存在する全エージェントのリストを返すメソッドである．
+sample06とほぼ同様であるが，AgentMovingステージがmodule1, module2の両方で定義されている．
+2つのステージを順番に実行してもよいが，SOARS Toolkitではこのような場合に2つのステージを同一のステージとして扱うための機能が提供されている．
+TSOARSBuilder.mergeStages メソッドで引数として渡したステージを同一のステージとして扱うようにマージすることができる．
+このとき，ステージの設定などは第1引数で渡したステージのものに統一されるため注意する．
 
 `TMain.java`
 
@@ -644,9 +740,10 @@ public class TMain {
         String simulationStart = "0/00:00:00";
         String simulationEnd = "7/00:00:00";
         String tick = "1:00:00";
-        List<Enum<?>> stages = List.of(EStage.DeterminingHealth,
-                                       EStage.AgentMoving,
-                                       EStage.RecoveringFromSick);
+        List<Enum<?>> stages = List.of(EModule2Stage.DeterminingHealth,
+                                       EModule2Stage.AgentMoving,
+                                       EModule1Stage.AgentMoving,
+                                       EModule2Stage.RecoveringFromSick);
         Set<Enum<?>> agentTypes = new HashSet<>();
         Collections.addAll(agentTypes, EAgentType.values());
         Set<Enum<?>> spotTypes = new HashSet<>();
@@ -657,12 +754,16 @@ public class TMain {
         // TSOARSBuilderの任意設定項目
         // *************************************************************************************************************
 
+        // module1とmodule2のAgentMovingステージをマージして同一のステージとみなす
+        // このとき第1引数で指定したステージに統一される．
+        builder.mergeStages(EModule2Stage.AgentMoving, EModule1Stage.AgentMoving);
+
         // マスター乱数発生器のシード値設定
         long seed = 0L;
         builder.setRandomSeed(seed);
 
         // ルールログとランタイムログの出力設定
-        String pathOfLogDir = "logs" + File.separator + "tutorials" + File.separator + "sample06";
+        String pathOfLogDir = "logs" + File.separator + "tutorials" + File.separator + "sample12";
         builder.setRuleLoggingEnabled(pathOfLogDir + File.separator + "rule_log.csv");
         builder.setRuntimeLoggingEnabled(pathOfLogDir + File.separator + "runtime_log.csv");
 
@@ -710,11 +811,11 @@ public class TMain {
             TAgent father = fathers.get(i); // i番目の父親エージェント
             TSpot home = homes.get(i); // i番目の父親エージェントの自宅
             father.initializeCurrentSpot(home); // 初期スポットを自宅に設定
-            TRole roleOfCommon = new TRoleOfDeterminingHealth(father, home, ERoleName.Father); // 健康状態決定役割を作成
+            TRole roleOfCommon = new TRoleOfDeterminingHealth(father, home, EModule1RoleName.Father); // 健康状態決定役割を作成
             TRole roleOfFather = new TRoleOfFather(father, home, company); // 父親役割を作成
-            new TRoleOfSickPerson(father, home, hospital, 2, ERoleName.Father); // 病人役割を作成
+            new TRoleOfSickPerson(father, home, hospital, 2, EModule1RoleName.Father); // 病人役割を作成
             roleOfFather.addChildRole(roleOfCommon); // 健康状態決定役割を父親役割の子役割に設定
-            father.activateRole(ERoleName.Father); // 父親役割をアクティブ化
+            father.activateRole(EModule1RoleName.Father); // 父親役割をアクティブ化
         }
 
         int noOfChildren = noOfHomes; // 子どもの数は家の数と同じ．
@@ -723,11 +824,11 @@ public class TMain {
             TAgent child = children.get(i); // i番目の子どもエージェント
             TSpot home = homes.get(i); // i番目の子どもエージェントの自宅
             child.initializeCurrentSpot(home); // 初期スポットを自宅に設定
-            TRole roleOfCommon = new TRoleOfDeterminingHealth(child, home, ERoleName.Child); // 健康状態決定役割を作成
+            TRole roleOfCommon = new TRoleOfDeterminingHealth(child, home, EModule1RoleName.Child); // 健康状態決定役割を作成
             TRole roleOfChild = new TRoleOfChild(child, home, school); // 子ども役割を作成
-            new TRoleOfSickPerson(child, home, hospital, 3, ERoleName.Child); // 病人役割を作成
+            new TRoleOfSickPerson(child, home, hospital, 3, EModule1RoleName.Child); // 病人役割を作成
             roleOfChild.addChildRole(roleOfCommon); // 健康状態決定役割を子ども役割の子役割に設定
-            child.activateRole(ERoleName.Child); // 子ども役割をアクティブ化
+            child.activateRole(EModule1RoleName.Child); // 子ども役割をアクティブ化
         }
 
         // *************************************************************************************************************
@@ -777,6 +878,6 @@ public class TMain {
 ```
 
 
-前：[sample05-2:ルールの汎化](src/main/java/jp/soars/tutorials/sample05_2/)
+前：
 
-次：[sample07:ステージ実行ルールによるルールの定期実行](src/main/java/jp/soars/tutorials/sample07/)
+次：

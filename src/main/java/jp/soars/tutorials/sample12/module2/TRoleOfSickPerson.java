@@ -1,4 +1,4 @@
-package jp.soars.tutorials.sample06;
+package jp.soars.tutorials.sample12.module2;
 
 import jp.soars.core.TAgent;
 import jp.soars.core.TRole;
@@ -28,19 +28,19 @@ public final class TRoleOfSickPerson extends TRole {
      * @param originalRoleName 元の役割．病気から回復した時にアクティブ化する．
      */
     public TRoleOfSickPerson(TAgent owner, TSpot home, TSpot hospital, int medicHour, Enum<?> originalRoleName) {
-        super(ERoleName.SickPerson, owner, 3, 0);
+        super(EModule2RoleName.SickPerson, owner, 3, 0);
 
         // 役割が持つルールの登録
         // 自宅から病院に移動するルール．10:00:00/エージェント移動ステージに定時実行ルールとして予約する．
         new TRuleOfAgentMoving(RULE_NAME_OF_MOVE_FROM_HOME_TO_HOSPITAL, this, home, hospital)
-                .setTimeAndStage(10, 0, 0, EStage.AgentMoving);
+                .setTimeAndStage(10, 0, 0, EModule2Stage.AgentMoving);
 
         // 病院から自宅に移動するルール．(12,13):00:00/エージェント移動ステージに定時実行ルールとして予約する．
         new TRuleOfAgentMoving(RULE_NAME_OF_MOVE_FROM_HOSPITAL_TO_HOME, this, hospital, home)
-                .setTimeAndStage(10 + medicHour, 0, 0, EStage.AgentMoving);
+                .setTimeAndStage(10 + medicHour, 0, 0, EModule2Stage.AgentMoving);
 
         // 病気から回復するルール．(12,13):00:00/病気回復ステージに定時実行ルールとして予約する．
         new TRuleOfRecoveringFromSick(RULE_NAME_OF_RECOVERING_FROM_SICK, this, originalRoleName)
-                .setTimeAndStage(10 + medicHour, 0, 0, EStage.RecoveringFromSick);
+                .setTimeAndStage(10 + medicHour, 0, 0, EModule2Stage.RecoveringFromSick);
     }
 }

@@ -1,4 +1,4 @@
-package jp.soars.tutorials.sample06;
+package jp.soars.tutorials.sample12;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -19,6 +19,14 @@ import jp.soars.core.TSOARSBuilder;
 import jp.soars.core.TSpot;
 import jp.soars.core.TSpotManager;
 import jp.soars.core.enums.ERuleDebugMode;
+import jp.soars.tutorials.sample12.module1.EDay;
+import jp.soars.tutorials.sample12.module1.EModule1RoleName;
+import jp.soars.tutorials.sample12.module1.EModule1Stage;
+import jp.soars.tutorials.sample12.module1.TRoleOfChild;
+import jp.soars.tutorials.sample12.module1.TRoleOfFather;
+import jp.soars.tutorials.sample12.module2.EModule2Stage;
+import jp.soars.tutorials.sample12.module2.TRoleOfDeterminingHealth;
+import jp.soars.tutorials.sample12.module2.TRoleOfSickPerson;
 import jp.soars.utils.random.ICRandom;
 
 /**
@@ -41,9 +49,10 @@ public class TMain {
         String simulationStart = "0/00:00:00";
         String simulationEnd = "7/00:00:00";
         String tick = "1:00:00";
-        List<Enum<?>> stages = List.of(EStage.DeterminingHealth,
-                                       EStage.AgentMoving,
-                                       EStage.RecoveringFromSick);
+        List<Enum<?>> stages = List.of(EModule2Stage.DeterminingHealth,
+                                       EModule2Stage.AgentMoving,
+                                       EModule1Stage.AgentMoving,
+                                       EModule2Stage.RecoveringFromSick);
         Set<Enum<?>> agentTypes = new HashSet<>();
         Collections.addAll(agentTypes, EAgentType.values());
         Set<Enum<?>> spotTypes = new HashSet<>();
@@ -54,12 +63,16 @@ public class TMain {
         // TSOARSBuilderの任意設定項目
         // *************************************************************************************************************
 
+        // module1とmodule2のAgentMovingステージをマージして同一のステージとみなす
+        // このとき第1引数で指定したステージに統一される．
+        builder.mergeStages(EModule2Stage.AgentMoving, EModule1Stage.AgentMoving);
+
         // マスター乱数発生器のシード値設定
         long seed = 0L;
         builder.setRandomSeed(seed);
 
         // ルールログとランタイムログの出力設定
-        String pathOfLogDir = "logs" + File.separator + "tutorials" + File.separator + "sample06";
+        String pathOfLogDir = "logs" + File.separator + "tutorials" + File.separator + "sample12";
         builder.setRuleLoggingEnabled(pathOfLogDir + File.separator + "rule_log.csv");
         builder.setRuntimeLoggingEnabled(pathOfLogDir + File.separator + "runtime_log.csv");
 
@@ -107,11 +120,11 @@ public class TMain {
             TAgent father = fathers.get(i); // i番目の父親エージェント
             TSpot home = homes.get(i); // i番目の父親エージェントの自宅
             father.initializeCurrentSpot(home); // 初期スポットを自宅に設定
-            TRole roleOfCommon = new TRoleOfDeterminingHealth(father, home, ERoleName.Father); // 健康状態決定役割を作成
+            TRole roleOfCommon = new TRoleOfDeterminingHealth(father, home, EModule1RoleName.Father); // 健康状態決定役割を作成
             TRole roleOfFather = new TRoleOfFather(father, home, company); // 父親役割を作成
-            new TRoleOfSickPerson(father, home, hospital, 2, ERoleName.Father); // 病人役割を作成
+            new TRoleOfSickPerson(father, home, hospital, 2, EModule1RoleName.Father); // 病人役割を作成
             roleOfFather.addChildRole(roleOfCommon); // 健康状態決定役割を父親役割の子役割に設定
-            father.activateRole(ERoleName.Father); // 父親役割をアクティブ化
+            father.activateRole(EModule1RoleName.Father); // 父親役割をアクティブ化
         }
 
         int noOfChildren = noOfHomes; // 子どもの数は家の数と同じ．
@@ -120,11 +133,11 @@ public class TMain {
             TAgent child = children.get(i); // i番目の子どもエージェント
             TSpot home = homes.get(i); // i番目の子どもエージェントの自宅
             child.initializeCurrentSpot(home); // 初期スポットを自宅に設定
-            TRole roleOfCommon = new TRoleOfDeterminingHealth(child, home, ERoleName.Child); // 健康状態決定役割を作成
+            TRole roleOfCommon = new TRoleOfDeterminingHealth(child, home, EModule1RoleName.Child); // 健康状態決定役割を作成
             TRole roleOfChild = new TRoleOfChild(child, home, school); // 子ども役割を作成
-            new TRoleOfSickPerson(child, home, hospital, 3, ERoleName.Child); // 病人役割を作成
+            new TRoleOfSickPerson(child, home, hospital, 3, EModule1RoleName.Child); // 病人役割を作成
             roleOfChild.addChildRole(roleOfCommon); // 健康状態決定役割を子ども役割の子役割に設定
-            child.activateRole(ERoleName.Child); // 子ども役割をアクティブ化
+            child.activateRole(EModule1RoleName.Child); // 子ども役割をアクティブ化
         }
 
         // *************************************************************************************************************
