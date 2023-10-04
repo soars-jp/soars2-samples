@@ -1,6 +1,6 @@
 前：[sample08:レイヤ機能の利用](src/main/java/jp/soars/tutorials/sample08/)
 
-次：
+次：[sample10:ステージのロールバック](src/main/java/jp/soars/tutorials/sample10/)
 
 # sample09:グローバル共有変数集合の利用 <!-- omit in toc -->
 
@@ -171,7 +171,7 @@ sample08と同じ．
 public final class TRoleOfAgent extends TRole {
 
     /** ランダム移動ルール名 */
-    private static final String RULE_NAME_OF_RANDOM_MOVING = "RandomMoving";
+    public static final String RULE_NAME_OF_RANDOM_MOVING = "RandomMoving";
 
     /**
      * コンストラクタ
@@ -343,4 +343,4 @@ public class TMain {
 
 前：[sample08:レイヤ機能の利用](src/main/java/jp/soars/tutorials/sample08/)
 
-次：
+次：[sample10:ステージのロールバック](src/main/java/jp/soars/tutorials/sample10/)

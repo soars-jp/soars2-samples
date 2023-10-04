@@ -14,10 +14,10 @@ public final class TRoleOfSickPerson extends TRole {
     public static final String RULE_NAME_OF_RECOVERING_FROM_SICK = "RecoveringFromSick";
 
     /** 自宅から病院に移動するルール名 */
-    private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_HOSPITAL = "MoveFromHomeToHospital";
+    public static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_HOSPITAL = "MoveFromHomeToHospital";
 
     /** 病院から自宅に移動するルール名 */
-    private static final String RULE_NAME_OF_MOVE_FROM_HOSPITAL_TO_HOME = "MoveFromHospitalToHome";
+    public static final String RULE_NAME_OF_MOVE_FROM_HOSPITAL_TO_HOME = "MoveFromHospitalToHome";
 
     /**
      * コンストラクタ

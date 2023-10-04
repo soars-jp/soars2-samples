@@ -135,7 +135,7 @@ public final class TRuleOfAgentRandomMoving extends TAgentRule {
 public final class TRoleOfAgent extends TRole {
 
     /** ランダム移動ルール名 */
-    private static final String RULE_NAME_OF_RANDOM_MOVING = "RandomMoving";
+    public static final String RULE_NAME_OF_RANDOM_MOVING = "RandomMoving";
 
     /**
      * コンストラクタ

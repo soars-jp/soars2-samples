@@ -1,6 +1,6 @@
-前：
+前：[sample09:グローバル共有変数集合の利用](src/main/java/jp/soars/tutorials/sample09/)
 
-次：
+次：[sample11:ステージのアクティブ制御](src/main/java/jp/soars/tutorials/sample11/)
 
 # sample10:ステージのロールバック <!-- omit in toc -->
 
@@ -337,7 +337,7 @@ sample07と同じ．
 public final class TRoleOfAgent extends TRole {
 
     /** ランダム移動ルール名 */
-    private static final String RULE_NAME_OF_RANDOM_MOVING = "RandomMoving";
+    public static final String RULE_NAME_OF_RANDOM_MOVING = "RandomMoving";
 
     /**
      * コンストラクタ
@@ -521,6 +521,6 @@ public class TMain {
 }
 ```
 
-前：
+前：[sample09:グローバル共有変数集合の利用](src/main/java/jp/soars/tutorials/sample09/)
 
-次：
+次：[sample11:ステージのアクティブ制御](src/main/java/jp/soars/tutorials/sample11/)

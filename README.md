@@ -17,16 +17,10 @@ SOARS toolkit ver.2のサンプルプログラム
   - [sample10:ステージのロールバック](src/main/java/jp/soars/tutorials/sample10/)
   - [sample11:ステージのアクティブ制御](src/main/java/jp/soars/tutorials/sample11/)
   - [sample12:モジュール合成](src/main/java/jp/soars/tutorials/sample12/)
-
-
-  <!-- - 
-  <!-- # サンプルは，明示的にリムーブしてから追加で実装．リムーブしない場合はワーニングが出ることを説明 -->
-  <!-- - [sample12:ルールの上書きと追加](src/main/java/jp/soars/tutorials/sample12/)
-  - [sample13:ルールの並列実行](src/main/java/jp/soars/tutorials/sample13/)
-  - [sample14:大規模実験のための最適化設定](src/main/java/jp/soars/tutorials/sample14/)
-  - [sample15:オブジェクトの動的追加・削除](src/main/java/jp/soars/tutorials/sample15/) -->
-
-
+  - [sample13:ルールの上書きと追加](src/main/java/jp/soars/tutorials/sample13/)
+  - [sample14:ルールの並列実行](src/main/java/jp/soars/tutorials/sample14/)
+  - [sample15:大規模実験のための最適化設定](src/main/java/jp/soars/tutorials/sample15/)
+  - [sample16:オブジェクトの動的追加・削除](src/main/java/jp/soars/tutorials/sample16/)
 - 小野研モジュール
   - [セル空間モジュール](src/main/java/jp/soars/onolab/cell)
 - セルオートマトン

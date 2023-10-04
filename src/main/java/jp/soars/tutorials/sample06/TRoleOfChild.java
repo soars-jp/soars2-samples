@@ -11,10 +11,10 @@ import jp.soars.core.TSpot;
 public final class TRoleOfChild extends TRole {
 
     /** 自宅から学校に移動するルール名 */
-    private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_SCHOOL = "MoveFromHomeToSchool";
+    public static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_SCHOOL = "MoveFromHomeToSchool";
 
     /** 学校から自宅に移動するルール名 */
-    private static final String RULE_NAME_OF_MOVE_FROM_SCHOOL_TO_HOME = "MoveFromSchoolToHome";
+    public static final String RULE_NAME_OF_MOVE_FROM_SCHOOL_TO_HOME = "MoveFromSchoolToHome";
 
     /**
      * コンストラクタ

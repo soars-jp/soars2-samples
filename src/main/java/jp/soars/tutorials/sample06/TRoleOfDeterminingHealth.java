@@ -11,7 +11,7 @@ import jp.soars.core.TSpot;
 public final class TRoleOfDeterminingHealth extends TRole {
 
     /** 健康状態決定ルール名 */
-    private static final String RULE_NAME_OF_DETERMINING_HEALTH = "DeterminingHealth";
+    public static final String RULE_NAME_OF_DETERMINING_HEALTH = "DeterminingHealth";
 
     /**
      * コンストラクタ

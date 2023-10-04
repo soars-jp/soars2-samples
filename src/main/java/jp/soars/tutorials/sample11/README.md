@@ -1,6 +1,6 @@
-前：
+前：[sample10:ステージのロールバック](src/main/java/jp/soars/tutorials/sample10/)
 
-次：
+次：[sample12:モジュール合成](src/main/java/jp/soars/tutorials/sample12/)
 
 # sample11:ステージのアクティブ制御 <!-- omit in toc -->
 
@@ -312,7 +312,7 @@ sample10のエージェント役割を変更する．
 public final class TRoleOfAgent extends TRole {
 
     /** ランダム移動ルール名 */
-    private static final String RULE_NAME_OF_RANDOM_MOVING = "RandomMoving";
+    public static final String RULE_NAME_OF_RANDOM_MOVING = "RandomMoving";
 
     /**
      * コンストラクタ
@@ -511,6 +511,6 @@ public class TMain {
 }
 ```
 
-前：
+前：[sample10:ステージのロールバック](src/main/java/jp/soars/tutorials/sample10/)
 
-次：
+次：[sample12:モジュール合成](src/main/java/jp/soars/tutorials/sample12/)
