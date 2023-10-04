@@ -1,6 +1,6 @@
-前：[sample06:子役割による役割のアクティブ制御](src/main/java/jp/soars/tutorials/sample06/)
+前：[sample06:子役割による役割のアクティブ制御](../sample06/)
 
-次：[sample08:レイヤ機能の利用](src/main/java/jp/soars/tutorials/sample08/)
+次：[sample08:レイヤ機能の利用](../sample08/)
 
 # sample07:ステージ実行ルールによるルールの定期実行 <!-- omit in toc -->
 
@@ -297,6 +297,6 @@ public class TMain {
 }
 ```
 
-前：[sample06:子役割による役割のアクティブ制御](src/main/java/jp/soars/tutorials/sample06/)
+前：[sample06:子役割による役割のアクティブ制御](../sample06/)
 
-次：[sample08:レイヤ機能の利用](src/main/java/jp/soars/tutorials/sample08/)
+次：[sample08:レイヤ機能の利用](../sample08/)

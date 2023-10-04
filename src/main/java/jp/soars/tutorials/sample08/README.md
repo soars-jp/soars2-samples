@@ -1,6 +1,6 @@
-前：[sample07:ステージ実行ルールによるルールの定期実行](src/main/java/jp/soars/tutorials/sample07/)
+前：[sample07:ステージ実行ルールによるルールの定期実行](../sample07/)
 
-次：[sample09:グローバル共有変数集合の利用](src/main/java/jp/soars/tutorials/sample09/)
+次：[sample09:グローバル共有変数集合の利用](../sample09/)
 
 # sample08:レイヤ機能の利用 <!-- omit in toc -->
 
@@ -323,6 +323,6 @@ public class TMain {
 }
 ```
 
-前：[sample07:ステージ実行ルールによるルールの定期実行](src/main/java/jp/soars/tutorials/sample07/)
+前：[sample07:ステージ実行ルールによるルールの定期実行](../sample07/)
 
-次：[sample09:グローバル共有変数集合の利用](src/main/java/jp/soars/tutorials/sample09/)
+次：[sample09:グローバル共有変数集合の利用](../sample09/)

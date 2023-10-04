@@ -1,11 +1,11 @@
-前：[sample09:グローバル共有変数集合の利用](src/main/java/jp/soars/tutorials/sample09/)
+前：[sample09:グローバル共有変数集合の利用](../sample09/)
 
-次：[sample11:ステージのアクティブ制御](src/main/java/jp/soars/tutorials/sample11/)
+次：[sample11:ステージのアクティブ制御](../sample11/)
 
 # sample10:ステージのロールバック <!-- omit in toc -->
 
 sample10では，ステージのロールバック機能を利用して，ルールの実行順序で結果が変わる(依存する)ルールの実装方法について解説する．
-sample10では，[sample07:ステージ実行ルールによるルールの定期実行](src/main/java/jp/soars/tutorials/sample07/)のシミュレーションを拡張してスポットに定員を設ける．
+sample10では，[sample07:ステージ実行ルールによるルールの定期実行](../sample07/)のシミュレーションを拡張してスポットに定員を設ける．
 スポットに定員を設定する場合，例えば，エージェントAがスポットAに移動しようとして満員で移動できなかった後に，
 エージェントBがスポットAからスポットBに移動してスポットAが移動可能になる可能性があり，これはルールの実行順序に依存する．
 
@@ -521,6 +521,6 @@ public class TMain {
 }
 ```
 
-前：[sample09:グローバル共有変数集合の利用](src/main/java/jp/soars/tutorials/sample09/)
+前：[sample09:グローバル共有変数集合の利用](../sample09/)
 
-次：[sample11:ステージのアクティブ制御](src/main/java/jp/soars/tutorials/sample11/)
+次：[sample11:ステージのアクティブ制御](../sample11/)

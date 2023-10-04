@@ -1,6 +1,6 @@
-前：[sample12:モジュール合成](src/main/java/jp/soars/tutorials/sample12/)
+前：[sample12:モジュール合成](../sample12/)
 
-次：[sample14:ルールの並列実行](src/main/java/jp/soars/tutorials/sample14/)
+次：[sample14:ルールの並列実行](../sample14/)
 
 # sample13:ルールの上書きと追加 <!-- omit in toc -->
 
@@ -973,6 +973,6 @@ public class TMain {
 ```
 
 
-前：[sample12:モジュール合成](src/main/java/jp/soars/tutorials/sample12/)
+前：[sample12:モジュール合成](../sample12/)
 
-次：[sample14:ルールの並列実行](src/main/java/jp/soars/tutorials/sample14/)
+次：[sample14:ルールの並列実行](../sample14/)

@@ -1,6 +1,6 @@
-前：[sample01:最も簡単なプログラム](src/main/java/jp/soars/tutorials/sample01/)
+前：[sample01:最も簡単なプログラム](../sample01/)
 
-次：[sample03:確率的なルールの定義](src/main/java/jp/soars/tutorials/sample03/)
+次：[sample03:確率的なルールの定義](../sample03/)
 
 # sample02:臨時実行ルールによる相対時刻指定 <!-- omit in toc -->
 
@@ -389,6 +389,6 @@ public class TMain {
 }
 ```
 
-前：[sample01:最も簡単なプログラム](src/main/java/jp/soars/tutorials/sample01/)
+前：[sample01:最も簡単なプログラム](../sample01/)
 
-次：[sample03:確率的なルールの定義](src/main/java/jp/soars/tutorials/sample03/)
+次：[sample03:確率的なルールの定義](../sample03/)

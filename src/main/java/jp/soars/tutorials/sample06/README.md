@@ -1,6 +1,6 @@
-前：[sample05-2:ルールの汎化](src/main/java/jp/soars/tutorials/sample05_2/)
+前：[sample05-2:ルールの汎化](../sample05_2/)
 
-次：[sample07:ステージ実行ルールによるルールの定期実行](src/main/java/jp/soars/tutorials/sample07/)
+次：[sample07:ステージ実行ルールによるルールの定期実行](../sample07/)
 
 
 # sample06:子役割による役割のアクティブ制御 <!-- omit in toc -->
@@ -777,6 +777,6 @@ public class TMain {
 ```
 
 
-前：[sample05-2:ルールの汎化](src/main/java/jp/soars/tutorials/sample05_2/)
+前：[sample05-2:ルールの汎化](../sample05_2/)
 
-次：[sample07:ステージ実行ルールによるルールの定期実行](src/main/java/jp/soars/tutorials/sample07/)
+次：[sample07:ステージ実行ルールによるルールの定期実行](../sample07/)

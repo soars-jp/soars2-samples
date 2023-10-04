@@ -1,6 +1,6 @@
-前：[sample08:レイヤ機能の利用](src/main/java/jp/soars/tutorials/sample08/)
+前：[sample08:レイヤ機能の利用](../sample08/)
 
-次：[sample10:ステージのロールバック](src/main/java/jp/soars/tutorials/sample10/)
+次：[sample10:ステージのロールバック](../sample10/)
 
 # sample09:グローバル共有変数集合の利用 <!-- omit in toc -->
 
@@ -341,6 +341,6 @@ public class TMain {
 }
 ```
 
-前：[sample08:レイヤ機能の利用](src/main/java/jp/soars/tutorials/sample08/)
+前：[sample08:レイヤ機能の利用](../sample08/)
 
-次：[sample10:ステージのロールバック](src/main/java/jp/soars/tutorials/sample10/)
+次：[sample10:ステージのロールバック](../sample10/)

@@ -1,4 +1,4 @@
-前：[sample15:大規模実験のための最適化設定](src/main/java/jp/soars/tutorials/sample15/)
+前：[sample15:大規模実験のための最適化設定](../sample15/)
 
 # sample16:オブジェクトの動的追加・削除 <!-- omit in toc -->
 
@@ -389,7 +389,7 @@ public class TMain {
 }
 ```
 
-前：[sample15:大規模実験のための最適化設定](src/main/java/jp/soars/tutorials/sample15/)
+前：[sample15:大規模実験のための最適化設定](../sample15/)
 
 
 

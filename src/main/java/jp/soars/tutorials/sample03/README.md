@@ -1,6 +1,6 @@
-前：[sample02:臨時実行ルールによる相対時刻指定](src/main/java/jp/soars/tutorials/sample02/)
+前：[sample02:臨時実行ルールによる相対時刻指定](../sample02/)
 
-次：[sample04:曜日概念の導入](src/main/java/jp/soars/tutorials/sample04/)
+次：[sample04:曜日概念の導入](../sample04/)
 
 
 # sample03:確率的なルールの定義 <!-- omit in toc -->
@@ -421,6 +421,6 @@ public class TMain {
 ```
 
 
-前：[sample02:臨時実行ルールによる相対時刻指定](src/main/java/jp/soars/tutorials/sample02/)
+前：[sample02:臨時実行ルールによる相対時刻指定](../sample02/)
 
-次：[sample04:曜日概念の導入](src/main/java/jp/soars/tutorials/sample04/)
+次：[sample04:曜日概念の導入](../sample04/)

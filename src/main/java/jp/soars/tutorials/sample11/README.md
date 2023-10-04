@@ -1,6 +1,6 @@
-前：[sample10:ステージのロールバック](src/main/java/jp/soars/tutorials/sample10/)
+前：[sample10:ステージのロールバック](../sample10/)
 
-次：[sample12:モジュール合成](src/main/java/jp/soars/tutorials/sample12/)
+次：[sample12:モジュール合成](../sample12/)
 
 # sample11:ステージのアクティブ制御 <!-- omit in toc -->
 
@@ -511,6 +511,6 @@ public class TMain {
 }
 ```
 
-前：[sample10:ステージのロールバック](src/main/java/jp/soars/tutorials/sample10/)
+前：[sample10:ステージのロールバック](../sample10/)
 
-次：[sample12:モジュール合成](src/main/java/jp/soars/tutorials/sample12/)
+次：[sample12:モジュール合成](../sample12/)

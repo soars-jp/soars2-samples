@@ -1,6 +1,6 @@
-前：[sample13:ルールの上書きと追加](src/main/java/jp/soars/tutorials/sample13/)
+前：[sample13:ルールの上書きと追加](../sample13/)
 
-次：[sample15:大規模実験のための最適化設定](src/main/java/jp/soars/tutorials/sample15/)
+次：[sample15:大規模実験のための最適化設定](../sample15/)
 
 # sample14:ルールの並列実行 <!-- omit in toc -->
 
@@ -434,6 +434,6 @@ public class TMainParallel {
 }
 ```
 
-前：[sample13:ルールの上書きと追加](src/main/java/jp/soars/tutorials/sample13/)
+前：[sample13:ルールの上書きと追加](../sample13/)
 
-次：[sample15:大規模実験のための最適化設定](src/main/java/jp/soars/tutorials/sample15/)
+次：[sample15:大規模実験のための最適化設定](../sample15/)

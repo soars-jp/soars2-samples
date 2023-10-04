@@ -1,6 +1,6 @@
-前：[sample14:ルールの並列実行](src/main/java/jp/soars/tutorials/sample14/)
+前：[sample14:ルールの並列実行](../sample14/)
 
-次：[sample16:オブジェクトの動的追加・削除](src/main/java/jp/soars/tutorials/sample16/)
+次：[sample16:オブジェクトの動的追加・削除](../sample16/)
 
 # sample15:大規模実験のための最適化設定 <!-- omit in toc -->
 
@@ -323,6 +323,6 @@ public class TMain {
 }
 ```
 
-前：[sample14:ルールの並列実行](src/main/java/jp/soars/tutorials/sample14/)
+前：[sample14:ルールの並列実行](../sample14/)
 
-次：[sample16:オブジェクトの動的追加・削除](src/main/java/jp/soars/tutorials/sample16/)
+次：[sample16:オブジェクトの動的追加・削除](../sample16/)
