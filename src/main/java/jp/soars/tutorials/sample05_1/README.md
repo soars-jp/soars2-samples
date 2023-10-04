@@ -1,5 +1,6 @@
-前：
-次：
+前：[sample04:曜日概念の導入](src/main/java/jp/soars/tutorials/sample04/)
+
+次：[sample05-2:ルールの汎化](src/main/java/jp/soars/tutorials/sample05_2/)
 
 
 # sample05-1:役割のアクティブ制御 <!-- omit in toc -->
@@ -447,19 +448,19 @@ public final class TRoleOfFather extends TRole {
     private final TSpot fCompany;
 
     /** 健康状態決定ルール名 */
-    private static final String RULE_NAME_OF_DETERMINING_HEALTH = "DeterminingHealth";
+    public static final String RULE_NAME_OF_DETERMINING_HEALTH = "DeterminingHealth";
 
     /** 9時に自宅から会社に移動するルール名 */
-    private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_9 = "MoveFromHomeToCompany9";
+    public static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_9 = "MoveFromHomeToCompany9";
 
     /** 10時に自宅から会社に移動するルール名 */
-    private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_10 = "MoveFromHomeToCompany10";
+    public static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_10 = "MoveFromHomeToCompany10";
 
     /** 11時に自宅から会社に移動するルール名 */
-    private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_11 = "MoveFromHomeToCompany11";
+    public static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_11 = "MoveFromHomeToCompany11";
 
     /** 会社から自宅に移動するルール名 */
-    private static final String RULE_NAME_OF_MOVE_FROM_COMPANY_TO_HOME = "MoveFromCompanyToHome";
+    public static final String RULE_NAME_OF_MOVE_FROM_COMPANY_TO_HOME = "MoveFromCompanyToHome";
 
     /**
      * コンストラクタ
@@ -530,10 +531,10 @@ public final class TRoleOfSickPerson extends TRole {
     public static final String RULE_NAME_OF_RECOVERING_FROM_SICK = "RecoveringFromSick";
 
     /** 自宅から病院に移動するルール名 */
-    private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_HOSPITAL = "MoveFromHomeToHospital";
+    public static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_HOSPITAL = "MoveFromHomeToHospital";
 
     /** 病院から自宅に移動するルール名 */
-    private static final String RULE_NAME_OF_MOVE_FROM_HOSPITAL_TO_HOME = "MoveFromHospitalToHome";
+    public static final String RULE_NAME_OF_MOVE_FROM_HOSPITAL_TO_HOME = "MoveFromHospitalToHome";
 
     /**
      * コンストラクタ
@@ -696,5 +697,6 @@ public class TMain {
 ```
 
 
-前：
-次：
+前：[sample04:曜日概念の導入](src/main/java/jp/soars/tutorials/sample04/)
+
+次：[sample05-2:ルールの汎化](src/main/java/jp/soars/tutorials/sample05_2/)

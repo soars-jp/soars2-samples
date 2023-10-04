@@ -1,5 +1,6 @@
-前：
-次：
+前：[sample06:子役割による役割のアクティブ制御](src/main/java/jp/soars/tutorials/sample06/)
+
+次：[sample08:レイヤ機能の利用](src/main/java/jp/soars/tutorials/sample08/)
 
 # sample07:ステージ実行ルールによるルールの定期実行 <!-- omit in toc -->
 
@@ -134,7 +135,7 @@ public final class TRuleOfAgentRandomMoving extends TAgentRule {
 public final class TRoleOfAgent extends TRole {
 
     /** ランダム移動ルール名 */
-    private static final String RULE_NAME_OF_RANDOM_MOVING = "RandomMoving";
+    public static final String RULE_NAME_OF_RANDOM_MOVING = "RandomMoving";
 
     /**
      * コンストラクタ
@@ -238,7 +239,7 @@ public class TMain {
         // *************************************************************************************************************
         // エージェント作成
         //   - Agent:Agent1-Agent10
-        //     - 初期スポット:Home
+        //     - 初期スポット:Spot
         //     - 役割:エージェント役割
         // *************************************************************************************************************
 
@@ -296,5 +297,6 @@ public class TMain {
 }
 ```
 
-前：
-次：
+前：[sample06:子役割による役割のアクティブ制御](src/main/java/jp/soars/tutorials/sample06/)
+
+次：[sample08:レイヤ機能の利用](src/main/java/jp/soars/tutorials/sample08/)

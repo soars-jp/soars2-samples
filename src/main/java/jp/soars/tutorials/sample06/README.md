@@ -1,5 +1,6 @@
-前：
-次：
+前：[sample05-2:ルールの汎化](src/main/java/jp/soars/tutorials/sample05_2/)
+
+次：[sample07:ステージ実行ルールによるルールの定期実行](src/main/java/jp/soars/tutorials/sample07/)
 
 
 # sample06:子役割による役割のアクティブ制御 <!-- omit in toc -->
@@ -15,7 +16,7 @@ sample06では子役割を登録して複数の役割のアクティブ状態を
   - [TRuleOfDeterminingHealth:健康状態決定ルール](#truleofdetermininghealth健康状態決定ルール)
   - [TRuleOfRecoveringFromSick:病気から回復するルール](#truleofrecoveringfromsick病気から回復するルール)
 - [役割の定義](#役割の定義)
-  - [TRoleOfCommon:共通役割](#troleofcommon共通役割)
+  - [TRoleOfDeterminingHealth:健康状態決定役割](#troleofdetermininghealth健康状態決定役割)
   - [TRoleOfFather:父親役割](#troleoffather父親役割)
   - [TRoleOfChild:子ども役割](#troleofchild子ども役割)
   - [TRoleOfSickPerson:病人役割](#troleofsickperson病人役割)
@@ -51,7 +52,7 @@ sample06では子役割を登録して複数の役割のアクティブ状態を
 sample05-2に追加して，
 エージェントタイプに子ども，
 スポットタイプに学校，
-役割名に共通役割と子ども役割を新たに定義する．
+役割名に健康状態決定役割と子ども役割を新たに定義する．
 
 `EAgentType.java`
 
@@ -96,8 +97,8 @@ public enum EStage {
 
 ```Java
 public enum ERoleName {
-    /** 共通役割 */
-    Common,
+    /** 健康状態決定役割 */
+    DeterminingHealth,
     /** 父親役割 */
     Father,
     /** 子ども役割 */
@@ -334,7 +335,7 @@ public final class TRuleOfStochasticallyAgentMovingOnWeekdays extends TAgentRule
 ### TRuleOfDeterminingHealth:健康状態決定ルール
 
 sample05-2のTRuleOfDeterminingHealthを変更する．
-このルールを持つエージェントのエージェントタイプに応じて非アクティブ化する役割を選択する．
+コンストラクタで非アクティブ化する役割名を受け取る．
 
 `TRuleOfDeterminingHealth.java`
 
@@ -347,20 +348,25 @@ public final class TRuleOfDeterminingHealth extends TAgentRule {
     /** 自宅 */
     private final TSpot fHome;
 
+    /** 病気になった時に非アクティブ化する役割名 */
+    private final Enum<?> fOriginalRoleName;
+
     /**
      * コンストラクタ
      * @param name ルール名
      * @param owner このルールを持つ役割
      * @param probability 病気になる確率[0, 1]
      * @param home 自宅
+     * @param originalRoleName 元の役割．病気になった時に非アクティブ化する．
      */
-    public TRuleOfDeterminingHealth(String name, TRole owner, double probability, TSpot home) {
+    public TRuleOfDeterminingHealth(String name, TRole owner, double probability, TSpot home, Enum<?> originalRoleName) {
         super(name, owner);
         if (probability < 0.0 || 1.0 < probability) {
             throw new RuntimeException("Invalid probability. Probability value must be between 0 and 1.");
         }
         fProbability = probability;
         fHome = home;
+        fOriginalRoleName = originalRoleName;
     }
 
     /**
@@ -378,15 +384,8 @@ public final class TRuleOfDeterminingHealth extends TAgentRule {
         boolean debugFlag = true;
         if (isAt(fHome)) {
             if (getRandom().nextDouble() <= fProbability) {
-                TAgent owner = getAgent();
-                if (owner.getType() == EAgentType.Father) {
-                    owner.deactivateRole(ERoleName.Father);
-                } else if (owner.getType() == EAgentType.Child) {
-                    owner.deactivateRole(ERoleName.Child);
-                } else {
-                    throw new RuntimeException("Unexpected agent type.");
-                }
-                owner.activateRole(ERoleName.SickPerson);
+                getAgent().deactivateRole(fOriginalRoleName);
+                getAgent().activateRole(ERoleName.SickPerson);
                 appendToDebugInfo("get sick.", debugFlag);
             } else {
                 appendToDebugInfo("Don't get sick. (probability)", debugFlag);
@@ -401,21 +400,26 @@ public final class TRuleOfDeterminingHealth extends TAgentRule {
 ### TRuleOfRecoveringFromSick:病気から回復するルール
 
 sample05-2のTRuleOfRecoveringFromSickを変更する．
-このルールを持つエージェントのエージェントタイプに応じてアクティブ化する役割を選択する．
+コンストラクタでアクティブ化する役割名を受け取る．
 
 `TRuleOfRecoveringFromSick.java`
 
 ```Java
 public final class TRuleOfRecoveringFromSick extends TAgentRule {
 
+    /** 病気から回復した時にアクティブ化する役割名 */
+    private final Enum<?> fOriginalRoleName;
+
     /**
      * コンストラクタ
      * @param name ルール名
      * @param owner このルールをもつ役割
+     * @param originalRoleName 元の役割．病気から回復した時にアクティブ化する．
      */
-    public TRuleOfRecoveringFromSick(String name, TRole owner) {
+    public TRuleOfRecoveringFromSick(String name, TRole owner, Enum<?> originalRoleName) {
         // 親クラスのコンストラクタを呼び出す．
         super(name, owner);
+        fOriginalRoleName = originalRoleName;
     }
 
     /**
@@ -430,48 +434,42 @@ public final class TRuleOfRecoveringFromSick extends TAgentRule {
     public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
             TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
         // 病人役割を非アクティブ化して父親役割か子ども役割をアクティブ化する．
-        TAgent owner = getAgent();
-        owner.deactivateRole(ERoleName.SickPerson);
-        if (owner.getType() == EAgentType.Father) {
-            owner.activateRole(ERoleName.Father);
-        } else if (owner.getType() == EAgentType.Child) {
-            owner.activateRole(ERoleName.Child);
-        } else {
-            throw new RuntimeException("Unexpected agent type.");
-        }
+        getAgent().deactivateRole(ERoleName.SickPerson);
+        getAgent().activateRole(fOriginalRoleName);
     }
 }
 ```
 
 ## 役割の定義
 
-### TRoleOfCommon:共通役割
+### TRoleOfDeterminingHealth:健康状態決定役割
 
 シナリオ「父親と子どもは，6時に自宅にいる場合に25%の確率で病気になる．」より，
 病気になるという動作は父親，子どもに関わらず共通である．
-そこで，共通役割を定義して健康状態決定ルールを持たせる．
-共通役割はメインクラスで父親役割か子ども役割の子役割として登録する．
-子役割として登録すると，父親役割か子ども役割をアクティブ化した場合に共通役割も同時にアクティブ化され，
+そこで，健康状態決定役割を定義して健康状態決定ルールを持たせる．
+健康状態決定役割はメインクラスで父親役割か子ども役割の子役割として登録する．
+子役割として登録すると，父親役割か子ども役割をアクティブ化した場合に健康状態決定役割も同時にアクティブ化され，
 ルールが実行される．
 
-`TRoleOfCommon.java`
+`TRoleOfDeterminingHealth.java`
 
 ```Java
-public final class TRoleOfCommon extends TRole {
+public final class TRoleOfDeterminingHealth extends TRole {
 
     /** 健康状態決定ルール名 */
-    private static final String RULE_NAME_OF_DETERMINING_HEALTH = "DeterminingHealth";
+    public static final String RULE_NAME_OF_DETERMINING_HEALTH = "DeterminingHealth";
 
     /**
      * コンストラクタ
      * @param owner この役割を持つエージェント
      * @param home 自宅
+     * @param originalRoleName 元の役割．病気になった時に非アクティブ化する．
      */
-    public TRoleOfCommon(TAgent owner, TSpot home) {
-        super(ERoleName.Common, owner, 1, 0);
+    public TRoleOfDeterminingHealth(TAgent owner, TSpot home, Enum<?> originalRoleName) {
+        super(ERoleName.DeterminingHealth, owner, 1, 0);
 
         // 健康状態決定ルール．6:00:00/健康状態決定ステージに定時実行ルールとして予約する．病人になる確率は25%(0.25)とする．
-        new TRuleOfDeterminingHealth(RULE_NAME_OF_DETERMINING_HEALTH, this, 0.25, home)
+        new TRuleOfDeterminingHealth(RULE_NAME_OF_DETERMINING_HEALTH, this, 0.25, home, originalRoleName)
                 .setTimeAndStage(6, 0, 0, EStage.DeterminingHealth);
     }
 }
@@ -480,7 +478,7 @@ public final class TRoleOfCommon extends TRole {
 ### TRoleOfFather:父親役割
 
 sample05-2のTRoleOfFatherを変更する．
-健康状態決定ルールは共通役割に設定するため，父親役割からは外す．
+健康状態決定ルールは健康状態決定役割に設定するため，父親役割からは外す．
 
 `TRoleOfFather.java`
 
@@ -488,16 +486,16 @@ sample05-2のTRoleOfFatherを変更する．
 public final class TRoleOfFather extends TRole {
 
     /** 9時に自宅から会社に移動するルール名 */
-    private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_9 = "MoveFromHomeToCompany9";
+    public static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_9 = "MoveFromHomeToCompany9";
 
     /** 10時に自宅から会社に移動するルール名 */
-    private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_10 = "MoveFromHomeToCompany10";
+    public static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_10 = "MoveFromHomeToCompany10";
 
     /** 11時に自宅から会社に移動するルール名 */
-    private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_11 = "MoveFromHomeToCompany11";
+    public static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_11 = "MoveFromHomeToCompany11";
 
     /** 会社から自宅に移動するルール名 */
-    private static final String RULE_NAME_OF_MOVE_FROM_COMPANY_TO_HOME = "MoveFromCompanyToHome";
+    public static final String RULE_NAME_OF_MOVE_FROM_COMPANY_TO_HOME = "MoveFromCompanyToHome";
 
     /**
      * コンストラクタ
@@ -542,10 +540,10 @@ public final class TRoleOfFather extends TRole {
 public final class TRoleOfChild extends TRole {
 
     /** 自宅から学校に移動するルール名 */
-    private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_SCHOOL = "MoveFromHomeToSchool";
+    public static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_SCHOOL = "MoveFromHomeToSchool";
 
     /** 学校から自宅に移動するルール名 */
-    private static final String RULE_NAME_OF_MOVE_FROM_SCHOOL_TO_HOME = "MoveFromSchoolToHome";
+    public static final String RULE_NAME_OF_MOVE_FROM_SCHOOL_TO_HOME = "MoveFromSchoolToHome";
 
     /**
      * コンストラクタ
@@ -575,7 +573,7 @@ public final class TRoleOfChild extends TRole {
 ### TRoleOfSickPerson:病人役割
 
 sample05-2のTRoleOfSickPersonを変更する．
-父親か子どもかによって実行時間を変更する．
+コンストラクタの引数 medicHour, originalRoleName は父親か子どもかによって変わる．
 
 `TRoleOfSickPerson.java`
 
@@ -586,16 +584,20 @@ public final class TRoleOfSickPerson extends TRole {
     public static final String RULE_NAME_OF_RECOVERING_FROM_SICK = "RecoveringFromSick";
 
     /** 自宅から病院に移動するルール名 */
-    private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_HOSPITAL = "MoveFromHomeToHospital";
+    public static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_HOSPITAL = "MoveFromHomeToHospital";
 
     /** 病院から自宅に移動するルール名 */
-    private static final String RULE_NAME_OF_MOVE_FROM_HOSPITAL_TO_HOME = "MoveFromHospitalToHome";
+    public static final String RULE_NAME_OF_MOVE_FROM_HOSPITAL_TO_HOME = "MoveFromHospitalToHome";
 
     /**
      * コンストラクタ
      * @param owner この役割を持つエージェント
+     * @param home 自宅
+     * @param hospital 病院
+     * @param medicHour 診察時間(病院滞在時間)
+     * @param originalRoleName 元の役割．病気から回復した時にアクティブ化する．
      */
-    public TRoleOfSickPerson(TAgent owner, TSpot home, TSpot hospital) {
+    public TRoleOfSickPerson(TAgent owner, TSpot home, TSpot hospital, int medicHour, Enum<?> originalRoleName) {
         super(ERoleName.SickPerson, owner, 3, 0);
 
         // 役割が持つルールの登録
@@ -604,20 +606,12 @@ public final class TRoleOfSickPerson extends TRole {
                 .setTimeAndStage(10, 0, 0, EStage.AgentMoving);
 
         // 病院から自宅に移動するルール．(12,13):00:00/エージェント移動ステージに定時実行ルールとして予約する．
-        int hour;
-        if (owner.getType() == EAgentType.Father) {
-            hour = 12;
-        } else if (owner.getType() == EAgentType.Child) {
-            hour = 13;
-        } else {
-            throw new RuntimeException("Unexpected agent type.");
-        }
         new TRuleOfAgentMoving(RULE_NAME_OF_MOVE_FROM_HOSPITAL_TO_HOME, this, hospital, home)
-                .setTimeAndStage(hour, 0, 0, EStage.AgentMoving);
+                .setTimeAndStage(10 + medicHour, 0, 0, EStage.AgentMoving);
 
         // 病気から回復するルール．(12,13):00:00/病気回復ステージに定時実行ルールとして予約する．
-        new TRuleOfRecoveringFromSick(RULE_NAME_OF_RECOVERING_FROM_SICK, this)
-                .setTimeAndStage(hour, 0, 0, EStage.RecoveringFromSick);
+        new TRuleOfRecoveringFromSick(RULE_NAME_OF_RECOVERING_FROM_SICK, this, originalRoleName)
+                .setTimeAndStage(10 + medicHour, 0, 0, EStage.RecoveringFromSick);
     }
 }
 ```
@@ -627,8 +621,8 @@ public final class TRoleOfSickPerson extends TRole {
 sample05-2のメインクラスのログ出力ディレクトリを変更する．そのほかの変更は以下に示す．
 
 - 学校スポットを1つ作成する．
-- 父親エージェントの設定で共通役割を作成して，父親役割の子役割として登録する．
-- 子どもエージェントを作成して自宅，共通役割，子ども役割，病人役割を設定する．設定方法は父親エージェントとほとんど同様である．
+- 父親エージェントの設定で健康状態決定役割を作成して，父親役割の子役割として登録する．
+- 子どもエージェントを作成して自宅，健康状態決定役割，子ども役割，病人役割を設定する．設定方法は父親エージェントと同様である．
 - スポットログに子どもエージェントのスポットを出力するように変更する．agentManagerのgetAgents()メソッドはシミュレーション中に存在する全エージェントのリストを返すメソッドである．
 
 `TMain.java`
@@ -704,10 +698,10 @@ public class TMain {
         // エージェント作成
         //   - Father:Father1, Father2, Father3
         //     - 初期スポット:Home
-        //     - 役割:共通役割，父親役割，病人役割
+        //     - 役割:健康状態決定役割，父親役割，病人役割
         //   - Child:Child1, Child2, Child3
         //     - 初期スポット:Home
-        //     - 役割:共通役割，子ども役割，病人役割
+        //     - 役割:健康状態決定役割，子ども役割，病人役割
         // *************************************************************************************************************
 
         int noOfFathers = noOfHomes; // 父親の数は家の数と同じ．
@@ -716,10 +710,10 @@ public class TMain {
             TAgent father = fathers.get(i); // i番目の父親エージェント
             TSpot home = homes.get(i); // i番目の父親エージェントの自宅
             father.initializeCurrentSpot(home); // 初期スポットを自宅に設定
-            TRole roleOfCommon = new TRoleOfCommon(father, home); // 共通役割を作成
+            TRole roleOfCommon = new TRoleOfDeterminingHealth(father, home, ERoleName.Father); // 健康状態決定役割を作成
             TRole roleOfFather = new TRoleOfFather(father, home, company); // 父親役割を作成
-            new TRoleOfSickPerson(father, home, hospital); // 病人役割を作成
-            roleOfFather.addChildRole(roleOfCommon); // 共通役割を父親役割の子役割に設定
+            new TRoleOfSickPerson(father, home, hospital, 2, ERoleName.Father); // 病人役割を作成
+            roleOfFather.addChildRole(roleOfCommon); // 健康状態決定役割を父親役割の子役割に設定
             father.activateRole(ERoleName.Father); // 父親役割をアクティブ化
         }
 
@@ -729,10 +723,10 @@ public class TMain {
             TAgent child = children.get(i); // i番目の子どもエージェント
             TSpot home = homes.get(i); // i番目の子どもエージェントの自宅
             child.initializeCurrentSpot(home); // 初期スポットを自宅に設定
-            TRole roleOfCommon = new TRoleOfCommon(child, home); // 共通役割を作成
+            TRole roleOfCommon = new TRoleOfDeterminingHealth(child, home, ERoleName.Child); // 健康状態決定役割を作成
             TRole roleOfChild = new TRoleOfChild(child, home, school); // 子ども役割を作成
-            new TRoleOfSickPerson(child, home, hospital); // 病人役割を作成
-            roleOfChild.addChildRole(roleOfCommon); // 共通役割を子ども役割の子役割に設定
+            new TRoleOfSickPerson(child, home, hospital, 3, ERoleName.Child); // 病人役割を作成
+            roleOfChild.addChildRole(roleOfCommon); // 健康状態決定役割を子ども役割の子役割に設定
             child.activateRole(ERoleName.Child); // 子ども役割をアクティブ化
         }
 
@@ -783,5 +777,6 @@ public class TMain {
 ```
 
 
-前：
-次：
+前：[sample05-2:ルールの汎化](src/main/java/jp/soars/tutorials/sample05_2/)
+
+次：[sample07:ステージ実行ルールによるルールの定期実行](src/main/java/jp/soars/tutorials/sample07/)

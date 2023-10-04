@@ -12,16 +12,15 @@ SOARS toolkit ver.2のサンプルプログラム
   - [sample05-2:ルールの汎化](src/main/java/jp/soars/tutorials/sample05_2/)
   - [sample06:子役割による役割のアクティブ制御](src/main/java/jp/soars/tutorials/sample06/)
   - [sample07:ステージ実行ルールによるルールの定期実行](src/main/java/jp/soars/tutorials/sample07/)
-
-  <!-- - [sample08:レイヤー機能の利用](src/main/java/jp/soars/tutorials/sample08/)
+  - [sample08:レイヤ機能の利用](src/main/java/jp/soars/tutorials/sample08/)
   - [sample09:グローバル共有変数集合の利用](src/main/java/jp/soars/tutorials/sample09/)
   - [sample10:ステージのロールバック](src/main/java/jp/soars/tutorials/sample10/)
-  - [sample11:モジュール合成](src/main/java/jp/soars/tutorials/sample11/)
-  # サンプルは，明示的にリムーブしてから追加で実装．リムーブしない場合はワーニングが出ることを説明
-  - [sample12:ルールの上書きと追加](src/main/java/jp/soars/tutorials/sample12/)
-  - [sample13:ルールの並列実行](src/main/java/jp/soars/tutorials/sample13/)
-  - [sample14:大規模実験のための最適化設定](src/main/java/jp/soars/tutorials/sample14/)
-  - [sample15:オブジェクトの動的追加・削除](src/main/java/jp/soars/tutorials/sample15/) -->
+  - [sample11:ステージのアクティブ制御](src/main/java/jp/soars/tutorials/sample11/)
+  - [sample12:モジュール合成](src/main/java/jp/soars/tutorials/sample12/)
+  - [sample13:ルールの上書きと追加](src/main/java/jp/soars/tutorials/sample13/)
+  - [sample14:ルールの並列実行](src/main/java/jp/soars/tutorials/sample14/)
+  - [sample15:大規模実験のための最適化設定](src/main/java/jp/soars/tutorials/sample15/)
+  - [sample16:オブジェクトの動的追加・削除](src/main/java/jp/soars/tutorials/sample16/)
 - 小野研モジュール
   - [セル空間モジュール](src/main/java/jp/soars/onolab/cell)
 - セルオートマトン
@@ -48,7 +47,7 @@ SOARS toolkit ver.2のサンプルプログラム
   - [アクティブ役割の仕様変更](#アクティブ役割の仕様変更)
   - [TModelの廃止とBuilderパターンの導入](#tmodelの廃止とbuilderパターンの導入)
   - [時間に秒を追加](#時間に秒を追加)
-  - [レイヤー機能](#レイヤー機能)
+  - [レイヤ機能](#レイヤ機能)
   - [ランタイムログの導入](#ランタイムログの導入)
   - [ルールログのデバッグ情報出力の仕様変更](#ルールログのデバッグ情報出力の仕様変更)
   - [ルールが自動的にシャッフルされるように仕様変更](#ルールが自動的にシャッフルされるように仕様変更)
@@ -113,10 +112,10 @@ Enum型は同じ名前を定義したとしても，定義場所が異なれば�
 - TTimeの最小単位を分から秒に変更．
 - この変更に伴って，[ver.1から移行する場合の注意点](#ver1から移行する場合の注意点)があるためそちらを参照．
 
-### レイヤー機能
+### レイヤ機能
 
-- スポットをレイヤーごとに作成して管理することができる機能．
-- 例えば，Real, SNSというレイヤーを作成してそれぞれのレイヤー上にスポットを作成する．エージェントはレイヤーごとに現在スポットをもち，スポットの移動は同じレイヤー上のみで行われる．
+- スポットをレイヤごとに作成して管理することができる機能．
+- 例えば，Real, SNSというレイヤを作成してそれぞれのレイヤ上にスポットを作成する．エージェントはレイヤごとに現在スポットをもち，スポットの移動は同じレイヤ上のみで行われる．
 
 ### ランタイムログの導入
 
@@ -170,8 +169,8 @@ TSOARSBuilderのコンストラクタ
   - stages: シミュレーションで使用するステージリスト．
   - agentTypes: シミュレーションで使用するエージェントタイプ集合．
   - spotTypes: シミュレーションで使用するスポットタイプ集合．
-  - layers: シミュレーションで使用するレイヤー集合．入力しない場合は，コアライブラリで定義されるデフォルトレイヤーのみ．
-  - defaultLayer: layersでデフォルトレイヤーとして設定するレイヤー．入力しない場合は，コアライブラリで定義されるデフォルトレイヤー．
+  - layers: シミュレーションで使用するレイヤ集合．入力しない場合は，コアライブラリで定義されるデフォルトレイヤのみ．
+  - defaultLayer: layersでデフォルトレイヤとして設定するレイヤ．入力しない場合は，コアライブラリで定義されるデフォルトレイヤ．
 
 インスタンスの作成と取得用メソッド
 
@@ -263,6 +262,6 @@ TSOARSBuilderのメソッド．
   - エージェントタイプごとのシミュレーションで作成されるエージェント数の最大値の予測値を指定するのがよい．
 - setExpectedNoOfSpots(Enum<?> layer, Enum<?> spotType, int expectedMaxNoOfSpots):
 - setExpectedNoOfSpots(Enum<?> spotType, int expectedMaxNoOfSpots):
-  - レイヤーとスポットタイプごとにスポットを保持するリストの初期サイズを指定する．
-  - レイヤーを入力しない場合は，デフォルトレイヤーが指定される．
-  - レイヤーとスポットタイプごとのシミュレーションで作成されるスポット数の最大値の予測値を指定するのがよい．
+  - レイヤとスポットタイプごとにスポットを保持するリストの初期サイズを指定する．
+  - レイヤを入力しない場合は，デフォルトレイヤが指定される．
+  - レイヤとスポットタイプごとのシミュレーションで作成されるスポット数の最大値の予測値を指定するのがよい．

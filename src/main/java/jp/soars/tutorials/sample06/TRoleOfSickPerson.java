@@ -14,16 +14,20 @@ public final class TRoleOfSickPerson extends TRole {
     public static final String RULE_NAME_OF_RECOVERING_FROM_SICK = "RecoveringFromSick";
 
     /** 自宅から病院に移動するルール名 */
-    private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_HOSPITAL = "MoveFromHomeToHospital";
+    public static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_HOSPITAL = "MoveFromHomeToHospital";
 
     /** 病院から自宅に移動するルール名 */
-    private static final String RULE_NAME_OF_MOVE_FROM_HOSPITAL_TO_HOME = "MoveFromHospitalToHome";
+    public static final String RULE_NAME_OF_MOVE_FROM_HOSPITAL_TO_HOME = "MoveFromHospitalToHome";
 
     /**
      * コンストラクタ
      * @param owner この役割を持つエージェント
+     * @param home 自宅
+     * @param hospital 病院
+     * @param medicHour 診察時間(病院滞在時間)
+     * @param originalRoleName 元の役割．病気から回復した時にアクティブ化する．
      */
-    public TRoleOfSickPerson(TAgent owner, TSpot home, TSpot hospital) {
+    public TRoleOfSickPerson(TAgent owner, TSpot home, TSpot hospital, int medicHour, Enum<?> originalRoleName) {
         super(ERoleName.SickPerson, owner, 3, 0);
 
         // 役割が持つルールの登録
@@ -32,19 +36,11 @@ public final class TRoleOfSickPerson extends TRole {
                 .setTimeAndStage(10, 0, 0, EStage.AgentMoving);
 
         // 病院から自宅に移動するルール．(12,13):00:00/エージェント移動ステージに定時実行ルールとして予約する．
-        int hour;
-        if (owner.getType() == EAgentType.Father) {
-            hour = 12;
-        } else if (owner.getType() == EAgentType.Child) {
-            hour = 13;
-        } else {
-            throw new RuntimeException("Unexpected agent type.");
-        }
         new TRuleOfAgentMoving(RULE_NAME_OF_MOVE_FROM_HOSPITAL_TO_HOME, this, hospital, home)
-                .setTimeAndStage(hour, 0, 0, EStage.AgentMoving);
+                .setTimeAndStage(10 + medicHour, 0, 0, EStage.AgentMoving);
 
         // 病気から回復するルール．(12,13):00:00/病気回復ステージに定時実行ルールとして予約する．
-        new TRuleOfRecoveringFromSick(RULE_NAME_OF_RECOVERING_FROM_SICK, this)
-                .setTimeAndStage(hour, 0, 0, EStage.RecoveringFromSick);
+        new TRuleOfRecoveringFromSick(RULE_NAME_OF_RECOVERING_FROM_SICK, this, originalRoleName)
+                .setTimeAndStage(10 + medicHour, 0, 0, EStage.RecoveringFromSick);
     }
 }

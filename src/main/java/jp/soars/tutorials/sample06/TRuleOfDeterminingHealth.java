@@ -2,7 +2,6 @@ package jp.soars.tutorials.sample06;
 
 import java.util.Map;
 
-import jp.soars.core.TAgent;
 import jp.soars.core.TAgentManager;
 import jp.soars.core.TAgentRule;
 import jp.soars.core.TRole;
@@ -22,20 +21,25 @@ public final class TRuleOfDeterminingHealth extends TAgentRule {
     /** 自宅 */
     private final TSpot fHome;
 
+    /** 病気になった時に非アクティブ化する役割名 */
+    private final Enum<?> fOriginalRoleName;
+
     /**
      * コンストラクタ
      * @param name ルール名
      * @param owner このルールを持つ役割
      * @param probability 病気になる確率[0, 1]
      * @param home 自宅
+     * @param originalRoleName 元の役割．病気になった時に非アクティブ化する．
      */
-    public TRuleOfDeterminingHealth(String name, TRole owner, double probability, TSpot home) {
+    public TRuleOfDeterminingHealth(String name, TRole owner, double probability, TSpot home, Enum<?> originalRoleName) {
         super(name, owner);
         if (probability < 0.0 || 1.0 < probability) {
             throw new RuntimeException("Invalid probability. Probability value must be between 0 and 1.");
         }
         fProbability = probability;
         fHome = home;
+        fOriginalRoleName = originalRoleName;
     }
 
     /**
@@ -53,15 +57,8 @@ public final class TRuleOfDeterminingHealth extends TAgentRule {
         boolean debugFlag = true;
         if (isAt(fHome)) {
             if (getRandom().nextDouble() <= fProbability) {
-                TAgent owner = getAgent();
-                if (owner.getType() == EAgentType.Father) {
-                    owner.deactivateRole(ERoleName.Father);
-                } else if (owner.getType() == EAgentType.Child) {
-                    owner.deactivateRole(ERoleName.Child);
-                } else {
-                    throw new RuntimeException("Unexpected agent type.");
-                }
-                owner.activateRole(ERoleName.SickPerson);
+                getAgent().deactivateRole(fOriginalRoleName);
+                getAgent().activateRole(ERoleName.SickPerson);
                 appendToDebugInfo("get sick.", debugFlag);
             } else {
                 appendToDebugInfo("Don't get sick. (probability)", debugFlag);

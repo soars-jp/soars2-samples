@@ -1,5 +1,6 @@
-前：
-次：
+前：[sample03:確率的なルールの定義](src/main/java/jp/soars/tutorials/sample03/)
+
+次：[sample05-1:役割のアクティブ制御](src/main/java/jp/soars/tutorials/sample05_1/)
 
 
 # sample04:曜日概念の導入 <!-- omit in toc -->
@@ -244,16 +245,16 @@ public final class TRoleOfFather extends TRole {
     private final TSpot fCompany;
 
     /** 9時に自宅から会社に移動するルール名 */
-    private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_9 = "MoveFromHomeToCompany9";
+    public static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_9 = "MoveFromHomeToCompany9";
 
     /** 10時に自宅から会社に移動するルール名 */
-    private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_10 = "MoveFromHomeToCompany10";
+    public static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_10 = "MoveFromHomeToCompany10";
 
     /** 11時に自宅から会社に移動するルール名 */
-    private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_11 = "MoveFromHomeToCompany11";
+    public static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY_11 = "MoveFromHomeToCompany11";
 
     /** 会社から自宅に移動するルール名 */
-    private static final String RULE_NAME_OF_MOVE_FROM_COMPANY_TO_HOME = "MoveFromCompanyToHome";
+    public static final String RULE_NAME_OF_MOVE_FROM_COMPANY_TO_HOME = "MoveFromCompanyToHome";
 
     /**
      * コンストラクタ
@@ -443,5 +444,6 @@ public class TMain {
 ```
 
 
-前：
-次：
+前：[sample03:確率的なルールの定義](src/main/java/jp/soars/tutorials/sample03/)
+
+次：[sample05-1:役割のアクティブ制御](src/main/java/jp/soars/tutorials/sample05_1/)

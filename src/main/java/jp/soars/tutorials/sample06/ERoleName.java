@@ -5,8 +5,8 @@ package jp.soars.tutorials.sample06;
  * @author nagakane
  */
 public enum ERoleName {
-    /** 共通役割 */
-    Common,
+    /** 健康状態決定役割 */
+    DeterminingHealth,
     /** 父親役割 */
     Father,
     /** 子ども役割 */

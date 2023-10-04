@@ -95,10 +95,10 @@ public class TMain {
         // エージェント作成
         //   - Father:Father1, Father2, Father3
         //     - 初期スポット:Home
-        //     - 役割:共通役割，父親役割，病人役割
+        //     - 役割:健康状態決定役割，父親役割，病人役割
         //   - Child:Child1, Child2, Child3
         //     - 初期スポット:Home
-        //     - 役割:共通役割，子ども役割，病人役割
+        //     - 役割:健康状態決定役割，子ども役割，病人役割
         // *************************************************************************************************************
 
         int noOfFathers = noOfHomes; // 父親の数は家の数と同じ．
@@ -107,10 +107,10 @@ public class TMain {
             TAgent father = fathers.get(i); // i番目の父親エージェント
             TSpot home = homes.get(i); // i番目の父親エージェントの自宅
             father.initializeCurrentSpot(home); // 初期スポットを自宅に設定
-            TRole roleOfCommon = new TRoleOfCommon(father, home); // 共通役割を作成
+            TRole roleOfCommon = new TRoleOfDeterminingHealth(father, home, ERoleName.Father); // 健康状態決定役割を作成
             TRole roleOfFather = new TRoleOfFather(father, home, company); // 父親役割を作成
-            new TRoleOfSickPerson(father, home, hospital); // 病人役割を作成
-            roleOfFather.addChildRole(roleOfCommon); // 共通役割を父親役割の子役割に設定
+            new TRoleOfSickPerson(father, home, hospital, 2, ERoleName.Father); // 病人役割を作成
+            roleOfFather.addChildRole(roleOfCommon); // 健康状態決定役割を父親役割の子役割に設定
             father.activateRole(ERoleName.Father); // 父親役割をアクティブ化
         }
 
@@ -120,10 +120,10 @@ public class TMain {
             TAgent child = children.get(i); // i番目の子どもエージェント
             TSpot home = homes.get(i); // i番目の子どもエージェントの自宅
             child.initializeCurrentSpot(home); // 初期スポットを自宅に設定
-            TRole roleOfCommon = new TRoleOfCommon(child, home); // 共通役割を作成
+            TRole roleOfCommon = new TRoleOfDeterminingHealth(child, home, ERoleName.Child); // 健康状態決定役割を作成
             TRole roleOfChild = new TRoleOfChild(child, home, school); // 子ども役割を作成
-            new TRoleOfSickPerson(child, home, hospital); // 病人役割を作成
-            roleOfChild.addChildRole(roleOfCommon); // 共通役割を子ども役割の子役割に設定
+            new TRoleOfSickPerson(child, home, hospital, 3, ERoleName.Child); // 病人役割を作成
+            roleOfChild.addChildRole(roleOfCommon); // 健康状態決定役割を子ども役割の子役割に設定
             child.activateRole(ERoleName.Child); // 子ども役割をアクティブ化
         }
 

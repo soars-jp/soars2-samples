@@ -1,5 +1,6 @@
-前：
-次：
+前：[sample01:最も簡単なプログラム](src/main/java/jp/soars/tutorials/sample01/)
+
+次：[sample03:確率的なルールの定義](src/main/java/jp/soars/tutorials/sample03/)
 
 # sample02:臨時実行ルールによる相対時刻指定 <!-- omit in toc -->
 
@@ -210,10 +211,10 @@ public final class TRoleOfFather extends TRole {
     private final TSpot fCompany;
 
     /** 自宅から会社に移動するルール名 */
-    private static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY = "MoveFromHomeToCompany";
+    public static final String RULE_NAME_OF_MOVE_FROM_HOME_TO_COMPANY = "MoveFromHomeToCompany";
 
     /** 会社から自宅に移動するルール名 */
-    private static final String RULE_NAME_OF_MOVE_FROM_COMPANY_TO_HOME = "MoveFromCompanyToHome";
+    public static final String RULE_NAME_OF_MOVE_FROM_COMPANY_TO_HOME = "MoveFromCompanyToHome";
 
     /**
      * コンストラクタ
@@ -388,5 +389,6 @@ public class TMain {
 }
 ```
 
-前：
-次：
+前：[sample01:最も簡単なプログラム](src/main/java/jp/soars/tutorials/sample01/)
+
+次：[sample03:確率的なルールの定義](src/main/java/jp/soars/tutorials/sample03/)

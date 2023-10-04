@@ -2,7 +2,6 @@ package jp.soars.tutorials.sample06;
 
 import java.util.Map;
 
-import jp.soars.core.TAgent;
 import jp.soars.core.TAgentManager;
 import jp.soars.core.TAgentRule;
 import jp.soars.core.TRole;
@@ -15,14 +14,19 @@ import jp.soars.core.TTime;
  */
 public final class TRuleOfRecoveringFromSick extends TAgentRule {
 
+    /** 病気から回復した時にアクティブ化する役割名 */
+    private final Enum<?> fOriginalRoleName;
+
     /**
      * コンストラクタ
      * @param name ルール名
      * @param owner このルールをもつ役割
+     * @param originalRoleName 元の役割．病気から回復した時にアクティブ化する．
      */
-    public TRuleOfRecoveringFromSick(String name, TRole owner) {
+    public TRuleOfRecoveringFromSick(String name, TRole owner, Enum<?> originalRoleName) {
         // 親クラスのコンストラクタを呼び出す．
         super(name, owner);
+        fOriginalRoleName = originalRoleName;
     }
 
     /**
@@ -37,14 +41,7 @@ public final class TRuleOfRecoveringFromSick extends TAgentRule {
     public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
             TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
         // 病人役割を非アクティブ化して父親役割か子ども役割をアクティブ化する．
-        TAgent owner = getAgent();
-        owner.deactivateRole(ERoleName.SickPerson);
-        if (owner.getType() == EAgentType.Father) {
-            owner.activateRole(ERoleName.Father);
-        } else if (owner.getType() == EAgentType.Child) {
-            owner.activateRole(ERoleName.Child);
-        } else {
-            throw new RuntimeException("Unexpected agent type.");
-        }
+        getAgent().deactivateRole(ERoleName.SickPerson);
+        getAgent().activateRole(fOriginalRoleName);
     }
 }
