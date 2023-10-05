@@ -32,7 +32,7 @@ SOARS toolkit ver.2のサンプルプログラム
   - [シロアリ](src/main/java/jp/soars/netlogo/termites) -->
 
 ## SOARS2 APIs (JavaDoc) <!-- omit in toc -->
-- http://www.ic.dis.titech.ac.jp/soars/soars2-apidocs_2_2_0/index.html
+- http://www.ic.dis.titech.ac.jp/soars/soars2-apidocs_2_4_0/index.html
 
 ## ver.1からの変更点
 
