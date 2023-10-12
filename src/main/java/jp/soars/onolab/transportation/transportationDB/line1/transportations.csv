@@ -1,0 +1,4 @@
+Line,Direction,TransportationName,TransportationType,Source,DepartureTime,Destination,ArrivalTime,ExpectedMaxNoOfAgentsInSpot
+line1,inbound,001,local,station1,7:00,station10,7:40,100
+line1,outbound,001,local,station10,6:30,station1,7:10,100
+line1,outbound,002,local,station10,18:00,station1,18:40,100

@@ -48,6 +48,11 @@
       <artifactId>onolab-spatial-spot-module</artifactId>
       <version>1.0.0</version>
     </dependency>
+        <dependency>
+      <groupId>jp.soars</groupId>
+      <artifactId>onolab-simple-transportation-module</artifactId>
+      <version>1.0.1</version>
+    </dependency>
   </dependencies>
 
   <build>
