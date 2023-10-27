@@ -89,8 +89,6 @@ public class TMain {
 
         // *************************************************************************************************************
         // 駅スポットと乗り物スポット作成
-        // - Station:Station
-        // - Transportation:Transportation
         // *************************************************************************************************************
 
         String PathOfTransportationLogDir = "src/main/java/jp/soars/onolab/transportation/transportationDB";
@@ -134,15 +132,15 @@ public class TMain {
         spotLogPW.println();
 
         // Transportation用PrintWriter
-        PrintWriter transportationPW = new PrintWriter(
+        PrintWriter transportationLogPW = new PrintWriter(
                 new BufferedWriter(new FileWriter(pathOfLogDir + File.separator + "transportation_log.csv")));
         // スポットログのカラム名出力
-        transportationPW.print("CurrentTime");
+        transportationLogPW.print("CurrentTime");
         for (TSpot transportation : transportationAndStationManager.getTransportationSpotList()) {
-            transportationPW.print(",");
-            transportationPW.print(transportation.getName());
+            transportationLogPW.print(",");
+            transportationLogPW.print(transportation.getName());
         }
-        transportationPW.println();
+        transportationLogPW.println();
 
         // *************************************************************************************************************
         // シミュレーションのメインループ
@@ -160,14 +158,15 @@ public class TMain {
             spotLogPW.println();
 
             // Transportationログ出力
-            transportationPW.print(ruleExecutor.getCurrentTime());
+            transportationLogPW.print(ruleExecutor.getCurrentTime());
             for (TSpot transportation : transportationAndStationManager.getTransportationSpotList()) {
-                transportationPW.print(',');
+                transportationLogPW.print(',');
                 if (transportationAndStationManager.isTransportationInService(transportation)) {
-                    transportationPW.print(transportationAndStationManager.getTransportationLocation(transportation));
+                    transportationLogPW
+                            .print(transportationAndStationManager.getTransportationLocation(transportation));
                 }
             }
-            transportationPW.println();
+            transportationLogPW.println();
         }
 
         // *************************************************************************************************************
@@ -176,6 +175,6 @@ public class TMain {
 
         ruleExecutor.shutdown();
         spotLogPW.close();
-        transportationPW.close();
+        transportationLogPW.close();
     }
 }

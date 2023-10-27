@@ -38,6 +38,7 @@ public final class TRuleOfAgentMoving extends TAgentRule {
      * @param destination 目的地
      */
     public TRuleOfAgentMoving(String name, TRole owner, TSpot source, TSpot destination) {
+        // 親クラスのコンストラクタを呼び出す．
         super(name, owner);
         fSource = source;
         fDestination = destination;
@@ -93,5 +94,4 @@ public final class TRuleOfAgentMoving extends TAgentRule {
             appendToDebugInfo("fail", debugFlag);
         }
     }
-
 }

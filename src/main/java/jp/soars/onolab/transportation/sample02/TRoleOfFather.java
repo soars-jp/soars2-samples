@@ -6,6 +6,7 @@ import jp.soars.core.TAgent;
 import jp.soars.core.TRole;
 import jp.soars.core.TSpot;
 import jp.soars.core.TTime;
+import jp.soars.modules.onolab.simple.transportation.TRuleOfAgentMovingStation;
 import jp.soars.modules.onolab.simple.transportation.ETransportationStage;
 import jp.soars.modules.onolab.simple.transportation.TRuleOfGettingOffTransportation;
 import jp.soars.modules.onolab.simple.transportation.TRuleOfGettingOnTransportation;

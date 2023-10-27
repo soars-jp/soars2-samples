@@ -82,15 +82,12 @@ public class TMain {
         // - MidWay:Mid
         // *************************************************************************************************************
 
-        int noOfHomes = 1; // 家の数
-        List<TSpot> homes = spotManager.createSpots(ESpotType.Home, noOfHomes);
+        TSpot home = spotManager.createSpot(ESpotType.Home);
         TSpot company = spotManager.createSpot(ESpotType.Company);
         TSpot mid = spotManager.createSpot(ESpotType.Mid);
 
         // *************************************************************************************************************
         // 駅スポットと乗り物スポット作成
-        // - Station:Station
-        // - Transportation:Transportation
         // *************************************************************************************************************
 
         String PathOfTransportationLogDir = "src/main/java/jp/soars/onolab/transportation/transportationDB";
@@ -105,17 +102,12 @@ public class TMain {
         // - 役割:父親役割
         // *************************************************************************************************************
 
-        int noOfFathers = noOfHomes; // 父親の数は家の数と同じ．
-        List<TAgent> fathers = agentManager.createAgents(EAgentType.Father, noOfFathers);
+        TAgent father = agentManager.createAgent(EAgentType.Father);
         TSpot srcStationSpot = spotManager.getSpotDB().get("station2");
         TSpot dstStationSpot = spotManager.getSpotDB().get("station8");
-        for (int i = 0; i < noOfFathers; ++i) {
-            TAgent father = fathers.get(i); // i番目の父親エージェント
-            TSpot home = homes.get(i); // i番目の父親エージェントの自宅
-            father.initializeCurrentSpot(home); // 初期スポットを自宅に設定
-            new TRoleOfFather(father, home, company, mid, srcStationSpot, dstStationSpot, "line1");
-            father.activateRole(ERoleName.Father);
-        }
+        father.initializeCurrentSpot(home);// 初期スポットを自宅に設定
+        new TRoleOfFather(father, home, company, mid, srcStationSpot, dstStationSpot, "line1");
+        father.activateRole(ERoleName.Father);
 
         // *************************************************************************************************************
         // 独自に作成するログ用のPrintWriter
@@ -127,22 +119,20 @@ public class TMain {
                 new BufferedWriter(new FileWriter(pathOfLogDir + File.separator + "spot_log.csv")));
         // スポットログのカラム名出力
         spotLogPW.print("CurrentTime");
-        for (TAgent father : fathers) {
-            spotLogPW.print(',');
-            spotLogPW.print(father.getName());
-        }
+        spotLogPW.print(',');
+        spotLogPW.print(father.getName());
         spotLogPW.println();
 
         // Transportation用PrintWriter
-        PrintWriter transportationPW = new PrintWriter(
+        PrintWriter transportationLogPW = new PrintWriter(
                 new BufferedWriter(new FileWriter(pathOfLogDir + File.separator + "transportation_log.csv")));
         // スポットログのカラム名出力
-        transportationPW.print("CurrentTime");
+        transportationLogPW.print("CurrentTime");
         for (TSpot transportation : transportationAndStationManager.getTransportationSpotList()) {
-            transportationPW.print(",");
-            transportationPW.print(transportation.getName());
+            transportationLogPW.print(",");
+            transportationLogPW.print(transportation.getName());
         }
-        transportationPW.println();
+        transportationLogPW.println();
 
         // *************************************************************************************************************
         // シミュレーションのメインループ
@@ -153,21 +143,20 @@ public class TMain {
         while (ruleExecutor.executeStep()) {
             // スポットログ出力
             spotLogPW.print(ruleExecutor.getCurrentTime());
-            for (TAgent father : fathers) {
-                spotLogPW.print(',');
-                spotLogPW.print(father.getCurrentSpotName());
-            }
+            spotLogPW.print(',');
+            spotLogPW.print(father.getCurrentSpotName());
             spotLogPW.println();
 
             // Transportationログ出力
-            transportationPW.print(ruleExecutor.getCurrentTime());
+            transportationLogPW.print(ruleExecutor.getCurrentTime());
             for (TSpot transportation : transportationAndStationManager.getTransportationSpotList()) {
-                transportationPW.print(',');
+                transportationLogPW.print(',');
                 if (transportationAndStationManager.isTransportationInService(transportation)) {
-                    transportationPW.print(transportationAndStationManager.getTransportationLocation(transportation));
+                    transportationLogPW
+                            .print(transportationAndStationManager.getTransportationLocation(transportation));
                 }
             }
-            transportationPW.println();
+            transportationLogPW.println();
         }
 
         // *************************************************************************************************************
@@ -176,6 +165,6 @@ public class TMain {
 
         ruleExecutor.shutdown();
         spotLogPW.close();
-        transportationPW.close();
+        transportationLogPW.close();
     }
 }
