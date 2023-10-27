@@ -188,7 +188,7 @@ public final class TRuleOfAgentMoving extends TAgentRule {
 sample01と同様に，「列車に乗る」ルールとしてonolab.simple.transportation.TRuleOfGettingOnTransportationクラス，「列車から降りる」ルールとしてonolab.simple.transportation.TRuleOfGettingOffTransportationクラスを利用する．
 ただし，駅に到着後，路線条件・方面条件・列車タイプ条件・行き先条件を満たす最初に来た列車に乗車する場合のコンストラクタを用いる．
 
-sample2ではsample1と異なり，「駅に到着する」ルールとして TRuleOfAgentMovingクラスを用いるのではなく，onolab.simple.transportation.TRuleOfAgentMovingStationクラスを利用する．
+sample01と異なる部分としては「駅に到着する」ルールとして TRuleOfAgentMovingクラスを用いるのではなく，onolab.simple.transportation.TRuleOfAgentMovingStationクラスを利用する．
 このクラスは，エージェントが駅へ移動して電車を待つルールが定義されており，登録された乗車ルールは，条件を満たす列車が到着した際に同時刻のAgentMovingステージに登録される．
 
 onolab.simple.transportation.TRuleOfGettingOnTransportationのコンストラクタの引数の意味は以下の通りである．
