@@ -48,7 +48,7 @@ public final class TRuleOfCalculateNextState extends TRule {
                 // 近傍セルの TRoleOfStateTransition 役割から現在の状態取得．
                 // ordinal() は DEATH -> 0, LIFE -> 1
                 noOfAgentsAlive += ((TRoleOfStateTransition) roleOf2DCell
-                        .getNeighborhood(x, y)
+                        .getCellByRelativeCoordinates(x, y)
                         .getRole(ERoleName.StateTransition))
                         .getState()
                         .ordinal();

@@ -46,7 +46,7 @@ public class TRuleOfAgentRandomMoving extends TAgentRule {
         TRoleOf2DCell role = (TRoleOf2DCell) currentSpot.getRole(ECellModuleRoleName.Cell);
         TSpot spot;
         do {
-            spot = role.getNeighborhood(random.nextInt(-1, 1), random.nextInt(-1, 1));
+            spot = role.getCellByRelativeCoordinates(random.nextInt(-1, 1), random.nextInt(-1, 1));
         } while (spot == null || spot.equals(currentSpot));
         moveTo(spot);
     }

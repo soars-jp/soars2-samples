@@ -50,19 +50,19 @@ public class TRuleOfAgentRandomAction extends TAgentRule {
         switch (action) {
             case Up:
                 spot1 = ((TRoleOf2DCell) getCurrentSpot().getRole(ECellModuleRoleName.Cell))
-                        .getNeighborhood(0, 1);
+                        .getCellByRelativeCoordinates(0, 1);
                 break;
             case Down:
                 spot1 = ((TRoleOf2DCell) getCurrentSpot().getRole(ECellModuleRoleName.Cell))
-                        .getNeighborhood(0, -1);
+                        .getCellByRelativeCoordinates(0, -1);
                 break;
             case Right:
                 spot1 = ((TRoleOf2DCell) getCurrentSpot().getRole(ECellModuleRoleName.Cell))
-                        .getNeighborhood(1, 0);
+                        .getCellByRelativeCoordinates(1, 0);
                 break;
             case Left:
                 spot1 = ((TRoleOf2DCell) getCurrentSpot().getRole(ECellModuleRoleName.Cell))
-                        .getNeighborhood(-1, 0);
+                        .getCellByRelativeCoordinates(-1, 0);
                 break;
         }
         // 1マス先が壁 -> 状態は変化なし，報酬 -1
@@ -78,22 +78,22 @@ public class TRuleOfAgentRandomAction extends TAgentRule {
         switch (action) {
             case Up:
                 spot2 = ((TRoleOf2DCell) spot1.getRole(ECellModuleRoleName.Cell))
-                        .getNeighborhood(0, 1);
+                        .getCellByRelativeCoordinates(0, 1);
                 state[1] += 2;
                 break;
             case Down:
                 spot2 = ((TRoleOf2DCell) spot1.getRole(ECellModuleRoleName.Cell))
-                        .getNeighborhood(0, -1);
+                        .getCellByRelativeCoordinates(0, -1);
                 state[1] -= 2;
                 break;
             case Right:
                 spot2 = ((TRoleOf2DCell) spot1.getRole(ECellModuleRoleName.Cell))
-                        .getNeighborhood(1, 0);
+                        .getCellByRelativeCoordinates(1, 0);
                 state[0] += 2;
                 break;
             case Left:
                 spot2 = ((TRoleOf2DCell) spot1.getRole(ECellModuleRoleName.Cell))
-                        .getNeighborhood(-1, 0);
+                        .getCellByRelativeCoordinates(-1, 0);
                 state[0] -= 2;
                 break;
         }
