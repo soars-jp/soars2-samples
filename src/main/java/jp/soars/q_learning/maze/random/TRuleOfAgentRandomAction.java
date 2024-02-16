@@ -1,4 +1,4 @@
-package jp.soars.q_learning.maze;
+package jp.soars.q_learning.maze.random;
 
 import java.util.Map;
 
@@ -13,13 +13,15 @@ import jp.soars.modules.onolab.cell.TRoleOf2DCell;
 
 /**
  * エージェントの行動をランダムに選択する
+ * 
  * @author nagakane
  */
 public class TRuleOfAgentRandomAction extends TAgentRule {
 
     /**
      * コンストラクタ
-     * @param name ルール名
+     * 
+     * @param name  ルール名
      * @param owner このルールを持つ役割
      */
     public TRuleOfAgentRandomAction(String name, TRole owner) {
@@ -28,10 +30,11 @@ public class TRuleOfAgentRandomAction extends TAgentRule {
 
     /**
      * ルールを実行する．
-     * @param currentTime 現在時刻
-     * @param currentStage 現在ステージ
-     * @param spotManager スポット管理
-     * @param agentManager エージェント管理
+     * 
+     * @param currentTime           現在時刻
+     * @param currentStage          現在ステージ
+     * @param spotManager           スポット管理
+     * @param agentManager          エージェント管理
      * @param globalSharedVariables グローバル共有変数集合
      */
     @Override

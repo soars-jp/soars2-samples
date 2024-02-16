@@ -1,4 +1,4 @@
-package jp.soars.q_learning.maze;
+package jp.soars.q_learning.maze.random;
 
 import jp.soars.utils.random.ICRandom;
 
@@ -6,12 +6,13 @@ public class TMazeGenerator {
 
     /**
      * 穴掘り法によって作成された2次元平面上の迷路を返す．
-     * @param width 横幅 (奇数)
-     * @param hight 縦幅 (奇数)
+     * 
+     * @param width  横幅 (奇数)
+     * @param hight  縦幅 (奇数)
      * @param startX スタートのx座標
      * @param startY スタートのy座標
-     * @param goalX ゴールのx座標
-     * @param goalY ゴールのy座標
+     * @param goalX  ゴールのx座標
+     * @param goalY  ゴールのy座標
      * @param random 乱数発生器
      * @return 迷路を表現するboolean配列．true -> 通路，false -> 壁
      * @throws RuntimeException 横幅，縦幅が奇数ではない場合．
@@ -49,8 +50,9 @@ public class TMazeGenerator {
 
     /**
      * 穴掘り法によって作成された2次元平面上の迷路を返す．
-     * @param width 横幅 (奇数)
-     * @param hight 縦幅 (奇数)
+     * 
+     * @param width  横幅 (奇数)
+     * @param hight  縦幅 (奇数)
      * @param random 乱数発生器
      * @return 迷路を表現するboolean配列．true -> 通路，false -> 壁
      * @throws RuntimeException 横幅，縦幅が奇数ではない場合．
@@ -62,15 +64,16 @@ public class TMazeGenerator {
 
     /**
      * 穴掘り法．再帰実装
-     * @param maze 迷路
-     * @param x 現在位置 x座標
-     * @param y 現在位置 y座標
-     * @param width 横幅
-     * @param hight 縦幅
+     * 
+     * @param maze   迷路
+     * @param x      現在位置 x座標
+     * @param y      現在位置 y座標
+     * @param width  横幅
+     * @param hight  縦幅
      * @param startX スタートのx座標
      * @param startY スタートのy座標
-     * @param goalX ゴールのx座標
-     * @param goalY ゴールのy座標
+     * @param goalX  ゴールのx座標
+     * @param goalY  ゴールのy座標
      * @param random 乱数発生器
      */
     private static final void dig(boolean[][] maze, int x, int y,
@@ -80,7 +83,7 @@ public class TMazeGenerator {
             return;
         }
 
-        int[] directions = new int[]{0, 1, 2, 3};
+        int[] directions = new int[] { 0, 1, 2, 3 };
         // Fisher–Yates shuffle
         for (int i = directions.length - 1; 0 < i; --i) {
             int index = random.nextInt(i + 1);

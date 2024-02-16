@@ -1,10 +1,11 @@
-package jp.soars.q_learning.maze;
+package jp.soars.q_learning.maze.random;
 
 import jp.soars.core.TRole;
 import jp.soars.core.TSpot;
 
 /**
  * 迷路セル役割
+ * 
  * @author nagakane
  */
 public class TRoleOfMazeCell extends TRole {
@@ -14,7 +15,8 @@ public class TRoleOfMazeCell extends TRole {
 
     /**
      * コンストラクタ
-     * @param owner この役割を持つスポット
+     * 
+     * @param owner        この役割を持つスポット
      * @param mazeCellType 迷路セルタイプ
      */
     public TRoleOfMazeCell(TSpot owner, EMazeCellType mazeCellType) {
@@ -24,6 +26,7 @@ public class TRoleOfMazeCell extends TRole {
 
     /**
      * 迷路セルタイプを設定する．
+     * 
      * @param mazeCellType 迷路セルタイプ
      */
     public final void setMazeCellType(EMazeCellType mazeCellType) {
@@ -32,6 +35,7 @@ public class TRoleOfMazeCell extends TRole {
 
     /**
      * 迷路セルタイプを返す．
+     * 
      * @return 迷路セルタイプ
      */
     public final EMazeCellType getMazeCellType() {

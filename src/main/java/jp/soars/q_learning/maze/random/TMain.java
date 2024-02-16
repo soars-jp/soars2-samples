@@ -1,4 +1,4 @@
-package jp.soars.q_learning.maze;
+package jp.soars.q_learning.maze.random;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +19,7 @@ import jp.soars.utils.random.ICRandom;
 
 /**
  * メインクラス
+ *
  * @author nagakane
  */
 public class TMain {
@@ -29,12 +30,12 @@ public class TMain {
     public static void main(String[] args) throws IOException, InterruptedException {
         // *************************************************************************************************************
         // TSOARSBuilderの必須設定項目
-        //   - simulationStart:シミュレーション開始時刻
-        //   - simulationEnd:シミュレーション終了時刻
-        //   - tick:1ステップの時間間隔
-        //   - stages:使用するステージリスト(実行順)
-        //   - agentTypes:使用するエージェントタイプ集合
-        //   - spotTypes:使用するスポットタイプ集合
+        // - simulationStart:シミュレーション開始時刻
+        // - simulationEnd:シミュレーション終了時刻
+        // - tick:1ステップの時間間隔
+        // - stages:使用するステージリスト(実行順)
+        // - agentTypes:使用するエージェントタイプ集合
+        // - spotTypes:使用するスポットタイプ集合
         // *************************************************************************************************************
 
         String simulationStart = "0/00:00:00";
@@ -55,7 +56,8 @@ public class TMain {
         builder.setPeriodicallyExecutedStage(EStage.AgentAction, simulationStart, tick);
 
         // ログ出力設定
-        String pathOfLogDir = "logs" + File.separator + "q_learning" + File.separator + "maze";
+        String pathOfLogDir = "logs" + File.separator + "q_learning" + File.separator + "maze" + File.separator
+                + "random";
         builder.setRuleLoggingEnabled(pathOfLogDir + File.separator + "rule_log.csv");
         builder.setRuntimeLoggingEnabled(pathOfLogDir + File.separator + "runtime_log.csv");
 
@@ -108,7 +110,8 @@ public class TMain {
         }
         // スタートとゴールはセルタイプ変更
         ((TRoleOfMazeCell) map.getCell(1, 1).getRole(ERoleName.MazeCell)).setMazeCellType(EMazeCellType.Start);
-        ((TRoleOfMazeCell) map.getCell(width - 2, hight - 2).getRole(ERoleName.MazeCell)).setMazeCellType(EMazeCellType.Goal);
+        ((TRoleOfMazeCell) map.getCell(width - 2, hight - 2).getRole(ERoleName.MazeCell))
+                .setMazeCellType(EMazeCellType.Goal);
 
         // *************************************************************************************************************
         // エージェント作成
