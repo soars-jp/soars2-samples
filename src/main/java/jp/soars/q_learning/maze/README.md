@@ -23,8 +23,6 @@ Q-Learning(強化学習)は，
 
 ## SOARSによる表現とシミュレーション条件
 
-このサンプルで実装するのは迷路問題のみで強化学習アルゴリズムは実装しない．
-
 - スポットをセルに見立ててセル空間を構築する．
 - 各スポットは通路，壁，スタート，ゴールのいずれかである．
 - エージェントは最初スタートに配置され，毎時刻ランダムに行動を選択してその結果の状態(座標)と報酬を得る．
@@ -216,14 +214,14 @@ public class TRuleOfAgentRandomAction extends TAgentRule {
 
 ## 役割の定義
 
-### TRoleOfAgent:エージェント役割
+### TRoleOfRandomAgent:ランダムエージェント役割
 
 エージェント役割は，エージェントの行動，状態，報酬をもち，エージェントランダム行動ルールが登録されている．
 
-`TRoleOfAgent.java`
+`TRoleOfRandomAgent.java`
 
 ```java
-public class TRoleOfAgent extends TRole {
+public class TRoleOfRandomAgent extends TRole {
 
     /** エージェントが選択した行動 */
     private EAgentAction fAgentAction;
@@ -232,22 +230,23 @@ public class TRoleOfAgent extends TRole {
     private final int[] fCoordinates;
 
     /** 行動で得られた報酬 */
-    private int fReword;
+    private int fReward;
 
     /** エージェント行動ランダム選択ルール */
     public static final String RULE_NAME_OF_AGENT_RANDOM_ACTION = "agentRandomAction";
 
     /**
      * コンストラクタ
-     * @param owner この役割を持つエージェント
+     *
+     * @param owner        この役割を持つエージェント
      * @param initialSpotX 初期スポットx座標
      * @param initialSpotY 初期スポットy座標
      */
-    public TRoleOfAgent(TAgent owner, int initialSpotX, int initialSpotY) {
+    public TRoleOfRandomAgent(TAgent owner, int initialSpotX, int initialSpotY) {
         super(ERoleName.Agent, owner, 1, 0);
         fAgentAction = null;
-        fCoordinates = new int[]{initialSpotX, initialSpotY};
-        fReword = 0;
+        fCoordinates = new int[] { initialSpotX, initialSpotY };
+        fReward = 0;
 
         new TRuleOfAgentRandomAction(RULE_NAME_OF_AGENT_RANDOM_ACTION, this)
                 .setStage(EStage.AgentAction);
@@ -255,6 +254,7 @@ public class TRoleOfAgent extends TRole {
 
     /**
      * エージェントが選択した行動を設定
+     *
      * @param action エージェントが選択した行動
      */
     public final void setAgentAction(EAgentAction action) {
@@ -263,6 +263,7 @@ public class TRoleOfAgent extends TRole {
 
     /**
      * エージェントが選択した行動を返す．
+     *
      * @return エージェントが選択した行動
      */
     public final EAgentAction getAgentAction() {
@@ -271,6 +272,7 @@ public class TRoleOfAgent extends TRole {
 
     /**
      * 行動で得られた次の状態 (セルの絶対座標)を返す．
+     *
      * @return 行動で得られた次の状態 (セルの絶対座標)
      */
     public final int[] getState() {
@@ -279,18 +281,20 @@ public class TRoleOfAgent extends TRole {
 
     /**
      * 行動で得られた報酬を設定
-     * @param reword 行動で得られた報酬
+     *
+     * @param reward 行動で得られた報酬
      */
-    public final void setReword(int reword) {
-        fReword = reword;
+    public final void setReward(int reward) {
+        fReward = reward;
     }
 
     /**
      * 行動で得られた報酬を返す．
+     *
      * @return 行動で得られた報酬
      */
-    public final int getReword() {
-        return fReword;
+    public final int getReward() {
+        return fReward;
     }
 }
 ```
@@ -436,7 +440,7 @@ public class TMain {
 
         TAgent agent = agentManager.createAgent(EAgentType.Agent, 1);
         agent.initializeCurrentSpot(map.getCell(1, 1));
-        TRoleOfAgent agentRole = new TRoleOfAgent(agent, 1, 1);
+        TRoleOfRandomAgent agentRole = new TRoleOfRandomAgent(agent, 1, 1);
         agent.activateRole(ERoleName.Agent);
 
         // *************************************************************************************************************
@@ -488,4 +492,304 @@ public class TMain {
         ruleExecutor.shutdown();
     }
 }
+```
+
+## 付録:ε-Greedy法による迷路探索
+
+ε-greedy法は，確率 $ 1 - \epsilon $ で一番大きい価値を持つ行動を決定的に選択し，確率 $ \epsilon (0  \leq  \epsilon  \leq  1) $ でランダムな行動を選択する方法である．
+
+Q学習では時刻 $ t $ において，状態集合 $ S $ の中で状態 $ s_{t} $ にエージェントがあり，エージェントが行動集合 $ A $ の中の $a_{t} $ を選択したとすると，次の状態 $s_{t+1} $ とエージェントが取った行動により得られる報酬 $ r_{t} $ を用いて $ Q $ の価値を更新する．
+更新式は以下のように表される．
+<div style="text-align: center;">
+
+$ Q(s_{t},a_{t})  \leftarrow Q(s_{t},a_{t}) + \alpha ( r_{t} + \gamma \cdot\underset{a^{'} \in \mathcal{A}}{\max}Q(s_{t+1},a^{'}) - Q(s_{t}, a_{t})) $
+
+</div>
+
+ここで，$ \alpha $ はステップサイズ，$ \gamma $ は割引率である．
+このサンプルでは，ステップサイズ $ \alpha $ を以下のように定義している．
+
+<div style="text-align: center;">
+
+$ \alpha = 1.0 /$状態 $ (s_{t},a_{t} )$ への訪問回数
+
+</div>
+
+詳しくは以下を参照されたい．
+- [ε-グリーディ法（ε-greedy）の概要とアルゴリズム及び実装例について](https://deus-ex-machina-ism.com/?p=58448)
+- [Qiita Q-learningで迷路探索をしてみた](https://qiita.com/miraclegliders44/items/f9337d6de9daf5b0ef37)
+
+### TRuleOfAgentEpsilonGreedyAction:エージェントε-グリーディ行動ルール
+
+エージェントε-グリーディ行動ルールは，エージェントの行動をε-Greedy法により選択してその結果得られる状態と報酬を計算する．
+
+デフォルトの引数として，確率ε=0.6，割引率γ=0.99としている．
+
+`TRuleOfAgentEpsilonGreedyAction.java`
+
+```java
+public class TRuleOfAgentEpsilonGreedyAction extends TAgentRule {
+
+    // Q関数
+    private Map<int[], Map<EAgentAction, Double>> fQMap;
+
+    // 状態行動対への訪問回数
+    private Map<int[], Map<EAgentAction, Integer>> fAlphaMap;
+
+    // 確率 ε
+    private double fEpsilon;
+
+    // 割引率
+    private double fGamma;
+
+    /**
+     * コンストラクタ
+     *
+     * @param name  ルール名
+     * @param owner このルールを持つ役割
+     */
+    public TRuleOfAgentEpsilonGreedyAction(String name, TRole owner) {
+        this(name, owner, 0.6, 0.99);
+    }
+
+    /**
+     * コンストラクタ
+     *
+     * @param name    ルール名
+     * @param owner   このルールを持つ役割
+     * @param epsilon 確率 ε
+     * @param gamma   割引率
+     */
+    public TRuleOfAgentEpsilonGreedyAction(String name, TRole owner, double epsilon, double gamma) {
+        super(name, owner);
+        fQMap = new HashMap<>();
+        fAlphaMap = new HashMap<>();
+        fEpsilon = epsilon;
+        fGamma = gamma;
+    }
+
+    /**
+     * ルールを実行する．
+     *
+     * @param currentTime           現在時刻
+     * @param currentStage          現在ステージ
+     * @param spotManager           スポット管理
+     * @param agentManager          エージェント管理
+     * @param globalSharedVariables グローバル共有変数集合
+     */
+    @Override
+    public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
+            TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
+        // 穴掘り法で作成した迷路なので，一回で2マス移動する．
+        EAgentAction[] actions = EAgentAction.values();
+
+        // 報酬は ゴール 100, 通路 0, 壁 -1
+        TRoleOfEpsilonGreedyAgent role = (TRoleOfEpsilonGreedyAgent) getOwnerRole();
+        int[] state = role.getState();
+
+        // Q学習のための初期化
+        fQMap.putIfAbsent(state, new HashMap<>());
+        fAlphaMap.putIfAbsent(state, new HashMap<>());
+        for (EAgentAction a : actions) {
+            fQMap.get(state).putIfAbsent(a, 0.0);
+            fAlphaMap.get(state).putIfAbsent(a, 0);
+        }
+
+        EAgentAction action;
+        if (getRandom().nextDouble() < fEpsilon) {
+            // 確率εでランダムな行動を選択
+            action = actions[getRandom().nextInt(actions.length)];
+        } else {
+            // 最良の行動を選択
+            action = fQMap.get(state).entrySet().stream().max(Map.Entry.comparingByValue()).get().getKey();
+        }
+        role.setAgentAction(action);
+
+        int reward = 0; // 報酬
+        int done = 0; // 終了判定
+
+        // 1マス先スポット
+        TSpot spot1 = null;
+        switch (action) {
+            case Up:
+                spot1 = ((TRoleOf2DCell) getCurrentSpot().getRole(ECellModuleRoleName.Cell))
+                        .getCellByRelativeCoordinates(0, 1);
+                break;
+            case Down:
+                spot1 = ((TRoleOf2DCell) getCurrentSpot().getRole(ECellModuleRoleName.Cell))
+                        .getCellByRelativeCoordinates(0, -1);
+                break;
+            case Right:
+                spot1 = ((TRoleOf2DCell) getCurrentSpot().getRole(ECellModuleRoleName.Cell))
+                        .getCellByRelativeCoordinates(1, 0);
+                break;
+            case Left:
+                spot1 = ((TRoleOf2DCell) getCurrentSpot().getRole(ECellModuleRoleName.Cell))
+                        .getCellByRelativeCoordinates(-1, 0);
+                break;
+        }
+        // 1マス先が壁 -> 状態は変化なし，報酬 -1
+        if (((TRoleOfMazeCell) spot1.getRole(ERoleName.MazeCell)).getMazeCellType() == EMazeCellType.Wall) {
+            reward = -1;
+            done = 1;
+        } else {
+            // 2マス先スポット
+            TSpot spot2 = null;
+            // 1マス先が壁ではないので移動可能なことは確定．-> 状態書き換え
+            switch (action) {
+                case Up:
+                    spot2 = ((TRoleOf2DCell) spot1.getRole(ECellModuleRoleName.Cell))
+                            .getCellByRelativeCoordinates(0, 1);
+                    state[1] += 2;
+                    break;
+                case Down:
+                    spot2 = ((TRoleOf2DCell) spot1.getRole(ECellModuleRoleName.Cell))
+                            .getCellByRelativeCoordinates(0, -1);
+                    state[1] -= 2;
+                    break;
+                case Right:
+                    spot2 = ((TRoleOf2DCell) spot1.getRole(ECellModuleRoleName.Cell))
+                            .getCellByRelativeCoordinates(1, 0);
+                    state[0] += 2;
+                    break;
+                case Left:
+                    spot2 = ((TRoleOf2DCell) spot1.getRole(ECellModuleRoleName.Cell))
+                            .getCellByRelativeCoordinates(-1, 0);
+                    state[0] -= 2;
+                    break;
+            }
+            // 2マス先がゴール -> 報酬 100
+            if (((TRoleOfMazeCell) spot2.getRole(ERoleName.MazeCell)).getMazeCellType() == EMazeCellType.Goal) {
+                done = 1;
+                reward = 100;
+            } else { // 2マス先が通路 -> 報酬 0
+                done = 0;
+                reward = 0;
+            }
+            // エージェント移動
+            moveTo(spot2);
+        }
+        role.setReward(reward); // 報酬の獲得
+        // 次の状態
+        int[] nextState = role.getState();
+        // 次の状態行動対のQ関数の初期化
+        fQMap.putIfAbsent(nextState, new HashMap<>());
+        for (EAgentAction a : actions) {
+            fQMap.get(nextState).putIfAbsent(a, 0.0);
+        }
+        // 状態行動対への訪問回数をインクリメント
+        fAlphaMap.get(state).put(action, fAlphaMap.get(state).get(action) + 1);
+        // ステップサイズ
+        double alpha = 1.0 / (double) fAlphaMap.get(state).get(action);
+        // Q関数の更新
+        fQMap.get(state).put(action,
+                fQMap.get(state).get(action) + alpha * ((double) reward + fGamma * (double) (1 - done)
+                        * fQMap.get(nextState).entrySet().stream().max(Map.Entry.comparingByValue()).get()
+                                .getValue()
+                        - fQMap.get(state).get(action)));
+
+    }
+}
+```
+
+### TRoleOfEpsilonGreedyAgent:ε-グリーディエージェント役割
+
+エージェント役割は，エージェントの行動，状態，報酬をもち，ε-グリーディ法による行動ルールが登録されている．
+
+`TRoleOfEpsilonGreedyAgent.java`
+
+```java
+public class TRoleOfEpsilonGreedyAgent extends TRole {
+
+    /** エージェントが選択した行動 */
+    private EAgentAction fAgentAction;
+
+    /** 行動で得られた次の状態 (セルの絶対座標) */
+    private final int[] fCoordinates;
+
+    /** 行動で得られた報酬 */
+    private int fReward;
+
+    /** エージェント行動ε-greedy選択ルール */
+    public static final String RULE_NAME_OF_AGENT_EPSILON_GREEDY_ACTION = "agentEpsilonGreedyAction";
+
+    /**
+     * コンストラクタ
+     *
+     * @param owner        この役割を持つエージェント
+     * @param initialSpotX 初期スポットx座標
+     * @param initialSpotY 初期スポットy座標
+     */
+    public TRoleOfEpsilonGreedyAgent(TAgent owner, int initialSpotX, int initialSpotY) {
+        super(ERoleName.Agent, owner, 1, 0);
+        fAgentAction = null;
+        fCoordinates = new int[] { initialSpotX, initialSpotY };
+        fReward = 0;
+
+        new TRuleOfAgentEpsilonGreedyAction(RULE_NAME_OF_AGENT_EPSILON_GREEDY_ACTION, this)
+                .setStage(EStage.AgentAction);
+    }
+
+    /**
+     * エージェントが選択した行動を設定
+     *
+     * @param action エージェントが選択した行動
+     */
+    public final void setAgentAction(EAgentAction action) {
+        fAgentAction = action;
+    }
+
+    /**
+     * エージェントが選択した行動を返す．
+     *
+     * @return エージェントが選択した行動
+     */
+    public final EAgentAction getAgentAction() {
+        return fAgentAction;
+    }
+
+    /**
+     * 行動で得られた次の状態 (セルの絶対座標)を返す．
+     *
+     * @return 行動で得られた次の状態 (セルの絶対座標)
+     */
+    public final int[] getState() {
+        return fCoordinates;
+    }
+
+    /**
+     * 行動で得られた報酬を設定
+     *
+     * @param reward 行動で得られた報酬
+     */
+    public final void setReward(int reward) {
+        fReward = reward;
+    }
+
+    /**
+     * 行動で得られた報酬を返す．
+     *
+     * @return 行動で得られた報酬
+     */
+    public final int getReward() {
+        return fReward;
+    }
+}
+```
+
+### メインクラスの定義
+
+上記のサンプルで実装したシミュレーションのメインクラスにおいて，エージェントを生成している箇所を以下のように書き換える．
+
+`TMain.java`
+
+```Java
+        // *************************************************************************************************************
+        // エージェント作成
+        // *************************************************************************************************************
+
+        TAgent agent = agentManager.createAgent(EAgentType.Agent, 1);
+        agent.initializeCurrentSpot(map.getCell(1, 1));
+        TRoleOfGreedyAgent agentRole = new TRoleOfEpsilonGreedyAgent(agent, 1, 1);
+        agent.activateRole(ERoleName.Agent);
 ```

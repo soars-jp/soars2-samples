@@ -1,4 +1,4 @@
-package jp.soars.q_learning.maze.greedy;
+package jp.soars.q_learning.maze;
 
 import jp.soars.utils.random.ICRandom;
 
@@ -6,7 +6,7 @@ public class TMazeGenerator {
 
     /**
      * 穴掘り法によって作成された2次元平面上の迷路を返す．
-     * 
+     *
      * @param width  横幅 (奇数)
      * @param hight  縦幅 (奇数)
      * @param startX スタートのx座標
@@ -50,7 +50,7 @@ public class TMazeGenerator {
 
     /**
      * 穴掘り法によって作成された2次元平面上の迷路を返す．
-     * 
+     *
      * @param width  横幅 (奇数)
      * @param hight  縦幅 (奇数)
      * @param random 乱数発生器
@@ -64,7 +64,7 @@ public class TMazeGenerator {
 
     /**
      * 穴掘り法．再帰実装
-     * 
+     *
      * @param maze   迷路
      * @param x      現在位置 x座標
      * @param y      現在位置 y座標

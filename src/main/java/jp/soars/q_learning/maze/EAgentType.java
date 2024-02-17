@@ -1,8 +1,8 @@
-package jp.soars.q_learning.maze.greedy;
+package jp.soars.q_learning.maze;
 
 /**
  * エージェントタイプ定義
- * 
+ *
  * @author nagakane
  */
 public enum EAgentType {

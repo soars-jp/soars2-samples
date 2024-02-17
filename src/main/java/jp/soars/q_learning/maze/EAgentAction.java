@@ -1,8 +1,8 @@
-package jp.soars.q_learning.maze.greedy;
+package jp.soars.q_learning.maze;
 
 /**
  * エージェントの行動定義
- * 
+ *
  * @author nagakane
  */
 public enum EAgentAction {

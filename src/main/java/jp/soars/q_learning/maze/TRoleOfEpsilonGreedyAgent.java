@@ -1,4 +1,4 @@
-package jp.soars.q_learning.maze.greedy;
+package jp.soars.q_learning.maze;
 
 import jp.soars.core.TAgent;
 import jp.soars.core.TRole;
@@ -6,9 +6,9 @@ import jp.soars.core.TRole;
 /**
  * エージェント役割
  *
- * @author nagakane
+ * @author nishikubo
  */
-public class TRoleOfAgent extends TRole {
+public class TRoleOfEpsilonGreedyAgent extends TRole {
 
     /** エージェントが選択した行動 */
     private EAgentAction fAgentAction;
@@ -17,10 +17,10 @@ public class TRoleOfAgent extends TRole {
     private final int[] fCoordinates;
 
     /** 行動で得られた報酬 */
-    private int fReword;
+    private int fReward;
 
-    /** エージェント行動ランダム選択ルール */
-    public static final String RULE_NAME_OF_AGENT_GREEDY_ACTION = "agentGreedyAction";
+    /** エージェント行動ε-greedy選択ルール */
+    public static final String RULE_NAME_OF_AGENT_EPSILON_GREEDY_ACTION = "agentEpsilonGreedyAction";
 
     /**
      * コンストラクタ
@@ -29,13 +29,13 @@ public class TRoleOfAgent extends TRole {
      * @param initialSpotX 初期スポットx座標
      * @param initialSpotY 初期スポットy座標
      */
-    public TRoleOfAgent(TAgent owner, int initialSpotX, int initialSpotY) {
+    public TRoleOfEpsilonGreedyAgent(TAgent owner, int initialSpotX, int initialSpotY) {
         super(ERoleName.Agent, owner, 1, 0);
         fAgentAction = null;
         fCoordinates = new int[] { initialSpotX, initialSpotY };
-        fReword = 0;
+        fReward = 0;
 
-        new TRuleOfAgentGreedyAction(RULE_NAME_OF_AGENT_GREEDY_ACTION, this)
+        new TRuleOfAgentEpsilonGreedyAction(RULE_NAME_OF_AGENT_EPSILON_GREEDY_ACTION, this)
                 .setStage(EStage.AgentAction);
     }
 
@@ -69,10 +69,10 @@ public class TRoleOfAgent extends TRole {
     /**
      * 行動で得られた報酬を設定
      *
-     * @param reword 行動で得られた報酬
+     * @param reward 行動で得られた報酬
      */
-    public final void setReword(int reword) {
-        fReword = reword;
+    public final void setReward(int reward) {
+        fReward = reward;
     }
 
     /**
@@ -80,7 +80,7 @@ public class TRoleOfAgent extends TRole {
      *
      * @return 行動で得られた報酬
      */
-    public final int getReword() {
-        return fReword;
+    public final int getReward() {
+        return fReward;
     }
 }

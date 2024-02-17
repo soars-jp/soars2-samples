@@ -1,8 +1,7 @@
-package jp.soars.q_learning.maze.greedy;
+package jp.soars.q_learning.maze;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import jp.soars.core.TAgentManager;
 import jp.soars.core.TAgentRule;
@@ -16,21 +15,21 @@ import jp.soars.modules.onolab.cell.TRoleOf2DCell;
 /**
  * エージェントの行動をGreedyに選択する
  *
- * @author nagakane
+ * @author nishikubo
  */
-public class TRuleOfAgentGreedyAction extends TAgentRule {
+public class TRuleOfAgentEpsilonGreedyAction extends TAgentRule {
 
     // Q関数
-    Map<int[], Map<EAgentAction, Double>> fQMap;
+    private Map<int[], Map<EAgentAction, Double>> fQMap;
 
     // 状態行動対への訪問回数
-    Map<int[], Map<EAgentAction, Integer>> fAlphaMap;
+    private Map<int[], Map<EAgentAction, Integer>> fAlphaMap;
 
     // 確率 ε
-    double fEpsilon;
+    private double fEpsilon;
 
     // 割引率
-    double fGamma;
+    private double fGamma;
 
     /**
      * コンストラクタ
@@ -38,8 +37,8 @@ public class TRuleOfAgentGreedyAction extends TAgentRule {
      * @param name  ルール名
      * @param owner このルールを持つ役割
      */
-    public TRuleOfAgentGreedyAction(String name, TRole owner) {
-        this(name, owner, 0.4, 0.99);
+    public TRuleOfAgentEpsilonGreedyAction(String name, TRole owner) {
+        this(name, owner, 0.6, 0.99);
     }
 
     /**
@@ -50,7 +49,7 @@ public class TRuleOfAgentGreedyAction extends TAgentRule {
      * @param epsilon 確率 ε
      * @param gamma   割引率
      */
-    public TRuleOfAgentGreedyAction(String name, TRole owner, double epsilon, double gamma) {
+    public TRuleOfAgentEpsilonGreedyAction(String name, TRole owner, double epsilon, double gamma) {
         super(name, owner);
         fQMap = new HashMap<>();
         fAlphaMap = new HashMap<>();
@@ -74,7 +73,7 @@ public class TRuleOfAgentGreedyAction extends TAgentRule {
         EAgentAction[] actions = EAgentAction.values();
 
         // 報酬は ゴール 100, 通路 0, 壁 -1
-        TRoleOfAgent role = (TRoleOfAgent) getOwnerRole();
+        TRoleOfEpsilonGreedyAgent role = (TRoleOfEpsilonGreedyAgent) getOwnerRole();
         int[] state = role.getState();
 
         // Q学習のための初期化
@@ -159,7 +158,7 @@ public class TRuleOfAgentGreedyAction extends TAgentRule {
             // エージェント移動
             moveTo(spot2);
         }
-        role.setReword(reward); // 報酬の獲得
+        role.setReward(reward); // 報酬の獲得
         // 次の状態
         int[] nextState = role.getState();
         // 次の状態行動対のQ関数の初期化
@@ -175,8 +174,8 @@ public class TRuleOfAgentGreedyAction extends TAgentRule {
         fQMap.get(state).put(action,
                 fQMap.get(state).get(action) + alpha * ((double) reward + fGamma * (double) (1 - done)
                         * fQMap.get(nextState).entrySet().stream().max(Map.Entry.comparingByValue()).get()
-                                .getValue())
-                        - fQMap.get(state).get(action));
+                                .getValue()
+                        - fQMap.get(state).get(action)));
 
     }
 }

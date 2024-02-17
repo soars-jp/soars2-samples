@@ -1,4 +1,4 @@
-package jp.soars.q_learning.maze.greedy;
+package jp.soars.q_learning.maze;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,6 +9,7 @@ import java.util.Set;
 
 import jp.soars.core.TAgent;
 import jp.soars.core.TAgentManager;
+import jp.soars.core.TRole;
 import jp.soars.core.TRuleExecutor;
 import jp.soars.core.TSOARSBuilder;
 import jp.soars.core.TSpot;
@@ -39,7 +40,7 @@ public class TMain {
         // *************************************************************************************************************
 
         String simulationStart = "0/00:00:00";
-        String simulationEnd = "0/00:10:00";
+        String simulationEnd = "0/00:5:00";
         String tick = "00:00:01";
         List<Enum<?>> stages = List.of(EStage.AgentAction);
         Set<Enum<?>> agentTypes = new HashSet<>();
@@ -56,8 +57,7 @@ public class TMain {
         builder.setPeriodicallyExecutedStage(EStage.AgentAction, simulationStart, tick);
 
         // ログ出力設定
-        String pathOfLogDir = "logs" + File.separator + "q_learning" + File.separator + "maze" + File.separator
-                + "greedy";
+        String pathOfLogDir = "logs" + File.separator + "q_learning" + File.separator + "maze";
         builder.setRuleLoggingEnabled(pathOfLogDir + File.separator + "rule_log.csv");
         builder.setRuntimeLoggingEnabled(pathOfLogDir + File.separator + "runtime_log.csv");
 
@@ -119,7 +119,8 @@ public class TMain {
 
         TAgent agent = agentManager.createAgent(EAgentType.Agent, 1);
         agent.initializeCurrentSpot(map.getCell(1, 1));
-        TRoleOfAgent agentRole = new TRoleOfAgent(agent, 1, 1);
+        // TRoleOfRandomAgent agentRole = new TRoleOfRandomAgent(agent, 1, 1);
+        TRoleOfEpsilonGreedyAgent agentRole = new TRoleOfEpsilonGreedyAgent(agent, 1, 1);
         agent.activateRole(ERoleName.Agent);
 
         // *************************************************************************************************************
@@ -128,8 +129,8 @@ public class TMain {
 
         do {
             // 画面クリア
-            // System.out.print("\033[H\033[2J");
-            // System.out.flush();
+            System.out.print("\033[H\033[2J");
+            System.out.flush();
             // 画面表示
             System.out.print(ruleExecutor.getCurrentTime());
             System.out.print("\n行動:");
@@ -139,15 +140,15 @@ public class TMain {
             System.out.print(", ");
             System.out.print(agentRole.getState()[1]);
             System.out.print(")\n報酬:");
-            System.out.println(agentRole.getReword());
+            System.out.println(agentRole.getReward());
             for (int y = map.getUpperBoundY(), lenY = map.getLowerBoundY(); lenY <= y; --y) {
                 for (int x = map.getLowerBoundX(), lenX = map.getUpperBoundX(); x <= lenX; ++x) {
                     TSpot spot = map.getCell(x, y);
-                    EMazeCellType mazeCellType = ((TRoleOfMazeCell) spot.getRole(ERoleName.MazeCell)).getMazeCellType();
                     if (spot.getAgents().size() != 0) { // エージェントがいるセル
                         System.out.print("👦");
                         continue;
                     }
+                    EMazeCellType mazeCellType = ((TRoleOfMazeCell) spot.getRole(ERoleName.MazeCell)).getMazeCellType();
                     if (mazeCellType == EMazeCellType.Wall) {
                         System.out.print("⬛︎");
                     } else if (mazeCellType == EMazeCellType.Aisle) {
@@ -161,7 +162,7 @@ public class TMain {
                 System.out.println();
             }
             // ディレイ 500ms
-            Thread.sleep(100);
+            Thread.sleep(500);
         } while (ruleExecutor.executeStep());
 
         // *************************************************************************************************************

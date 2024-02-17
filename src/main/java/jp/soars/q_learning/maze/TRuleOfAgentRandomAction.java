@@ -1,4 +1,4 @@
-package jp.soars.q_learning.maze.random;
+package jp.soars.q_learning.maze;
 
 import java.util.Map;
 
@@ -13,14 +13,14 @@ import jp.soars.modules.onolab.cell.TRoleOf2DCell;
 
 /**
  * エージェントの行動をランダムに選択する
- * 
+ *
  * @author nagakane
  */
 public class TRuleOfAgentRandomAction extends TAgentRule {
 
     /**
      * コンストラクタ
-     * 
+     *
      * @param name  ルール名
      * @param owner このルールを持つ役割
      */
@@ -30,7 +30,7 @@ public class TRuleOfAgentRandomAction extends TAgentRule {
 
     /**
      * ルールを実行する．
-     * 
+     *
      * @param currentTime           現在時刻
      * @param currentStage          現在ステージ
      * @param spotManager           スポット管理
@@ -45,7 +45,7 @@ public class TRuleOfAgentRandomAction extends TAgentRule {
         EAgentAction action = actions[getRandom().nextInt(actions.length)];
 
         // 報酬は ゴール 100, 通路 0, 壁 -1
-        TRoleOfAgent role = (TRoleOfAgent) getOwnerRole();
+        TRoleOfRandomAgent role = (TRoleOfRandomAgent) getOwnerRole();
         role.setAgentAction(action);
 
         // 1マス先スポット
@@ -70,7 +70,7 @@ public class TRuleOfAgentRandomAction extends TAgentRule {
         }
         // 1マス先が壁 -> 状態は変化なし，報酬 -1
         if (((TRoleOfMazeCell) spot1.getRole(ERoleName.MazeCell)).getMazeCellType() == EMazeCellType.Wall) {
-            role.setReword(-1);
+            role.setReward(-1);
             return;
         }
 
@@ -102,9 +102,9 @@ public class TRuleOfAgentRandomAction extends TAgentRule {
         }
         // 2マス先がゴール -> 報酬 100
         if (((TRoleOfMazeCell) spot2.getRole(ERoleName.MazeCell)).getMazeCellType() == EMazeCellType.Goal) {
-            role.setReword(100);
+            role.setReward(100);
         } else { // 2マス先が通路 -> 報酬 0
-            role.setReword(0);
+            role.setReward(0);
         }
         // エージェント移動
         moveTo(spot2);

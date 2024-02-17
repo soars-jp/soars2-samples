@@ -1,8 +1,8 @@
-package jp.soars.q_learning.maze.greedy;
+package jp.soars.q_learning.maze;
 
 /**
  * 役割名定義
- * 
+ *
  * @author nagakane
  */
 public enum ERoleName {

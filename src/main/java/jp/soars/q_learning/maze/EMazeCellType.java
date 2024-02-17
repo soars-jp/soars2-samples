@@ -1,8 +1,8 @@
-package jp.soars.q_learning.maze.random;
+package jp.soars.q_learning.maze;
 
 /**
  * 迷路セルタイプ定義
- * 
+ *
  * @author nagakane
  */
 public enum EMazeCellType {
