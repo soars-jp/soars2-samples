@@ -496,22 +496,22 @@ public class TMain {
 
 ## 付録:ε-Greedy法による迷路探索
 
-ε-greedy法は，確率 $ 1 - \epsilon $ で一番大きい価値を持つ行動を決定的に選択し，確率 $ \epsilon (0  \leq  \epsilon  \leq  1) $ でランダムな行動を選択する方法である．
+ε-greedy法は，確率 $1 - \epsilon$ で一番大きい価値を持つ行動を決定的に選択し，確率 $\epsilon (0  \leq  \epsilon  \leq  1)$ でランダムな行動を選択する方法である．
 
-Q学習では時刻 $ t $ において，状態集合 $ S $ の中で状態 $ s_{t} $ にエージェントがあり，エージェントが行動集合 $ A $ の中の $a_{t} $ を選択したとすると，次の状態 $s_{t+1} $ とエージェントが取った行動により得られる報酬 $ r_{t} $ を用いて $ Q $ の価値を更新する．
+Q学習では時刻 $t$ において，状態集合 $S$ の中で状態 $s_{t}$ にエージェントがあり，エージェントが行動集合 $A$ の中の $a_{t}$ を選択したとすると，次の状態 $s_{t+1}$ とエージェントが取った行動により得られる報酬 $r_{t}$ を用いて $Q$ の価値を更新する．
 更新式は以下のように表される．
 <div style="text-align: center;">
 
-$ Q(s_{t},a_{t})  \leftarrow Q(s_{t},a_{t}) + \alpha ( r_{t} + \gamma \cdot\underset{a^{'} \in \mathcal{A}}{\max}Q(s_{t+1},a^{'}) - Q(s_{t}, a_{t})) $
+$Q(s_{t},a_{t})  \leftarrow Q(s_{t},a_{t}) + \alpha ( r_{t} + \gamma \cdot\underset{a^{'} \in \mathcal{A}}{\max}Q(s_{t+1},a^{'}) - Q(s_{t}, a_{t}))$
 
 </div>
 
-ここで，$ \alpha $ はステップサイズ，$ \gamma $ は割引率である．
-このサンプルでは，ステップサイズ $ \alpha $ を以下のように定義している．
+ここで， $\alpha$ はステップサイズ， $\gamma$ は割引率である．
+このサンプルでは，ステップサイズ $\alpha$ を以下のように定義している．
 
 <div style="text-align: center;">
 
-$ \alpha = 1.0 /$状態 $ (s_{t},a_{t} )$ への訪問回数
+$\alpha = 1.0 /$状態 $(s_{t},a_{t} )$ への訪問回数
 
 </div>
 
