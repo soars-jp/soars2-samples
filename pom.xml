@@ -41,12 +41,12 @@
     <dependency>
       <groupId>jp.soars</groupId>
       <artifactId>onolab-cell-module</artifactId>
-      <version>1.1.0</version>
+      <version>1.1.1</version>
     </dependency>
     <dependency>
       <groupId>jp.soars</groupId>
       <artifactId>onolab-spatial-spot-module</artifactId>
-      <version>1.0.2</version>
+      <version>1.0.3</version>
     </dependency>
   </dependencies>
 
