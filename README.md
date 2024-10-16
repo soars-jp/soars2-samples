@@ -23,6 +23,7 @@ SOARS toolkit ver.2のサンプルプログラム
   - [sample16:オブジェクトの動的追加・削除](src/main/java/jp/soars/tutorials/sample16/)
 - 小野研モジュール
   - [セル空間モジュール](src/main/java/jp/soars/onolab/cell)
+  - [スポット内空間モジュール](src/main/java/jp/soars/onolab/spatial)
 - セルオートマトン
   - [ライフゲーム](src/main/java/jp/soars/ca/gol/)
 - 強化学習
