@@ -19,6 +19,8 @@ import jp.soars.core.TSpot;
 import jp.soars.core.TSpotManager;
 import jp.soars.core.enums.ERuleDebugMode;
 import jp.soars.modules.onolab.spatial.ESpatialSpotModuleRoleName;
+import jp.soars.modules.onolab.spatial.T2DCoordinate;
+import jp.soars.modules.onolab.spatial.T2DSpace;
 import jp.soars.modules.onolab.spatial.TRoleOf2DCoordinateAgent;
 import jp.soars.modules.onolab.spatial.TRoleOf2DCoordinateSpot;
 import jp.soars.utils.random.ICRandom;
@@ -91,10 +93,11 @@ public class TMain {
         double upperBoundX = 5.0;
         double lowerBoundY = -5.0;
         double upperBoundY = 5.0;
+        boolean isToroidal = true; // トーラスにするか？
         List<TSpot> spots = spotManager.createSpots(ESpotType.Spot, noOfSpots);
         for (int i = 0; i < noOfSpots; ++i) {
             TSpot spot = spots.get(i); // i番目のスポット
-            new TRoleOf2DCoordinateSpot(spot, lowerBoundX, upperBoundX, lowerBoundY, upperBoundY); // 2次元座標スポット役割作成
+            new TRoleOf2DCoordinateSpot(spot, lowerBoundX, upperBoundX, lowerBoundY, upperBoundY, isToroidal); // 2次元座標スポット役割作成
         }
 
         // *************************************************************************************************************
@@ -115,10 +118,8 @@ public class TMain {
             agent.activateRole(ERoleName.Agent); // エージェント役割をアクティブ化
 
             TRoleOf2DCoordinateAgent role = new TRoleOf2DCoordinateAgent(agent, spotManager); // 2次元座標利用エージェント役割作成
-            double x = random.nextDouble(lowerBoundX, upperBoundX); // x座標を座標の範囲内でランダムに生成
-            double y = random.nextDouble(lowerBoundY, upperBoundY); // y座標を座標の範囲内でランダムに生成
             // スポット内座標の初期化．現在スポットが設定されているかつ，スポットがスポット内座標役割を持っている必要がある点に注意．
-            role.moveInCurrentSpot(x, y, spotManager);
+            role.moveInCurrentSpot(spotManager, random);
         }
 
         // *************************************************************************************************************
@@ -178,9 +179,13 @@ public class TMain {
                         if (agent1.equals(agent2)) {
                             continue;
                         }
-                        double distance = ((TRoleOf2DCoordinateAgent) agent1.getRole(ESpatialSpotModuleRoleName.TwoDimensionalCoordinateAgent))
-                                .getCoordinate(spotManager).distance(((TRoleOf2DCoordinateAgent) agent2.getRole(ESpatialSpotModuleRoleName.TwoDimensionalCoordinateAgent))
-                                .getCoordinate(spotManager));
+                        T2DCoordinate coordinate1 = ((TRoleOf2DCoordinateAgent) agent1.getRole(ESpatialSpotModuleRoleName.TwoDimensionalCoordinateAgent))
+                                .getCoordinate(spotManager);
+                        T2DCoordinate coordinate2 = ((TRoleOf2DCoordinateAgent) agent2.getRole(ESpatialSpotModuleRoleName.TwoDimensionalCoordinateAgent))
+                                .getCoordinate(spotManager);
+                        T2DSpace space = ((TRoleOf2DCoordinateAgent) agent1.getRole(ESpatialSpotModuleRoleName.TwoDimensionalCoordinateAgent))
+                                .get2DSpaceOfCurrentSpot(spotManager);
+                        double distance = space.distance(coordinate1, coordinate2);
                         distanceLogPW.print("    ");
                         distanceLogPW.print(agent1.getName());
                         distanceLogPW.print("-");

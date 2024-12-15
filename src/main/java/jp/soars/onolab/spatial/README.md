@@ -94,14 +94,16 @@ TRuleOf2DCoordinateAgentはスポット間/スポット内座標の移動をサ�
 TRuleOf2DCoordinateAgent基本的なメソッドとして以下のものが実装されている．
 - moveTo(spot)
   - 指定したスポットに移動する．スポット内座標はNaNで初期化される．
-- moveTo(spot, x, y)
-  - 指定したスポットの指定した座標に移動する．
 - moveTo(spot, random)
   - 指定したスポットのランダムな座標に移動する．
-- moveInCurrentSpot(x, y, spotManager)
-  - 現在いるスポットの指定した座標に移動する．
+- moveTo(spot, x, y)
+  - 指定したスポットの指定した座標に移動する．
 - moveInCurrentSpot(spotManager, random)
   - 現在いるスポットのランダムな座標に移動する．
+- moveInCurrentSpot(x, y, spotManager)
+  - 現在いるスポットの指定した座標に移動する．
+- moveRelativeInCurrentSpot(dx, dy, spotManager)
+  - 現在いるスポットの現在座標から相対座標指定で移動する．
 
 `TRuleOfAgentRandomMoving.java`
 
@@ -135,32 +137,78 @@ public final class TRuleOfAgentRandomMoving extends TRuleOf2DCoordinateAgent {
     @Override
     public final void doIt(TTime currentTime, Enum<?> currentStage, TSpotManager spotManager,
             TAgentManager agentManager, Map<String, Object> globalSharedVariables) {
+        // *************************************************************************************************************
+        // 現在スポットとは別のスポットへ移動する場合．(通常のスポット間移動) スポット内座標はNaNに設定される．
+        // *************************************************************************************************************
+        // ICRandom random = getRandom(); // 乱数発生器
+        // List<TSpot> spots = spotManager.getSpots(fSpotType);
+        // TSpot spot = spots.get(getRandom().nextInt(spots.size())); // 移動先スポットをランダムに選択
+        // moveTo(spot); // 移動後にスポット内座標を初期化しない．スポット内座標はNaNに設定される．
+
+        // *************************************************************************************************************
+        // 現在スポットとは別のスポットのランダムなスポット内座標に移動する場合．
+        // *************************************************************************************************************
+        // ICRandom random = getRandom(); // 乱数発生器
+        // List<TSpot> spots = spotManager.getSpots(fSpotType);
+        // TSpot spot = spots.get(getRandom().nextInt(spots.size())); // 移動先スポットをランダムに選択
+        // moveTo(spot, random); // 移動後にランダムなスポット内座標に設定する場合．
+
+        // *************************************************************************************************************
+        // 現在スポットとは別のスポットの指定したスポット内座標に移動する場合．
+        // *************************************************************************************************************
+        // ICRandom random = getRandom(); // 乱数発生器
+        // List<TSpot> spots = spotManager.getSpots(fSpotType);
+        // TSpot spot = spots.get(getRandom().nextInt(spots.size())); // 移動先スポットをランダムに選択
+        // T2DSpace space = get2DSpace(spot); // スポット内2次元座標系
+        // double lowerBoundX = space.getLowerBoundX(); // X座標の下限
+        // double upperBoundX = space.getUpperBoundX(); // X座標の上限
+        // double lowerBoundY = space.getLowerBoundY(); // Y座標の下限
+        // double upperBoundY = space.getUpperBoundY(); // Y座標の上限
+        // // 中心座標を計算
+        // double x = lowerBoundX + (upperBoundX - lowerBoundX) / 2.0;
+        // double y = lowerBoundY + (upperBoundY - lowerBoundY) / 2.0;
+        // moveTo(spot, x, y); // 移動後に指定したスポット内座標に設定する場合．
+
+        // *************************************************************************************************************
+        // 現在スポットのランダムなスポット内座標に移動する場合．
+        // *************************************************************************************************************
+        // moveInCurrentSpot(spotManager, getRandom()); // スポット内座標のランダム移動
+
+        // *************************************************************************************************************
+        // 現在スポットの指定したスポット内座標に移動する場合．
+        // *************************************************************************************************************
+        // T2DSpace space = get2DSpaceOfCurrentSpot(spotManager); // 現在スポット内2次元座標系
+        // double lowerBoundX = space.getLowerBoundX(); // X座標の下限
+        // double upperBoundX = space.getUpperBoundX(); // X座標の上限
+        // double lowerBoundY = space.getLowerBoundY(); // Y座標の下限
+        // double upperBoundY = space.getUpperBoundY(); // Y座標の上限
+        // // 中心座標を計算
+        // double x = lowerBoundX + (upperBoundX - lowerBoundX) / 2.0;
+        // double y = lowerBoundY + (upperBoundY - lowerBoundY) / 2.0;
+        // moveInCurrentSpot(x, y, spotManager); // 移動
+
+        // *************************************************************************************************************
+        // 現在スポットのスポット内座標に相対座標指定で移動する場合．
+        // *************************************************************************************************************
+        // T2DSpace space = get2DSpaceOfCurrentSpot(spotManager); // 現在スポット内2次元座標系
+        // double lowerBoundX = space.getLowerBoundX(); // X座標の下限
+        // double upperBoundX = space.getUpperBoundX(); // X座標の上限
+        // double lowerBoundY = space.getLowerBoundY(); // Y座標の下限
+        // double upperBoundY = space.getUpperBoundY(); // Y座標の上限
+        // // 移動量 (dx, dy) を計算
+        // double dx = (upperBoundX - lowerBoundX) / 3.0;
+        // double dy = (upperBoundY - lowerBoundY) / 3.0;
+        // moveRelativeInCurrentSpot(dx, dy, spotManager); // 移動量を指定して移動
+
+
         ICRandom random = getRandom(); // 乱数発生器
         if (random.nextDouble() < MOVING_PROBABILITY) { // 確率でスポット間をランダム移動
             List<TSpot> spots = spotManager.getSpots(fSpotType);
             TSpot spot = spots.get(getRandom().nextInt(spots.size())); // 移動先スポットをランダムに選択
-            // moveTo(spot); // 移動後にスポット内座標を初期化しない場合．(座標はNaNに設定される．)
             moveTo(spot, random); // 移動後にランダムなスポット内座標に設定する場合．
         } else { // スポット内座標のランダム移動
             moveInCurrentSpot(spotManager, random); // 移動
         }
-
-        // // 座標を指定して移動する場合
-        // ICRandom random = getRandom(); // 乱数発生器
-        // if (random.nextDouble() < MOVING_PROBABILITY) { // 確率でスポット間をランダム移動
-        //     List<TSpot> spots = spotManager.getSpots(fSpotType);
-        //     TSpot spot = spots.get(getRandom().nextInt(spots.size())); // 移動先スポットをランダムに選択
-        //     // moveTo(spot); // 移動後にスポット内座標を初期化しない場合．(座標はNaNに設定される．)
-        //     // 移動先の座標
-        //     double x = 0.0;
-        //     double y = 0.0;
-        //     moveTo(spot, x, y); // 移動後に指定したスポット内座標に設定する場合．
-        // } else { // スポット内座標のランダム移動
-        //     // 移動先の座標
-        //     double x = 0.0;
-        //     double y = 0.0;
-        //     moveInCurrentSpot(x, y, spotManager); // 移動
-        // }
     }
 }
 ```
@@ -271,10 +319,11 @@ public class TMain {
         double upperBoundX = 5.0;
         double lowerBoundY = -5.0;
         double upperBoundY = 5.0;
+        boolean isToroidal = true; // トーラスにするか？
         List<TSpot> spots = spotManager.createSpots(ESpotType.Spot, noOfSpots);
         for (int i = 0; i < noOfSpots; ++i) {
             TSpot spot = spots.get(i); // i番目のスポット
-            new TRoleOf2DCoordinateSpot(spot, lowerBoundX, upperBoundX, lowerBoundY, upperBoundY); // 2次元座標スポット役割作成
+            new TRoleOf2DCoordinateSpot(spot, lowerBoundX, upperBoundX, lowerBoundY, upperBoundY, isToroidal); // 2次元座標スポット役割作成
         }
 
         // *************************************************************************************************************
@@ -295,10 +344,8 @@ public class TMain {
             agent.activateRole(ERoleName.Agent); // エージェント役割をアクティブ化
 
             TRoleOf2DCoordinateAgent role = new TRoleOf2DCoordinateAgent(agent, spotManager); // 2次元座標利用エージェント役割作成
-            double x = random.nextDouble(lowerBoundX, upperBoundX); // x座標を座標の範囲内でランダムに生成
-            double y = random.nextDouble(lowerBoundY, upperBoundY); // y座標を座標の範囲内でランダムに生成
             // スポット内座標の初期化．現在スポットが設定されているかつ，スポットがスポット内座標役割を持っている必要がある点に注意．
-            role.moveInCurrentSpot(x, y, spotManager);
+            role.moveInCurrentSpot(spotManager, random);
         }
 
         // *************************************************************************************************************
@@ -358,9 +405,13 @@ public class TMain {
                         if (agent1.equals(agent2)) {
                             continue;
                         }
-                        double distance = ((TRoleOf2DCoordinateAgent) agent1.getRole(ESpatialSpotModuleRoleName.TwoDimensionalCoordinateAgent))
-                                .getCoordinate(spotManager).distance(((TRoleOf2DCoordinateAgent) agent2.getRole(ESpatialSpotModuleRoleName.TwoDimensionalCoordinateAgent))
-                                .getCoordinate(spotManager));
+                        T2DCoordinate coordinate1 = ((TRoleOf2DCoordinateAgent) agent1.getRole(ESpatialSpotModuleRoleName.TwoDimensionalCoordinateAgent))
+                                .getCoordinate(spotManager);
+                        T2DCoordinate coordinate2 = ((TRoleOf2DCoordinateAgent) agent2.getRole(ESpatialSpotModuleRoleName.TwoDimensionalCoordinateAgent))
+                                .getCoordinate(spotManager);
+                        T2DSpace space = ((TRoleOf2DCoordinateAgent) agent1.getRole(ESpatialSpotModuleRoleName.TwoDimensionalCoordinateAgent))
+                                .get2DSpaceOfCurrentSpot(spotManager);
+                        double distance = space.distance(coordinate1, coordinate2);
                         distanceLogPW.print("    ");
                         distanceLogPW.print(agent1.getName());
                         distanceLogPW.print("-");
